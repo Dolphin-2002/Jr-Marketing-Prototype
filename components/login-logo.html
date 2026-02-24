@@ -1,0 +1,46 @@
+<!-- 
+    COMPONENT: Login Logo
+    Usage: include in login page header area
+-->
+<div class="login-logo-area" role="banner">
+    <div class="login-logo-img" aria-label="PRO DATA Logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" width="160" height="112">
+            <!-- White glow background -->
+            <defs>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <!-- Outer square border (dark navy) -->
+            <rect x="55" y="4" width="90" height="90" rx="8" ry="8"
+                  fill="none" stroke="#1a1a2e" stroke-width="6"/>
+
+            <!-- Inner square (red accent) -->
+            <rect x="73" y="22" width="54" height="54" rx="5" ry="5"
+                  fill="none" stroke="#e63946" stroke-width="5"/>
+
+            <!-- P letter on left side -->
+            <text x="62" y="67" font-family="'Segoe UI',Arial,sans-serif"
+                  font-size="38" font-weight="900" fill="#1a1a2e" filter="url(#glow)">p</text>
+
+            <!-- b letter on right side -->
+            <text x="102" y="67" font-family="'Segoe UI',Arial,sans-serif"
+                  font-size="38" font-weight="900" fill="#1a1a2e" filter="url(#glow)">b</text>
+
+            <!-- Red accent corner top-right -->
+            <rect x="123" y="4" width="22" height="22" rx="4" ry="4" fill="#e63946"/>
+
+            <!-- PRODATA text -->
+            <text x="100" y="112" font-family="'Segoe UI',Arial,sans-serif"
+                  font-size="22" font-weight="900" fill="#1a1a2e"
+                  text-anchor="middle" letter-spacing="3">PRODATA</text>
+        </svg>
+    </div>
+    <p class="login-logo-tagline">POS, ERP, Stock Management &amp; Invoicing Application</p>
+    <p class="login-logo-url">www.prodata.ngtlanka.com</p>
+</div>

@@ -1,0 +1,92 @@
+<!-- 
+    COMPONENT: Login Form
+    Usage: include inside the login card
+-->
+<div class="login-card-header">
+    <h1 class="login-title">Welcome Back</h1>
+    <p class="login-subtitle">Login to your PRO DATA</p>
+</div>
+
+<!-- Alert Box (hidden by default) -->
+<div id="login-alert" class="alert" style="display:none;" role="alert" aria-live="polite"></div>
+
+<form id="login-form" novalidate autocomplete="off">
+
+    <!-- Username Field -->
+    <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <div class="input-icon-wrap">
+            <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-control"
+                placeholder="Username"
+                autocomplete="username"
+                aria-required="true"
+                aria-label="Username"
+                spellcheck="false"
+            >
+            <span class="input-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </span>
+        </div>
+        <span class="form-error-msg" id="username-error"></span>
+    </div>
+
+    <!-- Forgot Password -->
+    <div class="login-forgot-row">
+        <a href="forgot-password.html" class="login-forgot-link" tabindex="3">Forgot Your Password?</a>
+    </div>
+
+    <!-- Password Field -->
+    <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="password-wrap">
+            <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Password"
+                autocomplete="current-password"
+                aria-required="true"
+                aria-label="Password"
+            >
+            <button type="button" class="password-toggle" id="toggle-password"
+                    aria-label="Show password" title="Toggle password visibility">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+        </div>
+        <span class="form-error-msg" id="password-error"></span>
+    </div>
+
+    <!-- Remember Me -->
+    <div class="login-remember-row">
+        <label class="checkbox-wrap">
+            <input type="checkbox" id="remember-me" name="remember-me">
+            <span class="checkbox-label">Remember Me</span>
+        </label>
+    </div>
+
+    <!-- Buttons -->
+    <div class="login-btn-group">
+        <button type="submit" id="login-btn" class="btn btn-primary" aria-label="Login">
+            <span class="btn-text">Login</span>
+            <div class="spinner" aria-hidden="true"></div>
+        </button>
+
+        <button type="button" id="tech-team-btn" class="btn btn-success" aria-label="Technical Team Portal">
+            <span class="btn-text">Technical Team</span>
+        </button>
+    </div>
+
+</form>
