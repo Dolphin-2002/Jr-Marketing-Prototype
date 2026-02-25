@@ -35,10 +35,6 @@
         }
         .tb-btn:hover { background: #f3f4f6; }
         .tb-btn.red   { border-color: #ef4444; color: #ef4444; }
-        .tb-btn.green { border-color: #22c55e; color: #22c55e; }
-        .tb-btn.blue  { border-color: #3b82f6; color: #3b82f6; }
-        .tb-btn.orange{ border-color: #f97316; color: #f97316; }
-        .tb-btn.gray  { border-color: #9ca3af; color: #9ca3af; }
         .tb-btn-add-expense {
             border: 1.5px solid #111827; background: #fff; color: #111827;
             border-radius: 6px; padding: 0 14px; height: 36px; cursor: pointer;
@@ -106,10 +102,15 @@
             color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
             font-size: 20px; font-weight: 300; flex-shrink: 0; transition: background .15s;
         }
-        .product-add-btn:hover { background: #2563eb; }
+        .product-add-btn:hover { background: #1b46a4; }
 
         /* ===== ITEMS TABLE ===== */
-        .pos-table-wrap { flex: 1; overflow-y: auto; }
+        .pos-table-wrap {
+            overflow-y: auto;
+            /* Show exactly 4 rows (each row ~47px) + header ~42px */
+            max-height: calc(42px + 4 * 47px);
+            flex: none;
+        }
         .pos-table {
             width: 100%; border-collapse: collapse; font-size: 13px;
         }
@@ -117,14 +118,16 @@
             border-bottom: 2px solid #f3f4f6;
         }
         .pos-table thead th {
-            padding: 10px 16px; text-align: left; font-weight: 700; color: #111827; font-size: 13px;
+            padding: 10px 12px; text-align: left; font-weight: 700; color: #111827; font-size: 13px;
+            position: sticky; top: 0; background: #fff; z-index: 1;
         }
         .pos-table thead th:nth-child(2) { text-align: center; }
-        .pos-table thead th:nth-child(3) { text-align: right; }
+        .pos-table thead th:nth-child(3) { text-align: center; }
+        .pos-table thead th:nth-child(4) { text-align: right; }
         .pos-table thead th:last-child { text-align: center; width: 40px; }
         .pos-table tbody tr { border-bottom: 1px solid #f9fafb; }
         .pos-table tbody tr:hover { background: #f9fafb; }
-        .pos-table tbody td { padding: 10px 16px; color: #374151; vertical-align: middle; }
+        .pos-table tbody td { padding: 10px 12px; color: #374151; vertical-align: middle; }
         .th-info { display: inline-flex; align-items: center; gap: 4px; }
         .th-info-icon {
             width: 16px; height: 16px; background: #06b6d4; border-radius: 50%;
@@ -136,6 +139,479 @@
             font-size: 20px; font-weight: 700; line-height: 1; padding: 0 6px;
         }
         .remove-row-btn:hover { color: #ef4444; }
+
+        /* Discount button in table */
+        .disc-btn {
+            display: inline-flex; align-items: center; gap: 4px;
+            border: 1.5px solid #d1d5db; background: #fff; border-radius: 6px;
+            padding: 3px 9px; font-size: 12px; font-weight: 600; color: #374151;
+            cursor: pointer; transition: all .15s; white-space: nowrap;
+        }
+        .disc-btn:hover { border-color: #f59e0b; color: #f59e0b; background: #fffbeb; }
+        .disc-btn.has-discount { border-color: #f59e0b; color: #fff; background: #f59e0b; }
+        .disc-btn.has-discount:hover { background: #d97706; border-color: #d97706; }
+
+        /* ===== DISCOUNT MODAL ===== */
+        .disc-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5);
+            z-index: 9999; align-items: center; justify-content: center;
+        }
+        .disc-overlay.open { display: flex; }
+        .disc-modal {
+            background: #fff; border-radius: 12px; width: 360px; max-width: 96vw;
+            box-shadow: 0 20px 60px rgba(0,0,0,.25);
+            animation: discSlideIn .18s ease;
+        }
+        @keyframes discSlideIn {
+            from { opacity:0; transform: translateY(-16px) scale(.97); }
+            to   { opacity:1; transform: translateY(0) scale(1); }
+        }
+        .disc-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px 12px;
+            border-bottom: 1.5px solid #f3f4f6;
+        }
+        .disc-header h3 { font-size: 15px; font-weight: 700; color: #111827; margin: 0; }
+        .disc-close {
+            background: none; border: none; font-size: 18px; color: #6b7280;
+            cursor: pointer; padding: 4px 8px; border-radius: 6px; line-height: 1;
+        }
+        .disc-close:hover { background: #fee2e2; color: #ef4444; }
+        .disc-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+        .disc-product-name {
+            font-size: 13px; font-weight: 600; color: #374151;
+            background: #f3f4f6; border-radius: 6px; padding: 7px 12px;
+        }
+        /* Radio toggle */
+        .disc-type-row {
+            display: flex; gap: 10px;
+        }
+        .disc-type-label {
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+            border: 2px solid #e5e7eb; border-radius: 8px; padding: 10px 6px;
+            cursor: pointer; font-size: 13px; font-weight: 600; color: #6b7280;
+            transition: all .15s;
+        }
+        .disc-type-label:has(input:checked) {
+            border-color: #f59e0b; background: #fffbeb; color: #b45309;
+        }
+        .disc-type-label input[type="radio"] { display: none; }
+        .disc-type-icon { font-size: 16px; }
+
+        /* Amount input */
+        .disc-amount-wrap {
+            display: flex; align-items: center;
+            border: 1.5px solid #d1d5db; border-radius: 6px;
+            overflow: hidden; height: 40px; background: #fff;
+        }
+        .disc-amount-wrap:focus-within { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+        .disc-amount-prefix {
+            padding: 0 12px; background: #f9fafb; border-right: 1px solid #e5e7eb;
+            height: 100%; display: flex; align-items: center;
+            font-size: 14px; font-weight: 700; color: #6b7280; flex-shrink: 0;
+        }
+        .disc-amount-input {
+            flex: 1; border: none; outline: none; padding: 0 12px;
+            font-size: 15px; font-weight: 700; color: #111827;
+        }
+        .disc-amount-suffix {
+            padding: 0 12px; background: #f9fafb; border-left: 1px solid #e5e7eb;
+            height: 100%; display: flex; align-items: center;
+            font-size: 13px; font-weight: 600; color: #9ca3af; flex-shrink: 0;
+        }
+        /* Preview */
+        .disc-preview {
+            font-size: 13px; color: #6b7280;
+            background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px;
+            padding: 8px 12px; display: none;
+        }
+        .disc-preview.show { display: block; }
+        .disc-preview strong { color: #16a34a; }
+        .disc-footer {
+            display: flex; gap: 10px; padding: 0 18px 18px;
+        }
+        .disc-btn-cancel {
+            flex: 1; height: 38px; border: 1.5px solid #d1d5db; background: #fff;
+            border-radius: 7px; font-size: 13px; font-weight: 600; color: #374151;
+            cursor: pointer; transition: background .15s;
+        }
+        .disc-btn-cancel:hover { background: #f3f4f6; }
+        .disc-btn-remove {
+            height: 38px; border: 1.5px solid #fca5a5; background: #fff;
+            border-radius: 7px; font-size: 13px; font-weight: 600; color: #ef4444;
+            cursor: pointer; padding: 0 14px; transition: background .15s;
+        }
+        .disc-btn-remove:hover { background: #fef2f2; }
+        .disc-btn-apply {
+            flex: 1; height: 38px; border: none; background: #f59e0b;
+            border-radius: 7px; font-size: 13px; font-weight: 700; color: #fff;
+            cursor: pointer; transition: background .15s;
+        }
+        .disc-btn-apply:hover { background: #d97706; }
+
+        /* ===== SHORTCUT MODALS (shared overlay + modal base) ===== */
+        .sc-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,.50);
+            z-index: 9990; align-items: center; justify-content: center; padding: 16px;
+        }
+        .sc-overlay.open { display: flex; }
+        .sc-modal {
+            background: #fff; border-radius: 12px; width: 480px; max-width: 98vw;
+            max-height: 92vh; display: flex; flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,.26);
+            animation: scSlideIn .18s ease;
+        }
+        @keyframes scSlideIn {
+            from { opacity:0; transform: translateY(-18px) scale(.97); }
+            to   { opacity:1; transform: translateY(0) scale(1); }
+        }
+        .sc-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 16px 20px 14px; border-bottom: 1.5px solid #f3f4f6; flex-shrink: 0;
+        }
+        .sc-header-icon {
+            width: 36px; height: 36px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .sc-header h3 { font-size: 15px; font-weight: 700; color: #111827; margin: 0; flex: 1; }
+        .sc-header-close {
+            background: none; border: none; font-size: 18px; color: #6b7280;
+            cursor: pointer; padding: 4px 8px; border-radius: 6px; line-height: 1;
+        }
+        .sc-header-close:hover { background: #fee2e2; color: #ef4444; }
+        .sc-body { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+        .sc-footer {
+            padding: 14px 20px; border-top: 1.5px solid #f3f4f6;
+            display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0;
+        }
+        .sc-btn-cancel {
+            padding: 0 20px; height: 38px; border: 1.5px solid #d1d5db; background: #fff;
+            border-radius: 7px; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer;
+        }
+        .sc-btn-cancel:hover { background: #f3f4f6; }
+        .sc-btn-confirm {
+            padding: 0 22px; height: 38px; border: none;
+            border-radius: 7px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer;
+            display: flex; align-items: center; gap: 7px;
+        }
+        /* Field helpers */
+        .sc-field { display: flex; flex-direction: column; gap: 5px; }
+        .sc-label { font-size: 12px; font-weight: 600; color: #374151; }
+        .sc-input, .sc-textarea {
+            border: 1.5px solid #d1d5db; border-radius: 6px;
+            padding: 0 10px; font-size: 13px; color: #374151; background: #fff;
+            outline: none; width: 100%; font-family: inherit;
+        }
+        .sc-input { height: 36px; }
+        .sc-textarea { padding: 8px 10px; height: 72px; resize: vertical; }
+        .sc-input:focus, .sc-textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
+        .sc-info-box {
+            background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 7px;
+            padding: 10px 14px; font-size: 13px; color: #0369a1; display: flex; align-items: flex-start; gap: 8px;
+        }
+        .sc-info-box svg { flex-shrink: 0; margin-top: 1px; color: #0ea5e9; }
+        /* Summary mini-table inside modals */
+        .sc-summary {
+            border: 1.5px solid #e5e7eb; border-radius: 8px; overflow: hidden;
+        }
+        .sc-summary-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 14px; font-size: 13px; border-bottom: 1px solid #f3f4f6;
+        }
+        .sc-summary-row:last-child { border-bottom: none; }
+        .sc-summary-row span:first-child { color: #6b7280; }
+        .sc-summary-row span:last-child { font-weight: 700; color: #111827; }
+        .sc-summary-row.total span:last-child { color: #16a34a; font-size: 15px; }
+
+        /* ── DRAFT specific ── */
+        #draft-overlay .sc-header-icon { background: #eff6ff; color: #3b82f6; }
+        #draft-overlay .sc-btn-confirm { background: #3b82f6; }
+        #draft-overlay .sc-btn-confirm:hover { background: #2563eb; }
+        /* Draft slot list */
+        .draft-slot {
+            border: 1.5px solid #e5e7eb; border-radius: 8px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px; cursor: pointer; transition: background .15s;
+        }
+        .draft-slot:hover { background: #eff6ff; border-color: #3b82f6; }
+        .draft-slot .slot-info { font-size: 13px; color: #374151; }
+        .draft-slot .slot-meta { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+        .draft-slot .slot-actions { display: flex; gap: 6px; }
+        .draft-slot-del {
+            background: none; border: 1.5px solid #fca5a5; border-radius: 5px;
+            color: #ef4444; cursor: pointer; padding: 3px 8px; font-size: 12px; font-weight: 600;
+        }
+        .draft-slot-del:hover { background: #fef2f2; }
+        .draft-slot-restore {
+            background: #3b82f6; border: none; border-radius: 5px;
+            color: #fff; cursor: pointer; padding: 3px 10px; font-size: 12px; font-weight: 600;
+        }
+        .draft-slot-restore:hover { background: #2563eb; }
+        .draft-empty { text-align: center; color: #9ca3af; font-size: 13px; padding: 20px 0; }
+
+        /* ── QUOTATION specific ── */
+        #quotation-overlay .sc-header-icon { background: #fff7ed; color: #f97316; }
+        #quotation-overlay .sc-btn-confirm { background: #f97316; }
+        #quotation-overlay .sc-btn-confirm:hover { background: #ea580c; }
+
+        /* ── SUSPEND specific ── */
+        #suspend-overlay .sc-header-icon { background: #fef2f2; color: #ef4444; }
+        #suspend-overlay .sc-btn-confirm { background: #ef4444; }
+        #suspend-overlay .sc-btn-confirm:hover { background: #dc2626; }
+        /* Suspended order list */
+        .susp-slot {
+            border: 1.5px solid #e5e7eb; border-radius: 8px;
+            padding: 10px 14px; transition: background .15s;
+        }
+        .susp-slot-top {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;
+        }
+        .susp-slot-name { font-size: 13px; font-weight: 600; color: #111827; }
+        .susp-slot-time { font-size: 11px; color: #9ca3af; }
+        .susp-slot-items { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+        .susp-slot-actions { display: flex; gap: 6px; justify-content: flex-end; }
+        .susp-slot-del {
+            background: none; border: 1.5px solid #fca5a5; border-radius: 5px;
+            color: #ef4444; cursor: pointer; padding: 3px 8px; font-size: 12px; font-weight: 600;
+        }
+        .susp-slot-del:hover { background: #fef2f2; }
+        .susp-slot-resume {
+            background: #ef4444; border: none; border-radius: 5px;
+            color: #fff; cursor: pointer; padding: 3px 10px; font-size: 12px; font-weight: 600;
+        }
+        .susp-slot-resume:hover { background: #dc2626; }
+        .susp-empty { text-align: center; color: #9ca3af; font-size: 13px; padding: 20px 0; }
+
+        /* ── CREDIT SALE specific ── */
+        #credit-overlay .sc-header-icon { background: #f0fdf4; color: #22c55e; }
+        #credit-overlay .sc-btn-confirm { background: #22c55e; }
+        #credit-overlay .sc-btn-confirm:hover { background: #16a34a; }
+        .credit-customer-card {
+            background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 8px;
+            padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+        }
+        .credit-cust-avatar {
+            width: 38px; height: 38px; border-radius: 50%; background: #22c55e;
+            color: #fff; font-size: 15px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .credit-cust-name { font-size: 14px; font-weight: 700; color: #111827; }
+        .credit-cust-limit { font-size: 12px; color: #16a34a; margin-top: 2px; }
+        .credit-warn {
+            background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 8px;
+            padding: 10px 14px; font-size: 13px; color: #dc2626;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .credit-warn svg { flex-shrink: 0; }
+
+        /* ===== ADD EXPENSE MODAL ===== */
+        #ae-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,.50);
+            z-index: 9995; align-items: flex-start; justify-content: center;
+            padding: 30px 16px; overflow-y: auto;
+        }
+        #ae-overlay.open { display: flex; }
+        .ae-modal {
+            background: #fff; border-radius: 12px; width: 640px; max-width: 98vw;
+            display: flex; flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,.26);
+            animation: scSlideIn .18s ease;
+            margin: auto;
+        }
+        .ae-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 22px 14px; border-bottom: 1.5px solid #e5e7eb;
+        }
+        .ae-header h3 { font-size: 16px; font-weight: 700; color: #111827; margin: 0; }
+        .ae-header-close {
+            background: none; border: none; font-size: 18px; color: #6b7280;
+            cursor: pointer; padding: 4px 8px; border-radius: 6px; line-height: 1;
+        }
+        .ae-header-close:hover { background: #fee2e2; color: #ef4444; }
+        .ae-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
+        .ae-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .ae-field { display: flex; flex-direction: column; gap: 5px; }
+        .ae-label {
+            font-size: 12px; font-weight: 600; color: #374151;
+        }
+        .ae-label .req { color: #ef4444; }
+        .ae-input, .ae-select, .ae-textarea {
+            border: 1.5px solid #d1d5db; border-radius: 6px;
+            padding: 0 11px; height: 38px; font-size: 13px; color: #374151;
+            background: #fff; outline: none; width: 100%; font-family: inherit;
+        }
+        .ae-textarea { height: 80px; padding: 9px 11px; resize: vertical; }
+        .ae-input:focus, .ae-select:focus, .ae-textarea:focus {
+            border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+        }
+        .ae-input.error, .ae-select.error, .ae-textarea.error { border-color: #ef4444; }
+        .ae-error-msg { font-size: 11px; color: #ef4444; display: none; }
+        .ae-error-msg.show { display: block; }
+        .ae-input-with-icon {
+            display: flex; align-items: center;
+            border: 1.5px solid #d1d5db; border-radius: 6px;
+            height: 38px; background: #fff; overflow: hidden;
+        }
+        .ae-input-with-icon:focus-within { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.12); }
+        .ae-input-with-icon.error { border-color: #ef4444; }
+        .ae-input-icon {
+            width: 38px; display: flex; align-items: center; justify-content: center;
+            background: #f9fafb; border-right: 1px solid #e5e7eb; flex-shrink: 0;
+            color: #6b7280; height: 100%;
+        }
+        .ae-input-inner {
+            flex: 1; border: none; outline: none; padding: 0 11px;
+            font-size: 13px; color: #374151; background: transparent; font-family: inherit;
+        }
+        .ae-date-wrap {
+            display: flex; align-items: center;
+            border: 1.5px solid #d1d5db; border-radius: 6px;
+            height: 38px; background: #f9fafb; overflow: hidden;
+        }
+        .ae-date-wrap:focus-within { border-color: #3b82f6; }
+        .ae-date-icon {
+            width: 38px; display: flex; align-items: center; justify-content: center;
+            color: #6b7280; flex-shrink: 0;
+        }
+        .ae-date-input {
+            flex: 1; border: none; outline: none; padding: 0 8px;
+            font-size: 13px; color: #374151; background: transparent; font-family: inherit; height: 100%;
+        }
+        .ae-section-title {
+            font-size: 14px; font-weight: 700; color: #3b82f6; margin-bottom: 2px;
+        }
+        .ae-divider { border: none; border-top: 1.5px solid #f3f4f6; margin: 2px 0; }
+        /* Cheque fields */
+        .ae-cheque-fields {
+            display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;
+        }
+        .ae-cheque-fields.show { display: grid; }
+        .ae-footer {
+            padding: 14px 22px; border-top: 1.5px solid #e5e7eb;
+            display: flex; justify-content: flex-end; gap: 10px;
+        }
+        .ae-btn-cancel {
+            padding: 0 22px; height: 38px; border: 1.5px solid #d1d5db; background: #fff;
+            border-radius: 7px; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer;
+        }
+        .ae-btn-cancel:hover { background: #f3f4f6; }
+        .ae-btn-save {
+            padding: 0 26px; height: 38px; border: none; background: #3b82f6;
+            border-radius: 7px; font-size: 13px; font-weight: 700; color: #fff;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+        }
+        .ae-btn-save:hover { background: #2563eb; }
+
+        /* ===== ADD PRODUCT MODAL ===== */
+        #ap-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,.50);
+            z-index: 9996; align-items: flex-start; justify-content: center;
+            padding: 30px 16px; overflow-y: auto;
+        }
+        #ap-overlay.open { display: flex; }
+        .ap-modal {
+            background: #fff; border-radius: 12px; width: 860px; max-width: 98vw;
+            display: flex; flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,.28);
+            animation: scSlideIn .18s ease;
+            margin: auto;
+        }
+        .ap-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 24px 14px; border-bottom: 1.5px solid #e5e7eb;
+        }
+        .ap-header h3 { font-size: 16px; font-weight: 700; color: #111827; margin: 0; }
+        .ap-header-close {
+            background: none; border: none; font-size: 18px; color: #6b7280;
+            cursor: pointer; padding: 4px 8px; border-radius: 6px; line-height: 1;
+        }
+        .ap-header-close:hover { background: #fee2e2; color: #ef4444; }
+        .ap-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 18px; }
+        .ap-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+        .ap-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .ap-field { display: flex; flex-direction: column; gap: 5px; }
+        .ap-label { font-size: 12px; font-weight: 600; color: #374151; }
+        .ap-label .req { color: #ef4444; }
+        .ap-label .ap-info-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 15px; height: 15px; border-radius: 50%; background: #06b6d4;
+            color: #fff; font-size: 10px; font-weight: 700; cursor: default; margin-left: 3px;
+        }
+        .ap-input, .ap-select, .ap-textarea {
+            border: 1.5px solid #d1d5db; border-radius: 6px;
+            padding: 0 11px; height: 38px; font-size: 13px; color: #374151;
+            background: #fff; outline: none; width: 100%; font-family: inherit;
+            appearance: none;
+        }
+        .ap-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px;
+        }
+        .ap-textarea { height: 120px; padding: 9px 11px; resize: vertical; }
+        .ap-input:focus, .ap-select:focus, .ap-textarea:focus {
+            border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.12); outline: none;
+        }
+        .ap-input.error, .ap-select.error { border-color: #ef4444; }
+        .ap-error-msg { font-size: 11px; color: #ef4444; display: none; }
+        .ap-error-msg.show { display: block; }
+        /* Manage Stock checkbox row */
+        .ap-checkbox-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 14px; background: #f0f9ff; border: 1.5px solid #bae6fd;
+            border-radius: 8px;
+        }
+        .ap-checkbox-row input[type="checkbox"] {
+            width: 16px; height: 16px; accent-color: #3b82f6; cursor: pointer; flex-shrink: 0;
+        }
+        .ap-checkbox-label { font-size: 13px; font-weight: 700; color: #0369a1; cursor: pointer; }
+        .ap-checkbox-hint { font-size: 11px; color: #6b7280; display: block; margin-top: 1px; }
+        /* Rich text editor area (simple styled textarea) */
+        .ap-editor-wrap {
+            border: 1.5px solid #d1d5db; border-radius: 8px; overflow: hidden;
+        }
+        .ap-editor-wrap:focus-within { border-color: #3b82f6; }
+        .ap-editor-toolbar {
+            background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+            padding: 6px 10px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+        }
+        .ap-tb-btn {
+            background: none; border: 1px solid transparent; border-radius: 4px;
+            padding: 3px 7px; font-size: 12px; color: #374151; cursor: pointer; font-family: inherit;
+        }
+        .ap-tb-btn:hover { background: #e5e7eb; }
+        .ap-tb-btn.active { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; }
+        .ap-tb-sep { width: 1px; height: 16px; background: #d1d5db; margin: 0 2px; }
+        .ap-editor-content {
+            min-height: 110px; padding: 10px 12px; font-size: 13px; color: #374151;
+            outline: none; line-height: 1.6;
+        }
+        .ap-section-divider {
+            border: none; border-top: 1.5px solid #f3f4f6;
+        }
+        /* Barcode type select with preview */
+        .ap-barcode-preview {
+            font-size: 11px; color: #6b7280; margin-top: 3px;
+        }
+        .ap-footer {
+            padding: 14px 24px; border-top: 1.5px solid #e5e7eb;
+            display: flex; justify-content: flex-end; gap: 10px;
+        }
+        .ap-btn-cancel {
+            padding: 0 22px; height: 38px; border: 1.5px solid #d1d5db; background: #fff;
+            border-radius: 7px; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer;
+        }
+        .ap-btn-cancel:hover { background: #f3f4f6; }
+        .ap-btn-save {
+            padding: 0 26px; height: 38px; border: none; background: #3b82f6;
+            border-radius: 7px; font-size: 13px; font-weight: 700; color: #fff;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+        }
+        .ap-btn-save:hover { background: #2563eb; }
+        .ap-editor-content:empty:before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+            pointer-events: none;
+        }
 
         /* Empty state */
         .pos-table-empty {
@@ -350,7 +826,6 @@
         .shortcut-item:nth-child(2) svg { color: #f97316; }
         .shortcut-item:nth-child(3) svg { color: #ef4444; }
         .shortcut-item:nth-child(4) svg { color: #22c55e; }
-        .shortcut-item:nth-child(5) svg { color: #ef4444; }
         .shortcut-label { font-size: 11px; color: #374151; font-weight: 500; }
         .action-divider { width: 1px; height: 48px; background: #e5e7eb; }
         .action-btns { display: flex; align-items: center; gap: 10px; }
@@ -546,50 +1021,7 @@
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
             </button>
-            <!-- Payment -->
-            <button class="tb-btn green" title="Payment">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <rect x="1" y="4" width="22" height="16" rx="2"/>
-                    <line x1="1" y1="10" x2="23" y2="10"/>
-                </svg>
-            </button>
-            <!-- Calculator -->
-            <button class="tb-btn blue" title="Calculator">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <rect x="4" y="2" width="16" height="20" rx="2"/>
-                    <rect x="7" y="5" width="10" height="4" rx="1"/>
-                    <line x1="8" y1="13" x2="8" y2="13"/><line x1="12" y1="13" x2="12" y2="13"/><line x1="16" y1="13" x2="16" y2="13"/>
-                    <line x1="8" y1="17" x2="8" y2="17"/><line x1="12" y1="17" x2="12" y2="17"/><line x1="16" y1="17" x2="16" y2="17"/>
-                </svg>
-            </button>
-            <!-- Reset -->
-            <button class="tb-btn orange" title="Reset">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                     stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <polyline points="1 4 1 10 7 10"/>
-                    <path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
-                </svg>
-            </button>
-            <!-- Save Draft -->
-            <button class="tb-btn gray" title="Save Draft">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                    <polyline points="17 21 17 13 7 13 7 21"/>
-                    <polyline points="7 3 7 8 15 8"/>
-                </svg>
-            </button>
-            <!-- Settings -->
-            <button class="tb-btn gray" title="Settings">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                </svg>
-            </button>
-            <button class="tb-btn-add-expense" title="Add Expense">
+            <button class="tb-btn-add-expense" id="btn-add-expense" title="Add Expense">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"/>
@@ -669,6 +1101,7 @@
                                 </span>
                             </th>
                             <th style="text-align:center">Quantity</th>
+                            <th style="text-align:center">Discount</th>
                             <th style="text-align:right">Subtotal</th>
                             <th style="text-align:center">
                                 <span style="font-size:20px;font-weight:700;line-height:1;">✕</span>
@@ -761,15 +1194,6 @@
                     <polyline points="20 6 9 17 4 12"/>
                 </svg>
                 <span class="shortcut-label">Credit Sale</span>
-            </div>
-            <!-- Card -->
-            <div class="shortcut-item" title="Card Payment">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <rect x="1" y="4" width="22" height="16" rx="2"/>
-                    <line x1="1" y1="10" x2="23" y2="10"/>
-                </svg>
-                <span class="shortcut-label">Card</span>
             </div>
         </div>
 
@@ -1204,6 +1628,431 @@
         </div><!-- /ac-modal -->
     </div><!-- /ac-overlay -->
 
+    <!-- ===== DISCOUNT MODAL ===== -->
+    <div class="disc-overlay" id="disc-overlay" role="dialog" aria-modal="true" aria-labelledby="disc-title">
+        <div class="disc-modal">
+            <div class="disc-header">
+                <h3 id="disc-title">Set Product Discount</h3>
+                <button class="disc-close" id="disc-close" title="Close">✕</button>
+            </div>
+            <div class="disc-body">
+                <!-- Product name display -->
+                <div class="disc-product-name" id="disc-product-name">—</div>
+
+                <!-- Type selector -->
+                <div class="disc-type-row">
+                    <label class="disc-type-label">
+                        <input type="radio" name="disc-type" value="fixed" id="disc-fixed" checked/>
+                        <span class="disc-type-icon">🔒</span> Fixed Amount
+                    </label>
+                    <label class="disc-type-label">
+                        <input type="radio" name="disc-type" value="percentage" id="disc-percentage"/>
+                        <span class="disc-type-icon">%</span> Percentage
+                    </label>
+                </div>
+
+                <!-- Amount input -->
+                <div class="disc-amount-wrap">
+                    <span class="disc-amount-prefix" id="disc-prefix">LKR</span>
+                    <input class="disc-amount-input" type="number" id="disc-amount-input"
+                           placeholder="0" min="0" step="0.01" autocomplete="off"/>
+                    <span class="disc-amount-suffix" id="disc-suffix">fixed</span>
+                </div>
+
+                <!-- Preview -->
+                <div class="disc-preview" id="disc-preview">
+                    Discount: <strong id="disc-preview-val">—</strong> off this product
+                </div>
+            </div>
+            <div class="disc-footer">
+                <button class="disc-btn-cancel" id="disc-btn-cancel">Cancel</button>
+                <button class="disc-btn-remove" id="disc-btn-remove" title="Remove discount">Remove</button>
+                <button class="disc-btn-apply" id="disc-btn-apply">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ DRAFT MODAL ═══════════ -->
+    <div class="sc-overlay" id="draft-overlay" role="dialog" aria-modal="true">
+        <div class="sc-modal" id="draft-modal">
+            <div class="sc-header">
+                <span class="sc-header-icon">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </span>
+                <h3 id="draft-modal-title">Save as Draft</h3>
+                <button class="sc-header-close" id="draft-close-btn">✕</button>
+            </div>
+            <div class="sc-body" id="draft-body">
+                <!-- Populated by JS -->
+            </div>
+            <div class="sc-footer" id="draft-footer">
+                <button class="sc-btn-cancel" id="draft-cancel-btn">Close</button>
+                <button class="sc-btn-confirm" id="draft-save-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save Draft
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ QUOTATION MODAL ═══════════ -->
+    <div class="sc-overlay" id="quotation-overlay" role="dialog" aria-modal="true">
+        <div class="sc-modal" id="quotation-modal">
+            <div class="sc-header">
+                <span class="sc-header-icon">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </span>
+                <h3>Create Quotation</h3>
+                <button class="sc-header-close" id="quotation-close-btn">✕</button>
+            </div>
+            <div class="sc-body">
+                <div class="sc-info-box">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    A quotation is a formal price estimate. It will <strong>&nbsp;not&nbsp;</strong> deduct stock or record a payment.
+                </div>
+                <div class="sc-summary" id="quo-summary"></div>
+                <div class="sc-field">
+                    <label class="sc-label">Quotation Note (optional)</label>
+                    <textarea class="sc-textarea" id="quo-note" placeholder="e.g. Valid for 7 days · Terms &amp; conditions..."></textarea>
+                </div>
+                <div class="sc-field">
+                    <label class="sc-label">Customer Reference</label>
+                    <input class="sc-input" type="text" id="quo-customer-ref" placeholder="Auto-filled from selected customer" readonly/>
+                </div>
+            </div>
+            <div class="sc-footer">
+                <button class="sc-btn-cancel" id="quotation-cancel-btn">Cancel</button>
+                <button class="sc-btn-confirm" id="quotation-save-btn" style="background:#f97316;">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Save Quotation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ SUSPEND MODAL ═══════════ -->
+    <div class="sc-overlay" id="suspend-overlay" role="dialog" aria-modal="true">
+        <div class="sc-modal" id="suspend-modal">
+            <div class="sc-header">
+                <span class="sc-header-icon">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                </span>
+                <h3 id="suspend-modal-title">Suspend Sale</h3>
+                <button class="sc-header-close" id="suspend-close-btn">✕</button>
+            </div>
+            <div class="sc-body" id="suspend-body">
+                <!-- Populated by JS -->
+            </div>
+            <div class="sc-footer" id="suspend-footer">
+                <button class="sc-btn-cancel" id="suspend-cancel-btn">Close</button>
+                <button class="sc-btn-confirm" id="suspend-save-btn" style="background:#ef4444;">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    Suspend Sale
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ CREDIT SALE MODAL ═══════════ -->
+    <div class="sc-overlay" id="credit-overlay" role="dialog" aria-modal="true">
+        <div class="sc-modal" id="credit-modal">
+            <div class="sc-header">
+                <span class="sc-header-icon">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                </span>
+                <h3>Credit Sale</h3>
+                <button class="sc-header-close" id="credit-close-btn">✕</button>
+            </div>
+            <div class="sc-body" id="credit-body">
+                <!-- Populated by JS -->
+            </div>
+            <div class="sc-footer" id="credit-footer">
+                <button class="sc-btn-cancel" id="credit-cancel-btn">Cancel</button>
+                <button class="sc-btn-confirm" id="credit-confirm-btn" style="background:#22c55e;">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    Confirm Credit Sale
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ ADD EXPENSE MODAL ═══════════ -->
+    <div id="ae-overlay" role="dialog" aria-modal="true" aria-labelledby="ae-title">
+        <div class="ae-modal">
+
+            <div class="ae-header">
+                <h3 id="ae-title">Add Expense</h3>
+                <button class="ae-header-close" id="ae-close-btn">✕</button>
+            </div>
+
+            <div class="ae-body">
+
+                <!-- Row 1: Reference No + Date -->
+                <div class="ae-grid-2">
+                    <div class="ae-field">
+                        <label class="ae-label">Reference No</label>
+                        <input class="ae-input" type="text" id="ae-ref" placeholder="Leave empty to auto-generate"/>
+                        <span style="font-size:11px;color:#9ca3af;margin-top:2px;">Leave empty to autogenerate</span>
+                    </div>
+                    <div class="ae-field">
+                        <label class="ae-label">Date <span class="req">*</span></label>
+                        <div class="ae-date-wrap">
+                            <span class="ae-date-icon">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </span>
+                            <input class="ae-date-input" type="datetime-local" id="ae-date"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Expense Title (category) + Expense Note -->
+                <div class="ae-grid-2">
+                    <div class="ae-field">
+                        <label class="ae-label">Expense Title <span class="req">*</span></label>
+                        <textarea class="ae-textarea" id="ae-title-input" placeholder="e.g. Office Supplies, Electricity Bill, Staff Meal…" style="height:64px;"></textarea>
+                        <span class="ae-error-msg" id="ae-title-err">Expense title is required.</span>
+                    </div>
+                    <div class="ae-field">
+                        <label class="ae-label">Expense Note</label>
+                        <textarea class="ae-textarea" id="ae-note" placeholder="Optional details about this expense…" style="height:64px;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Row 3: Total Amount -->
+                <div class="ae-field" style="max-width:260px;">
+                    <label class="ae-label">Total Amount <span class="req">*</span></label>
+                    <div class="ae-input-with-icon" id="ae-amount-wrap">
+                        <span class="ae-input-icon">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        </span>
+                        <input class="ae-input-inner" type="number" id="ae-amount" placeholder="0.00" min="0" step="0.01"/>
+                    </div>
+                    <span class="ae-error-msg" id="ae-amount-err">Please enter a valid amount.</span>
+                </div>
+
+                <hr class="ae-divider"/>
+
+                <!-- Add Payment section -->
+                <div class="ae-section-title">Add Payment</div>
+
+                <div class="ae-grid-2">
+                    <!-- Payment Amount -->
+                    <div class="ae-field">
+                        <label class="ae-label">Amount <span class="req">*</span></label>
+                        <div class="ae-input-with-icon" id="ae-pay-amount-wrap">
+                            <span class="ae-input-icon">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            </span>
+                            <input class="ae-input-inner" type="number" id="ae-pay-amount" placeholder="0.00" min="0" step="0.01"/>
+                        </div>
+                        <span class="ae-error-msg" id="ae-pay-amount-err">Please enter a payment amount.</span>
+                    </div>
+                    <!-- Paid On -->
+                    <div class="ae-field">
+                        <label class="ae-label">Paid On <span class="req">*</span></label>
+                        <div class="ae-date-wrap">
+                            <span class="ae-date-icon">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </span>
+                            <input class="ae-date-input" type="datetime-local" id="ae-paid-on"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="ae-field" style="max-width:280px;">
+                    <label class="ae-label">Payment Method <span class="req">*</span></label>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span class="ae-input-icon" style="border:1.5px solid #d1d5db;border-radius:6px;height:38px;width:38px;background:#f9fafb;flex-shrink:0;">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        </span>
+                        <select class="ae-select" id="ae-pay-method" style="flex:1;">
+                            <option value="cash">Cash</option>
+                            <option value="cheque">Cheque</option>
+                            <option value="bank">Bank Transfer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cheque fields (shown only when cheque selected) -->
+                <div class="ae-cheque-fields" id="ae-cheque-fields">
+                    <div class="ae-field">
+                        <label class="ae-label">Cheque No</label>
+                        <input class="ae-input" type="text" id="ae-cheque-no" placeholder="Cheque number"/>
+                    </div>
+                    <div class="ae-field">
+                        <label class="ae-label">Bank</label>
+                        <input class="ae-input" type="text" id="ae-cheque-bank" placeholder="Bank name"/>
+                    </div>
+                    <div class="ae-field">
+                        <label class="ae-label">Cheque Date</label>
+                        <input class="ae-input" type="date" id="ae-cheque-date"/>
+                    </div>
+                    <div class="ae-field">
+                        <label class="ae-label">Cheque Status</label>
+                        <select class="ae-select" id="ae-cheque-status">
+                            <option value="pending">Pending</option>
+                            <option value="passed">Passed</option>
+                            <option value="bounced">Bounced</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Bank Transfer field -->
+                <div class="ae-field" id="ae-bank-field" style="display:none;max-width:280px;">
+                    <label class="ae-label">Bank / Account Reference</label>
+                    <input class="ae-input" type="text" id="ae-bank-ref" placeholder="e.g. Bank of Ceylon · ACC-001"/>
+                </div>
+
+                <!-- Payment Note -->
+                <div class="ae-field">
+                    <label class="ae-label">Payment Note</label>
+                    <textarea class="ae-textarea" id="ae-pay-note" placeholder="Optional note for this payment…"></textarea>
+                </div>
+
+            </div><!-- /ae-body -->
+
+            <div class="ae-footer">
+                <button class="ae-btn-cancel" id="ae-cancel-btn">Cancel</button>
+                <button class="ae-btn-save" id="ae-save-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    Save Expense
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════ ADD NEW PRODUCT MODAL ═══════════════════════════ -->
+    <div id="ap-overlay" role="dialog" aria-modal="true" aria-labelledby="ap-title">
+        <div class="ap-modal">
+
+            <div class="ap-header">
+                <h3 id="ap-title">Add New Product</h3>
+                <button class="ap-header-close" id="ap-close-btn" title="Close">✕</button>
+            </div>
+
+            <div class="ap-body">
+
+                <!-- Row 1: Product Name | SKU | Selling Price -->
+                <div class="ap-grid-3">
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-name">Product Name <span class="req">*</span></label>
+                        <input type="text" id="ap-name" class="ap-input" placeholder="e.g. Milo 400g">
+                        <span class="ap-error-msg" id="ap-name-err">Product name is required.</span>
+                    </div>
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-sku">
+                            SKU
+                            <span class="ap-info-icon" title="Stock Keeping Unit — a unique product identifier">i</span>
+                        </label>
+                        <input type="text" id="ap-sku" class="ap-input" placeholder="Auto-generated if left empty">
+                    </div>
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-price">Selling Price <span class="req">*</span></label>
+                        <input type="number" id="ap-price" class="ap-input" placeholder="0.00" min="0" step="0.01">
+                        <span class="ap-error-msg" id="ap-price-err">A valid selling price is required.</span>
+                    </div>
+                </div>
+
+                <!-- Row 2: Barcode Type | Unit | Warranty -->
+                <div class="ap-grid-3">
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-barcode">Barcode Type <span class="req">*</span></label>
+                        <select id="ap-barcode" class="ap-select">
+                            <option value="">— Select Barcode —</option>
+                            <option value="C128">Code 128 (C128)</option>
+                            <option value="C39">Code 39 (C39)</option>
+                            <option value="EAN13">EAN-13</option>
+                            <option value="EAN8">EAN-8</option>
+                            <option value="UPCA">UPC-A</option>
+                            <option value="UPCE">UPC-E</option>
+                        </select>
+                        <span class="ap-error-msg" id="ap-barcode-err">Barcode type is required.</span>
+                    </div>
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-unit">Unit <span class="req">*</span></label>
+                        <select id="ap-unit" class="ap-select">
+                            <option value="">— Select Unit —</option>
+                            <option value="Pieces">Pieces</option>
+                            <option value="Boxes">Boxes</option>
+                        </select>
+                        <span class="ap-error-msg" id="ap-unit-err">Unit is required.</span>
+                    </div>
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-warranty">Warranty</label>
+                        <select id="ap-warranty" class="ap-select">
+                            <option value="">— No Warranty —</option>
+                            <option value="6 Months">6 Months</option>
+                            <option value="1 Year">1 Year</option>
+                            <option value="2 Years">2 Years</option>
+                            <option value="5 Years">5 Years</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 3: Manage Stock checkbox -->
+                <div class="ap-checkbox-row">
+                    <input type="checkbox" id="ap-manage-stock" checked>
+                    <div>
+                        <label class="ap-checkbox-label" for="ap-manage-stock">Manage Stock?</label>
+                        <span class="ap-checkbox-hint">Enable stock management at product level</span>
+                    </div>
+                </div>
+
+                <!-- Row 4: Alert Qty | Weight (alert qty conditional) -->
+                <div class="ap-grid-2" id="ap-stock-fields">
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-alert-qty">Alert Quantity</label>
+                        <input type="number" id="ap-alert-qty" class="ap-input" placeholder="e.g. 5" min="0">
+                    </div>
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-weight">Weight (kg)</label>
+                        <input type="number" id="ap-weight" class="ap-input" placeholder="e.g. 0.5" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="ap-grid-2" id="ap-no-stock-weight" style="display:none;">
+                    <div></div><!-- spacer -->
+                    <div class="ap-field">
+                        <label class="ap-label" for="ap-weight-ns">Weight (kg)</label>
+                        <input type="number" id="ap-weight-ns" class="ap-input" placeholder="e.g. 0.5" min="0" step="0.01">
+                    </div>
+                </div>
+
+                <hr class="ap-section-divider">
+
+                <!-- Product Description (styled toolbar + contenteditable) -->
+                <div class="ap-field">
+                    <label class="ap-label">Product Description</label>
+                    <div class="ap-editor-wrap">
+                        <div class="ap-editor-toolbar">
+                            <button type="button" class="ap-tb-btn" onclick="document.execCommand('bold')" title="Bold"><b>B</b></button>
+                            <button type="button" class="ap-tb-btn" onclick="document.execCommand('italic')" title="Italic"><i>I</i></button>
+                            <button type="button" class="ap-tb-btn" onclick="document.execCommand('underline')" title="Underline"><u>U</u></button>
+                            <span class="ap-tb-sep"></span>
+                            <button type="button" class="ap-tb-btn" onclick="document.execCommand('insertUnorderedList')" title="Bullet list">• List</button>
+                            <button type="button" class="ap-tb-btn" onclick="document.execCommand('justifyLeft')" title="Align Left">≡L</button>
+                            <button type="button" class="ap-tb-btn" onclick="document.execCommand('justifyCenter')" title="Align Centre">≡C</button>
+                        </div>
+                        <div class="ap-editor-content" id="ap-description" contenteditable="true" spellcheck="true"
+                            data-placeholder="Enter product description..."></div>
+                    </div>
+                </div>
+
+            </div><!-- /ap-body -->
+
+            <div class="ap-footer">
+                <button class="ap-btn-cancel" id="ap-cancel-btn">Cancel</button>
+                <button class="ap-btn-save" id="ap-save-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    Save Product
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <!-- ═══════════════════════════ /ADD NEW PRODUCT MODAL ═══════════════════════════ -->
+
     <script src="assets/js/utils.js"></script>    <script src="assets/js/auth.js"></script>
     <script src="assets/js/toast.js"></script>
     <script>
@@ -1227,6 +2076,27 @@
 
         /* ===== Cart State ===== */
         let cartItems = [];
+        let discModalIdx = -1; // which item index the discount modal is open for
+
+        /* ---- Discount helpers ---- */
+        function calcItemDiscount(item) {
+            if (!item.discount) return 0;
+            const linePrice = item.price * item.qty;
+            if (item.discount.type === 'fixed') {
+                return Math.min(item.discount.value, linePrice);
+            } else {
+                return Math.min((item.discount.value / 100) * linePrice, linePrice);
+            }
+        }
+
+        function discLabel(item) {
+            if (!item.discount) return null;
+            if (item.discount.type === 'fixed') {
+                return `LKR ${item.discount.value.toLocaleString('en-LK',{minimumFractionDigits:2})}`;
+            } else {
+                return `${item.discount.value}%`;
+            }
+        }
 
         function renderCart() {
             const tbody = document.getElementById('pos-items-body');
@@ -1242,6 +2112,15 @@
             emptyMsg.style.display = 'none';
 
             cartItems.forEach((item, idx) => {
+                const lineTotal   = item.price * item.qty;
+                const discAmt     = calcItemDiscount(item);
+                const lineNet     = lineTotal - discAmt;
+                const label       = discLabel(item);
+                const hasDisc     = !!item.discount && item.discount.value > 0;
+
+                const discBtnClass = hasDisc ? 'disc-btn has-discount' : 'disc-btn';
+                const discBtnText  = hasDisc ? label : '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add';
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${item.name}</td>
@@ -1252,7 +2131,16 @@
                             <button onclick="changeQty(${idx},1)"  style="width:24px;height:24px;border:1px solid #d1d5db;border-radius:4px;background:#f9fafb;cursor:pointer;font-size:14px;line-height:1;">+</button>
                         </div>
                     </td>
-                    <td style="text-align:right;font-weight:600;">LKR ${(item.price * item.qty).toLocaleString('en-LK', {minimumFractionDigits:2})}</td>
+                    <td style="text-align:center">
+                        <button class="${discBtnClass}" onclick="openDiscModal(${idx})">${discBtnText}</button>
+                    </td>
+                    <td style="text-align:right;font-weight:600;">
+                        ${hasDisc
+                            ? `<span style="text-decoration:line-through;color:#9ca3af;font-weight:400;font-size:11px;">LKR ${lineTotal.toLocaleString('en-LK',{minimumFractionDigits:2})}</span><br>
+                               <span style="color:#16a34a;">LKR ${lineNet.toLocaleString('en-LK',{minimumFractionDigits:2})}</span>`
+                            : `LKR ${lineTotal.toLocaleString('en-LK',{minimumFractionDigits:2})}`
+                        }
+                    </td>
                     <td style="text-align:center">
                         <button class="remove-row-btn" onclick="removeItem(${idx})">✕</button>
                     </td>
@@ -1263,12 +2151,15 @@
         }
 
         function updateTotals() {
-            const totalQty = cartItems.reduce((s,i) => s + i.qty, 0);
-            const totalAmt = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalQty      = cartItems.reduce((s,i) => s + i.qty, 0);
+            const totalAmt      = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const totalPayable  = totalAmt - totalDiscount;
             const fmt = v => v.toLocaleString('en-LK', {minimumFractionDigits:2, maximumFractionDigits:2});
-            document.getElementById('total-items').textContent   = fmt(totalQty);
-            document.getElementById('total-amount').textContent  = fmt(totalAmt);
-            document.getElementById('total-payable').textContent = fmt(totalAmt);
+            document.getElementById('total-items').textContent    = fmt(totalQty);
+            document.getElementById('total-amount').textContent   = fmt(totalAmt);
+            document.getElementById('total-discount').textContent = fmt(totalDiscount);
+            document.getElementById('total-payable').textContent  = fmt(totalPayable);
         }
 
         window.changeQty = function(idx, delta) {
@@ -1280,6 +2171,100 @@
             cartItems.splice(idx, 1);
             renderCart();
         };
+
+        /* ===== DISCOUNT MODAL ===== */
+        window.openDiscModal = function(idx) {
+            discModalIdx = idx;
+            const item = cartItems[idx];
+            document.getElementById('disc-product-name').textContent = item.name;
+
+            // Restore saved values
+            const savedType = item.discount ? item.discount.type : 'fixed';
+            const savedVal  = item.discount ? item.discount.value : '';
+            document.getElementById('disc-fixed').checked      = savedType === 'fixed';
+            document.getElementById('disc-percentage').checked = savedType === 'percentage';
+            document.getElementById('disc-amount-input').value = savedVal || '';
+
+            updateDiscPrefix();
+            updateDiscPreview();
+            document.getElementById('disc-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('disc-amount-input').focus(), 80);
+        };
+
+        function updateDiscPrefix() {
+            const isPerc = document.getElementById('disc-percentage').checked;
+            document.getElementById('disc-prefix').textContent = isPerc ? '%' : 'LKR';
+            document.getElementById('disc-suffix').textContent = isPerc ? 'percent' : 'fixed';
+        }
+
+        function updateDiscPreview() {
+            const isPerc = document.getElementById('disc-percentage').checked;
+            const val    = parseFloat(document.getElementById('disc-amount-input').value) || 0;
+            const prev   = document.getElementById('disc-preview');
+            const prevVal = document.getElementById('disc-preview-val');
+
+            if (val <= 0 || discModalIdx < 0) {
+                prev.classList.remove('show'); return;
+            }
+            const item      = cartItems[discModalIdx];
+            const lineTotal = item.price * item.qty;
+            let discAmt;
+            if (isPerc) {
+                discAmt = Math.min((val / 100) * lineTotal, lineTotal);
+                prevVal.textContent = `LKR ${discAmt.toLocaleString('en-LK',{minimumFractionDigits:2})} (${val}% of LKR ${lineTotal.toLocaleString('en-LK',{minimumFractionDigits:2})})`;
+            } else {
+                discAmt = Math.min(val, lineTotal);
+                prevVal.textContent = `LKR ${discAmt.toLocaleString('en-LK',{minimumFractionDigits:2})}`;
+            }
+            prev.classList.add('show');
+        }
+
+        function closeDiscModal() {
+            document.getElementById('disc-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+            discModalIdx = -1;
+        }
+
+        document.querySelectorAll('input[name="disc-type"]').forEach(r => {
+            r.addEventListener('change', () => { updateDiscPrefix(); updateDiscPreview(); });
+        });
+        document.getElementById('disc-amount-input').addEventListener('input', updateDiscPreview);
+        document.getElementById('disc-close').addEventListener('click', closeDiscModal);
+        document.getElementById('disc-btn-cancel').addEventListener('click', closeDiscModal);
+        document.getElementById('disc-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('disc-overlay')) closeDiscModal();
+        });
+
+        document.getElementById('disc-btn-remove').addEventListener('click', () => {
+            if (discModalIdx >= 0) {
+                delete cartItems[discModalIdx].discount;
+                renderCart();
+                Toast.info('Discount removed.');
+            }
+            closeDiscModal();
+        });
+
+        document.getElementById('disc-btn-apply').addEventListener('click', () => {
+            if (discModalIdx < 0) return;
+            const val = parseFloat(document.getElementById('disc-amount-input').value);
+            if (isNaN(val) || val < 0) { Toast.warning('Please enter a valid discount value.'); return; }
+            const isPerc = document.getElementById('disc-percentage').checked;
+            if (isPerc && val > 100) { Toast.warning('Percentage cannot exceed 100%.'); return; }
+            const item      = cartItems[discModalIdx];
+            const lineTotal = item.price * item.qty;
+            if (!isPerc && val > lineTotal) { Toast.warning(`Fixed discount cannot exceed the line total (LKR ${lineTotal.toLocaleString('en-LK',{minimumFractionDigits:2})}).`); return; }
+
+            if (val === 0) {
+                delete cartItems[discModalIdx].discount;
+                Toast.info('Discount cleared.');
+            } else {
+                cartItems[discModalIdx].discount = { type: isPerc ? 'percentage' : 'fixed', value: val };
+                Toast.success(`Discount applied to ${item.name}.`);
+            }
+            renderCart();
+            closeDiscModal();
+        });
 
         /* Demo products for search */
         const demoProducts = [
@@ -1321,15 +2306,9 @@
             }
         });
 
-        /* Add button */
+        /* Add button — opens Add New Product modal */
         document.getElementById('add-product-btn').addEventListener('click', () => {
-            const query = document.getElementById('product-search').value.trim().toLowerCase();
-            if (!query) { Toast.warning('Please enter a product name or SKU.'); return; }
-            const found = demoProducts.find(p =>
-                p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query)
-            );
-            if (found) { addToCart(found); }
-            else { Toast.error('Product not found. Try: Milk Powder, Milo, Rice, Soap...'); }
+            openAddNewProduct();
         });
 
         /* Cancel */
@@ -1345,7 +2324,9 @@
         /* Cash pay */
         document.getElementById('btn-cash').addEventListener('click', () => {
             if (cartItems.length === 0) { Toast.warning('Add items to cart first.'); return; }
-            const total = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalAmt      = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const total         = totalAmt - totalDiscount;
             Toast.success(`Cash payment of LKR ${total.toLocaleString('en-LK', {minimumFractionDigits:2})} processed!`);
             cartItems = [];
             renderCart();
@@ -1384,8 +2365,10 @@
             document.getElementById('mp-staff-note').value = '';
             mpAddRow();
             mpUpdateSummary();
-            const totalPayable = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
-            document.getElementById('mp-sum-items').textContent = cartItems.reduce((s, i) => s + i.qty, 0);
+            const totalAmt      = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const totalPayable  = totalAmt - totalDiscount;
+            document.getElementById('mp-sum-items').textContent = cartItems.reduce((s,i) => s + i.qty, 0);
             document.getElementById('mp-sum-payable').textContent = mpFmt(totalPayable);
             document.getElementById('mp-overlay').classList.add('open');
             document.body.style.overflow = 'hidden';
@@ -1495,7 +2478,9 @@
             document.querySelectorAll('.mp-amount-input').forEach(inp => {
                 totalPaying += parseFloat(inp.value || 0);
             });
-            const totalPayable = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+            const totalAmt      = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const totalPayable  = totalAmt - totalDiscount;
             const change = totalPaying > totalPayable ? totalPaying - totalPayable : 0;
             const balance = totalPayable > totalPaying ? totalPayable - totalPaying : 0;
 
@@ -1531,8 +2516,10 @@
             if (!allFilled) { Toast.warning('Please enter an amount for each payment row.'); return; }
             if (totalPaying <= 0) { Toast.warning('Total paying amount must be greater than 0.'); return; }
 
-            const totalPayable = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
-            const balance = totalPayable - totalPaying;
+            const totalAmt      = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const totalPayable  = totalAmt - totalDiscount;
+            const balance       = totalPayable - totalPaying;
 
             // Collect payment rows data
             const payments = [];
@@ -1623,6 +2610,11 @@
             if (e.key === 'Escape') {
                 closeModal();
                 closeMultiplePayModal();
+                closeDiscModal();
+                ['draft-overlay','quotation-overlay','suspend-overlay','credit-overlay'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && el.classList.contains('open')) scCloseOverlay(id);
+                });
             }
         });
 
@@ -1690,12 +2682,758 @@
             const opt = document.createElement('option');
             opt.value = displayName;
             opt.textContent = displayName;
+            const creditLimit = parseFloat(document.getElementById('ac-credit-limit').value) || 0;
+            opt.dataset.creditLimit = creditLimit;
             opt.selected = true;
             sel.appendChild(opt);
 
             Toast.success(`Customer "${displayName}" added successfully!`);
             closeModal();
         });
+
+        /* ══════════════════════════════════════════════════════════════════
+           SHARED HELPERS
+        ══════════════════════════════════════════════════════════════════ */
+        function scFmt(val) {
+            return 'LKR ' + parseFloat(val || 0).toLocaleString('en-LK', { minimumFractionDigits: 2 });
+        }
+        function scTotalPayable() {
+            const gross    = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const discount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            return gross - discount;
+        }
+        function scSelectedCustomer() {
+            const sel = document.getElementById('customer-select');
+            return sel.options[sel.selectedIndex] || null;
+        }
+        function scIsWalkIn() {
+            const opt = scSelectedCustomer();
+            if (!opt) return true;
+            return opt.selectedIndex === 0 || opt.value.toLowerCase().includes('walk-in') || opt.value === '';
+        }
+        function scCartEmpty() {
+            return cartItems.length === 0;
+        }
+        function scSummaryHTML() {
+            const gross    = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const discount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const payable  = gross - discount;
+            const items    = cartItems.reduce((s,i) => s + i.qty, 0);
+            const custOpt  = scSelectedCustomer();
+            const customer = custOpt ? custOpt.value || 'Walk-In Customer' : 'Walk-In Customer';
+            return `
+                <div class="sc-summary-row"><span>Customer</span><span>${customer}</span></div>
+                <div class="sc-summary-row"><span>Total Items</span><span>${items}</span></div>
+                ${discount > 0 ? `<div class="sc-summary-row"><span>Discount</span><span style="color:#dc2626">− ${scFmt(discount)}</span></div>` : ''}
+                <div class="sc-summary-row total"><span>Total Payable</span><span>${scFmt(payable)}</span></div>
+            `;
+        }
+        function scOpenOverlay(id) {
+            document.getElementById(id).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function scCloseOverlay(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        /* ══════════════════════════════════════════════════════════════════
+           DRAFT
+        ══════════════════════════════════════════════════════════════════ */
+        const DRAFTS_KEY = 'prodata_drafts';
+
+        function getDrafts() {
+            try { return JSON.parse(localStorage.getItem(DRAFTS_KEY)) || []; }
+            catch(e) { return []; }
+        }
+        function saveDraftsToStorage(drafts) {
+            localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts));
+        }
+
+        function renderDraftModal() {
+            const drafts   = getDrafts();
+            const body     = document.getElementById('draft-body');
+            const footer   = document.getElementById('draft-footer');
+            const saveBtn  = document.getElementById('draft-save-btn');
+            const titleEl  = document.getElementById('draft-modal-title');
+
+            if (drafts.length === 0 && scCartEmpty()) {
+                titleEl.textContent = 'Drafts';
+                saveBtn.style.display = 'none';
+                body.innerHTML = `<div class="draft-empty">No saved drafts yet.<br><small>Add items to the cart and save a draft.</small></div>`;
+                return;
+            }
+
+            if (!scCartEmpty()) {
+                titleEl.textContent = 'Save as Draft';
+                saveBtn.style.display = 'flex';
+            } else {
+                titleEl.textContent = 'Saved Drafts';
+                saveBtn.style.display = 'none';
+            }
+
+            let html = '';
+
+            if (!scCartEmpty()) {
+                const custOpt = scSelectedCustomer();
+                const customer = custOpt ? custOpt.value || 'Walk-In Customer' : 'Walk-In Customer';
+                html += `
+                <div class="sc-summary" style="margin-bottom:4px;">${scSummaryHTML()}</div>
+                <div class="sc-field">
+                    <label class="sc-label">Draft Note (optional)</label>
+                    <input class="sc-input" type="text" id="draft-note-input" placeholder="e.g. Customer will return tomorrow…"/>
+                </div>`;
+            }
+
+            if (drafts.length > 0) {
+                html += `<div class="sc-label" style="margin-top:${!scCartEmpty()?'4px':'0'}">Saved Drafts (${drafts.length})</div>`;
+                drafts.slice().reverse().forEach(d => {
+                    const date   = new Date(d.date).toLocaleString('en-LK', {dateStyle:'short',timeStyle:'short'});
+                    const items  = d.items.reduce((s,i) => s+i.qty, 0);
+                    html += `
+                    <div class="draft-slot">
+                        <div>
+                            <div class="slot-info">${d.id} · ${d.customer}</div>
+                            <div class="slot-meta">${date} · ${items} item(s) · ${scFmt(d.totalPayable)}</div>
+                            ${d.note ? `<div class="slot-meta">${d.note}</div>` : ''}
+                        </div>
+                        <div class="slot-actions">
+                            <button class="draft-slot-del" data-id="${d.id}">Delete</button>
+                            <button class="draft-slot-restore" data-id="${d.id}">Restore</button>
+                        </div>
+                    </div>`;
+                });
+            } else if (scCartEmpty()) {
+                html += `<div class="draft-empty">No saved drafts yet.</div>`;
+            }
+
+            body.innerHTML = html;
+
+            body.querySelectorAll('.draft-slot-restore').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    const draft = getDrafts().find(d => d.id === id);
+                    if (!draft) return;
+                    if (!scCartEmpty() && !confirm('Restoring a draft will replace the current cart. Continue?')) return;
+                    cartItems = JSON.parse(JSON.stringify(draft.items));
+                    renderCart(); updateTotals();
+                    scCloseOverlay('draft-overlay');
+                    Toast.success(`Draft ${id} restored!`);
+                });
+            });
+            body.querySelectorAll('.draft-slot-del').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    if (!confirm(`Delete draft ${id}? This cannot be undone.`)) return;
+                    const drafts = getDrafts().filter(d => d.id !== id);
+                    saveDraftsToStorage(drafts);
+                    renderDraftModal();
+                    Toast.info(`Draft ${id} deleted.`);
+                });
+            });
+        }
+
+        document.querySelector('.shortcut-item[title="Draft"]').addEventListener('click', () => {
+            renderDraftModal();
+            scOpenOverlay('draft-overlay');
+        });
+
+        document.getElementById('draft-save-btn').addEventListener('click', () => {
+            if (scCartEmpty()) { Toast.warning('Cart is empty — nothing to save.'); return; }
+            const custOpt  = scSelectedCustomer();
+            const customer = custOpt ? custOpt.value || 'Walk-In Customer' : 'Walk-In Customer';
+            const note     = (document.getElementById('draft-note-input') || {}).value || '';
+            const draft    = {
+                id:           'DRF-' + Date.now(),
+                date:         new Date().toISOString(),
+                customer,
+                items:        JSON.parse(JSON.stringify(cartItems)),
+                totalPayable: scTotalPayable(),
+                note
+            };
+            const drafts = getDrafts();
+            drafts.push(draft);
+            saveDraftsToStorage(drafts);
+            cartItems = []; renderCart(); updateTotals();
+            scCloseOverlay('draft-overlay');
+            Toast.success(`Draft ${draft.id} saved! Cart cleared.`);
+        });
+
+        document.getElementById('draft-close-btn').addEventListener('click',  () => scCloseOverlay('draft-overlay'));
+        document.getElementById('draft-cancel-btn').addEventListener('click', () => scCloseOverlay('draft-overlay'));
+        document.getElementById('draft-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('draft-overlay')) scCloseOverlay('draft-overlay');
+        });
+
+        /* ══════════════════════════════════════════════════════════════════
+           QUOTATION
+        ══════════════════════════════════════════════════════════════════ */
+        const QUOTATIONS_KEY = 'prodata_quotations';
+
+        document.querySelector('.shortcut-item[title="Quotation"]').addEventListener('click', () => {
+            if (scCartEmpty()) { Toast.warning('Add items to the cart before creating a quotation.'); return; }
+            const custOpt = scSelectedCustomer();
+            const customer = custOpt ? custOpt.value || 'Walk-In Customer' : 'Walk-In Customer';
+            document.getElementById('quo-summary').innerHTML = scSummaryHTML();
+            document.getElementById('quo-customer-ref').value = customer;
+            document.getElementById('quo-note').value = '';
+            scOpenOverlay('quotation-overlay');
+        });
+
+        document.getElementById('quotation-save-btn').addEventListener('click', () => {
+            if (scCartEmpty()) { Toast.warning('Cart is empty.'); return; }
+            const custOpt  = scSelectedCustomer();
+            const customer = custOpt ? custOpt.value || 'Walk-In Customer' : 'Walk-In Customer';
+            const note     = document.getElementById('quo-note').value.trim();
+            const quotation = {
+                id:           'QUO-' + Date.now(),
+                date:         new Date().toISOString(),
+                customer,
+                items:        JSON.parse(JSON.stringify(cartItems)),
+                totalPayable: scTotalPayable(),
+                note,
+                status:       'Pending'
+            };
+            try {
+                const list = JSON.parse(localStorage.getItem(QUOTATIONS_KEY)) || [];
+                list.push(quotation);
+                localStorage.setItem(QUOTATIONS_KEY, JSON.stringify(list));
+            } catch(e) {}
+            scCloseOverlay('quotation-overlay');
+            Toast.success(`Quotation ${quotation.id} saved! Cart is unchanged.`);
+        });
+
+        document.getElementById('quotation-close-btn').addEventListener('click',  () => scCloseOverlay('quotation-overlay'));
+        document.getElementById('quotation-cancel-btn').addEventListener('click', () => scCloseOverlay('quotation-overlay'));
+        document.getElementById('quotation-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('quotation-overlay')) scCloseOverlay('quotation-overlay');
+        });
+
+        /* ══════════════════════════════════════════════════════════════════
+           SUSPEND
+        ══════════════════════════════════════════════════════════════════ */
+        const SUSPENDED_KEY = 'prodata_suspended';
+
+        function getSuspended() {
+            try { return JSON.parse(localStorage.getItem(SUSPENDED_KEY)) || []; }
+            catch(e) { return []; }
+        }
+        function saveSuspendedToStorage(list) {
+            localStorage.setItem(SUSPENDED_KEY, JSON.stringify(list));
+        }
+        function updateSuspendBadge() {
+            const list  = getSuspended();
+            const item  = document.querySelector('.shortcut-item[title="Suspend"]');
+            if (!item) return;
+            let badge = item.querySelector('.susp-count-badge');
+            if (list.length > 0) {
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'susp-count-badge';
+                    badge.style.cssText = `
+                        position:absolute; top:2px; right:2px;
+                        background:#ef4444; color:#fff; border-radius:999px;
+                        font-size:10px; font-weight:700;
+                        min-width:16px; height:16px; line-height:16px;
+                        text-align:center; padding:0 4px;
+                    `;
+                    item.style.position = 'relative';
+                    item.appendChild(badge);
+                }
+                badge.textContent = list.length;
+            } else {
+                if (badge) badge.remove();
+            }
+        }
+
+        function renderSuspendModal() {
+            const list  = getSuspended();
+            const body  = document.getElementById('suspend-body');
+            const saveBtn = document.getElementById('suspend-save-btn');
+            const title = document.getElementById('suspend-modal-title');
+
+            if (!scCartEmpty()) {
+                title.textContent = 'Suspend Current Sale';
+                saveBtn.style.display = 'flex';
+            } else {
+                title.textContent = 'Retrieve Suspended Sale';
+                saveBtn.style.display = 'none';
+            }
+
+            let html = '';
+
+            if (!scCartEmpty()) {
+                html += `<div class="sc-summary" style="margin-bottom:4px;">${scSummaryHTML()}</div>
+                <div class="sc-info-box">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    The current cart will be parked. You can retrieve it later to continue the sale.
+                </div>`;
+            }
+
+            if (list.length > 0) {
+                html += `<div class="sc-label" style="margin-top:${!scCartEmpty()?'4px':'0'}">Parked Sales (${list.length})</div>`;
+                list.slice().reverse().forEach((s, ri) => {
+                    const idx  = list.length - 1 - ri;
+                    const date = new Date(s.date).toLocaleString('en-LK', {dateStyle:'short',timeStyle:'short'});
+                    const items = s.items.reduce((a,i) => a+i.qty, 0);
+                    html += `
+                    <div class="susp-slot">
+                        <div class="susp-slot-top">
+                            <span class="susp-slot-name">${s.id}</span>
+                            <span class="susp-slot-time">${date}</span>
+                        </div>
+                        <div class="susp-slot-items">${s.customer} · ${items} item(s) · ${scFmt(s.totalPayable)}</div>
+                        <div class="susp-slot-actions">
+                            <button class="susp-slot-del" data-id="${s.id}">Discard</button>
+                            <button class="susp-slot-resume" data-id="${s.id}">Resume</button>
+                        </div>
+                    </div>`;
+                });
+            } else if (scCartEmpty()) {
+                html += `<div class="susp-empty">No parked sales.</div>`;
+            }
+
+            body.innerHTML = html;
+
+            body.querySelectorAll('.susp-slot-resume').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id   = btn.dataset.id;
+                    const susp = getSuspended().find(s => s.id === id);
+                    if (!susp) return;
+                    if (!scCartEmpty() && !confirm('Resuming a parked sale will replace the current cart. Continue?')) return;
+                    cartItems = JSON.parse(JSON.stringify(susp.items));
+                    const remaining = getSuspended().filter(s => s.id !== id);
+                    saveSuspendedToStorage(remaining);
+                    updateSuspendBadge();
+                    renderCart(); updateTotals();
+                    scCloseOverlay('suspend-overlay');
+                    Toast.success(`Sale ${id} resumed!`);
+                });
+            });
+            body.querySelectorAll('.susp-slot-del').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    if (!confirm(`Discard parked sale ${id}? This cannot be undone.`)) return;
+                    const remaining = getSuspended().filter(s => s.id !== id);
+                    saveSuspendedToStorage(remaining);
+                    updateSuspendBadge();
+                    renderSuspendModal();
+                    Toast.info(`Parked sale ${id} discarded.`);
+                });
+            });
+        }
+
+        document.querySelector('.shortcut-item[title="Suspend"]').addEventListener('click', () => {
+            renderSuspendModal();
+            scOpenOverlay('suspend-overlay');
+        });
+
+        document.getElementById('suspend-save-btn').addEventListener('click', () => {
+            if (scCartEmpty()) { Toast.warning('Cart is empty — nothing to suspend.'); return; }
+            const custOpt  = scSelectedCustomer();
+            const customer = custOpt ? custOpt.value || 'Walk-In Customer' : 'Walk-In Customer';
+            const suspended = {
+                id:           'SUS-' + Date.now(),
+                date:         new Date().toISOString(),
+                customer,
+                items:        JSON.parse(JSON.stringify(cartItems)),
+                totalPayable: scTotalPayable()
+            };
+            const list = getSuspended();
+            list.push(suspended);
+            saveSuspendedToStorage(list);
+            updateSuspendBadge();
+            cartItems = []; renderCart(); updateTotals();
+            scCloseOverlay('suspend-overlay');
+            Toast.success(`Sale ${suspended.id} parked. Cart cleared.`);
+        });
+
+        document.getElementById('suspend-close-btn').addEventListener('click',  () => scCloseOverlay('suspend-overlay'));
+        document.getElementById('suspend-cancel-btn').addEventListener('click', () => scCloseOverlay('suspend-overlay'));
+        document.getElementById('suspend-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('suspend-overlay')) scCloseOverlay('suspend-overlay');
+        });
+
+        /* Init suspend badge on load */
+        updateSuspendBadge();
+
+        /* ══════════════════════════════════════════════════════════════════
+           CREDIT SALE
+        ══════════════════════════════════════════════════════════════════ */
+        const CREDIT_KEY = 'prodata_credit_sales';
+
+        function renderCreditModal() {
+            const body       = document.getElementById('credit-body');
+            const confirmBtn = document.getElementById('credit-confirm-btn');
+            const sel        = document.getElementById('customer-select');
+            const opt        = sel.options[sel.selectedIndex];
+            const isWalkIn   = scIsWalkIn();
+            const creditLimit = opt ? parseFloat(opt.dataset.creditLimit || '0') : 0;
+
+            if (scCartEmpty()) {
+                confirmBtn.disabled = true; confirmBtn.style.opacity = '0.5';
+                body.innerHTML = `<div class="credit-warn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    The cart is empty. Add items before processing a credit sale.
+                </div>`;
+                return;
+            }
+
+            if (isWalkIn) {
+                confirmBtn.disabled = true; confirmBtn.style.opacity = '0.5';
+                body.innerHTML = `<div class="credit-warn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Credit Sale requires a <strong>&nbsp;registered customer&nbsp;</strong>. Please select or add a customer first.
+                </div>`;
+                return;
+            }
+
+            if (creditLimit <= 0) {
+                confirmBtn.disabled = true; confirmBtn.style.opacity = '0.5';
+                const custName = opt ? opt.value : '';
+                body.innerHTML = `<div class="credit-warn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <strong>${custName}</strong> does not have a credit limit set. Edit the customer and add a credit limit before proceeding.
+                </div>`;
+                return;
+            }
+
+            const payable  = scTotalPayable();
+
+            if (payable > creditLimit) {
+                confirmBtn.disabled = true; confirmBtn.style.opacity = '0.5';
+                body.innerHTML = `<div class="credit-warn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Order total (${scFmt(payable)}) exceeds customer's credit limit (${scFmt(creditLimit)}).
+                </div>`;
+                return;
+            }
+
+            /* All good */
+            confirmBtn.disabled = false; confirmBtn.style.opacity = '1';
+            const custName = opt ? opt.value : '';
+            const initials = custName.split(' ').map(w => w[0] || '').join('').toUpperCase().slice(0,2);
+            body.innerHTML = `
+                <div class="credit-customer-card">
+                    <div class="credit-cust-avatar">${initials}</div>
+                    <div>
+                        <div class="credit-cust-name">${custName}</div>
+                        <div class="credit-cust-limit">Credit Limit: ${scFmt(creditLimit)}</div>
+                    </div>
+                </div>
+                <div class="sc-summary">${scSummaryHTML()}</div>
+                <div class="sc-info-box">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    This sale will be recorded as <strong>&nbsp;unpaid&nbsp;</strong>. No payment is collected now. The amount will be tracked against the customer's credit account.
+                </div>`;
+        }
+
+        document.querySelector('.shortcut-item[title="Credit Sale"]').addEventListener('click', () => {
+            renderCreditModal();
+            scOpenOverlay('credit-overlay');
+        });
+
+        document.getElementById('credit-confirm-btn').addEventListener('click', () => {
+            if (scCartEmpty())  { Toast.warning('Cart is empty.'); return; }
+            if (scIsWalkIn())   { Toast.error('Select a registered customer first.'); return; }
+            const sel   = document.getElementById('customer-select');
+            const opt   = sel.options[sel.selectedIndex];
+            const creditLimit = parseFloat(opt.dataset.creditLimit || '0');
+            if (creditLimit <= 0) { Toast.error('Customer has no credit limit set.'); return; }
+            const payable = scTotalPayable();
+            if (payable > creditLimit) { Toast.error(`Order total exceeds credit limit (${scFmt(creditLimit)}).`); return; }
+
+            const custName = opt.value;
+            const record   = {
+                id:           'CR-' + Date.now(),
+                date:         new Date().toISOString(),
+                customer:     custName,
+                items:        JSON.parse(JSON.stringify(cartItems)),
+                totalPayable: payable,
+                creditLimit,
+                status:       'Unpaid'
+            };
+            try {
+                const list = JSON.parse(localStorage.getItem(CREDIT_KEY)) || [];
+                list.push(record);
+                localStorage.setItem(CREDIT_KEY, JSON.stringify(list));
+            } catch(e) {}
+
+            cartItems = []; renderCart(); updateTotals();
+            scCloseOverlay('credit-overlay');
+            Toast.success(`Credit Sale ${record.id} recorded for ${custName}. Total: ${scFmt(payable)}`);
+        });
+
+        document.getElementById('credit-close-btn').addEventListener('click',  () => scCloseOverlay('credit-overlay'));
+        document.getElementById('credit-cancel-btn').addEventListener('click', () => scCloseOverlay('credit-overlay'));
+        document.getElementById('credit-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('credit-overlay')) scCloseOverlay('credit-overlay');
+        });
+
+        /* ══════════════════════════════════════════════════════════════════
+           ADD EXPENSE
+        ══════════════════════════════════════════════════════════════════ */
+        const AE_KEY = 'prodata_expenses';
+
+        function aeNow() {
+            const d = new Date();
+            const pad = n => String(n).padStart(2,'0');
+            return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+
+        function openAddExpense() {
+            /* Reset form */
+            document.getElementById('ae-ref').value          = '';
+            document.getElementById('ae-date').value         = aeNow();
+            document.getElementById('ae-title-input').value  = '';
+            document.getElementById('ae-note').value         = '';
+            document.getElementById('ae-amount').value       = '';
+            document.getElementById('ae-pay-amount').value   = '';
+            document.getElementById('ae-paid-on').value      = aeNow();
+            document.getElementById('ae-pay-method').value   = 'cash';
+            document.getElementById('ae-cheque-no').value    = '';
+            document.getElementById('ae-cheque-bank').value  = '';
+            document.getElementById('ae-cheque-date').value  = '';
+            document.getElementById('ae-cheque-status').value= 'pending';
+            document.getElementById('ae-bank-ref').value     = '';
+            document.getElementById('ae-pay-note').value     = '';
+            document.getElementById('ae-cheque-fields').classList.remove('show');
+            document.getElementById('ae-bank-field').style.display = 'none';
+            /* Clear errors */
+            ['ae-title-err','ae-amount-err','ae-pay-amount-err'].forEach(id => {
+                document.getElementById(id).classList.remove('show');
+            });
+            ['ae-title-input','ae-amount-wrap','ae-pay-amount-wrap'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) { el.classList.remove('error'); }
+            });
+            document.getElementById('ae-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAddExpense() {
+            document.getElementById('ae-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('btn-add-expense').addEventListener('click', openAddExpense);
+        document.getElementById('ae-close-btn').addEventListener('click',   closeAddExpense);
+        document.getElementById('ae-cancel-btn').addEventListener('click',  closeAddExpense);
+        document.getElementById('ae-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('ae-overlay')) closeAddExpense();
+        });
+
+        /* Show / hide extra fields on payment method change */
+        document.getElementById('ae-pay-method').addEventListener('change', function() {
+            const val = this.value;
+            document.getElementById('ae-cheque-fields').classList.toggle('show', val === 'cheque');
+            document.getElementById('ae-bank-field').style.display = val === 'bank' ? '' : 'none';
+        });
+
+        /* Auto-fill payment amount from total amount */
+        document.getElementById('ae-amount').addEventListener('input', function() {
+            const payEl = document.getElementById('ae-pay-amount');
+            if (!payEl.value) payEl.value = this.value;
+        });
+
+        /* Save */
+        document.getElementById('ae-save-btn').addEventListener('click', () => {
+            let valid = true;
+
+            const titleEl  = document.getElementById('ae-title-input');
+            const amountEl = document.getElementById('ae-amount');
+            const payAmtEl = document.getElementById('ae-pay-amount');
+
+            /* Clear previous errors */
+            ['ae-title-err','ae-amount-err','ae-pay-amount-err'].forEach(id =>
+                document.getElementById(id).classList.remove('show'));
+            titleEl.classList.remove('error');
+            document.getElementById('ae-amount-wrap').classList.remove('error');
+            document.getElementById('ae-pay-amount-wrap').classList.remove('error');
+
+            if (!titleEl.value.trim()) {
+                titleEl.classList.add('error');
+                document.getElementById('ae-title-err').classList.add('show');
+                valid = false;
+            }
+            const amt = parseFloat(amountEl.value);
+            if (!amountEl.value || isNaN(amt) || amt <= 0) {
+                document.getElementById('ae-amount-wrap').classList.add('error');
+                document.getElementById('ae-amount-err').classList.add('show');
+                valid = false;
+            }
+            const payAmt = parseFloat(payAmtEl.value);
+            if (!payAmtEl.value || isNaN(payAmt) || payAmt <= 0) {
+                document.getElementById('ae-pay-amount-wrap').classList.add('error');
+                document.getElementById('ae-pay-amount-err').classList.add('show');
+                valid = false;
+            }
+            if (!valid) return;
+
+            const method = document.getElementById('ae-pay-method').value;
+            const record = {
+                id:          'EXP-' + Date.now(),
+                ref:         document.getElementById('ae-ref').value.trim() || ('EXP-' + Date.now()),
+                date:        document.getElementById('ae-date').value || new Date().toISOString(),
+                title:       titleEl.value.trim(),
+                note:        document.getElementById('ae-note').value.trim(),
+                totalAmount: amt,
+                payment: {
+                    amount:  payAmt,
+                    paidOn:  document.getElementById('ae-paid-on').value || new Date().toISOString(),
+                    method,
+                    note:    document.getElementById('ae-pay-note').value.trim(),
+                    ...(method === 'cheque' ? {
+                        chequeNo:     document.getElementById('ae-cheque-no').value.trim(),
+                        bank:         document.getElementById('ae-cheque-bank').value.trim(),
+                        chequeDate:   document.getElementById('ae-cheque-date').value,
+                        chequeStatus: document.getElementById('ae-cheque-status').value
+                    } : {}),
+                    ...(method === 'bank' ? {
+                        bankRef: document.getElementById('ae-bank-ref').value.trim()
+                    } : {})
+                }
+            };
+
+            try {
+                const list = JSON.parse(localStorage.getItem(AE_KEY)) || [];
+                list.push(record);
+                localStorage.setItem(AE_KEY, JSON.stringify(list));
+            } catch(e) {}
+
+            closeAddExpense();
+            Toast.success(`Expense "${record.title}" saved! Ref: ${record.ref}`);
+        });
+
+        /* Escape key for expense modal */
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.getElementById('ae-overlay').classList.contains('open')) {
+                closeAddExpense();
+            }
+        });
+
+        /* ─────────── ADD NEW PRODUCT ─────────── */
+        function openAddNewProduct() {
+            /* Reset all fields */
+            document.getElementById('ap-name').value        = '';
+            document.getElementById('ap-sku').value         = '';
+            document.getElementById('ap-price').value       = '';
+            document.getElementById('ap-barcode').value     = '';
+            document.getElementById('ap-unit').value        = '';
+            document.getElementById('ap-warranty').value    = '';
+            document.getElementById('ap-manage-stock').checked = true;
+            document.getElementById('ap-alert-qty').value   = '';
+            document.getElementById('ap-weight').value      = '';
+            document.getElementById('ap-weight-ns').value   = '';
+            document.getElementById('ap-description').innerHTML = '';
+            /* Show/hide stock fields */
+            document.getElementById('ap-stock-fields').style.display    = 'grid';
+            document.getElementById('ap-no-stock-weight').style.display = 'none';
+            /* Clear error states */
+            ['ap-name','ap-price','ap-barcode','ap-unit'].forEach(id => {
+                document.getElementById(id).classList.remove('error');
+            });
+            ['ap-name-err','ap-price-err','ap-barcode-err','ap-unit-err'].forEach(id => {
+                document.getElementById(id).classList.remove('show');
+            });
+            /* Open overlay */
+            document.getElementById('ap-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('ap-name').focus();
+        }
+
+        function closeAddNewProduct() {
+            document.getElementById('ap-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        /* Toggle stock fields when Manage Stock checkbox changes */
+        document.getElementById('ap-manage-stock').addEventListener('change', function () {
+            document.getElementById('ap-stock-fields').style.display    = this.checked ? 'grid' : 'none';
+            document.getElementById('ap-no-stock-weight').style.display = this.checked ? 'none' : 'grid';
+        });
+
+        /* Close buttons */
+        document.getElementById('ap-close-btn').addEventListener('click',  closeAddNewProduct);
+        document.getElementById('ap-cancel-btn').addEventListener('click', closeAddNewProduct);
+        document.getElementById('ap-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('ap-overlay')) closeAddNewProduct();
+        });
+
+        /* Escape key for Add Product modal */
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.getElementById('ap-overlay').classList.contains('open')) {
+                closeAddNewProduct();
+            }
+        });
+
+        /* ── Save Product ── */
+        document.getElementById('ap-save-btn').addEventListener('click', () => {
+            const nameEl    = document.getElementById('ap-name');
+            const priceEl   = document.getElementById('ap-price');
+            const barcodeEl = document.getElementById('ap-barcode');
+            const unitEl    = document.getElementById('ap-unit');
+
+            let valid = true;
+
+            /* Validation helpers */
+            function flagField(inputId, errId, show) {
+                document.getElementById(inputId).classList.toggle('error', show);
+                document.getElementById(errId).classList.toggle('show', show);
+                if (show) valid = false;
+            }
+
+            flagField('ap-name',    'ap-name-err',    !nameEl.value.trim());
+            flagField('ap-price',   'ap-price-err',   !priceEl.value || parseFloat(priceEl.value) < 0);
+            flagField('ap-barcode', 'ap-barcode-err', !barcodeEl.value);
+            flagField('ap-unit',    'ap-unit-err',    !unitEl.value);
+
+            if (!valid) return;
+
+            const manageStock = document.getElementById('ap-manage-stock').checked;
+            const weightVal   = manageStock
+                ? parseFloat(document.getElementById('ap-weight').value)    || null
+                : parseFloat(document.getElementById('ap-weight-ns').value) || null;
+
+            /* Generate SKU if not provided */
+            let sku = document.getElementById('ap-sku').value.trim();
+            if (!sku) {
+                sku = 'SKU-' + Date.now().toString(36).toUpperCase();
+            }
+
+            const record = {
+                id:          'PRD-' + Date.now(),
+                name:        nameEl.value.trim(),
+                sku:         sku,
+                price:       parseFloat(priceEl.value),
+                barcodeType: barcodeEl.value,
+                unit:        unitEl.value,
+                manageStock: manageStock,
+                alertQty:    manageStock ? (parseInt(document.getElementById('ap-alert-qty').value) || null) : null,
+                warranty:    document.getElementById('ap-warranty').value,
+                weight:      weightVal,
+                description: document.getElementById('ap-description').innerHTML.trim(),
+                date:        new Date().toISOString()
+            };
+
+            /* Push to runtime demoProducts so it is immediately searchable */
+            demoProducts.push({ name: record.name, sku: record.sku, price: record.price });
+
+            /* Persist to localStorage */
+            const existing = JSON.parse(localStorage.getItem('prodata_products') || '[]');
+            existing.unshift(record);
+            localStorage.setItem('prodata_products', JSON.stringify(existing));
+
+            closeAddNewProduct();
+            Toast.success(`Product "${record.name}" added! SKU: ${record.sku}`);
+        });
+
+        /* Auto-open Add Product modal if navigated here via #add-product */
+        if (window.location.hash === '#add-product') {
+            openAddNewProduct();
+            history.replaceState(null, '', window.location.pathname);
+        }
+
     });
     </script>
 </body>
