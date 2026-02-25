@@ -107,9 +107,8 @@
         /* ===== ITEMS TABLE ===== */
         .pos-table-wrap {
             overflow-y: auto;
-            /* Show exactly 4 rows (each row ~47px) + header ~42px */
-            max-height: calc(42px + 4 * 47px);
-            flex: none;
+            flex: 1;
+            min-height: 0;
         }
         .pos-table {
             width: 100%; border-collapse: collapse; font-size: 13px;
@@ -613,9 +612,9 @@
         /* ===== TOTALS FOOTER (inside card) ===== */
         .pos-card-footer {
             border-top: 1px solid #e5e7eb;
-            padding: 14px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 40px;
+            padding: 6px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 40px;
         }
-        .total-row { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #111827; }
+        .total-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #111827; }
         .total-row strong { font-weight: 700; }
         .total-row .edit-icon { color: #6b7280; cursor: pointer; }
         .total-row .edit-icon:hover { color: #3b82f6; }
@@ -833,6 +832,98 @@
             cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background .15s;
         }
         .btn-cash:hover { background: #16a34a; }
+
+        /* ===== BILL / RECEIPT MODAL ===== */
+        .bill-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,.55);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1200; opacity: 0; pointer-events: none; transition: opacity .2s;
+        }
+        .bill-overlay.open { opacity: 1; pointer-events: all; }
+        .bill-modal {
+            background: #fff; border-radius: 12px; width: 420px; max-width: 96vw;
+            max-height: 92vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25);
+            display: flex; flex-direction: column;
+        }
+        /* Header toolbar (screen-only) */
+        .bill-toolbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px; border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb; border-radius: 12px 12px 0 0;
+            flex-shrink: 0;
+        }
+        .bill-toolbar-title { font-size: 14px; font-weight: 700; color: #374151; }
+        .bill-toolbar-actions { display: flex; gap: 8px; }
+        .bill-btn-print {
+            background: linear-gradient(135deg,#0a5c2e,#16a34a); color: #fff;
+            border: none; border-radius: 7px; padding: 7px 16px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 6px; transition: opacity .15s;
+        }
+        .bill-btn-print:hover { opacity: .88; }
+        .bill-btn-close {
+            background: #f3f4f6; color: #374151; border: none; border-radius: 7px;
+            padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s;
+        }
+        .bill-btn-close:hover { background: #e5e7eb; }
+        /* Receipt body */
+        .bill-receipt {
+            padding: 24px 28px; font-family: 'Courier New', monospace;
+            font-size: 12.5px; color: #111827; line-height: 1.55;
+        }
+        .bill-shop-name {
+            text-align: center; font-size: 17px; font-weight: 700;
+            letter-spacing: .5px; margin-bottom: 2px;
+        }
+        .bill-shop-sub {
+            text-align: center; font-size: 11px; color: #6b7280; margin-bottom: 14px;
+        }
+        .bill-divider { border: none; border-top: 1px dashed #9ca3af; margin: 10px 0; }
+        .bill-meta { font-size: 11.5px; color: #374151; margin-bottom: 8px; }
+        .bill-meta span { float: right; }
+        .bill-meta::after { content:''; display:table; clear:both; }
+        .bill-col-header {
+            display: grid; grid-template-columns: 1fr 42px 70px 72px;
+            font-weight: 700; font-size: 11px; padding: 4px 0;
+            border-bottom: 1px solid #d1d5db; margin-bottom: 4px; text-transform: uppercase;
+        }
+        .bill-col-header span:nth-child(2),
+        .bill-col-header span:nth-child(3),
+        .bill-col-header span:nth-child(4) { text-align: right; }
+        .bill-item-row {
+            display: grid; grid-template-columns: 1fr 42px 70px 72px;
+            padding: 3px 0; font-size: 12px; border-bottom: 1px dotted #e5e7eb;
+        }
+        .bill-item-row span:nth-child(2),
+        .bill-item-row span:nth-child(3),
+        .bill-item-row span:nth-child(4) { text-align: right; }
+        .bill-item-disc { font-size: 10.5px; color: #dc2626; grid-column: 1/-1; padding-left: 8px; }
+        .bill-totals { margin-top: 10px; }
+        .bill-total-line {
+            display: flex; justify-content: space-between;
+            font-size: 12.5px; padding: 2px 0;
+        }
+        .bill-total-line.grand {
+            font-size: 15px; font-weight: 800; padding: 6px 0 2px;
+            border-top: 1.5px solid #111827; margin-top: 4px;
+        }
+        .bill-total-line.disc-line { color: #dc2626; }
+        .bill-footer-msg {
+            text-align: center; font-size: 11px; color: #6b7280;
+            margin-top: 18px; line-height: 1.6;
+        }
+
+        /* Print styles — hide everything except .bill-receipt */
+        @media print {
+            body > *:not(#bill-overlay) { display: none !important; }
+            #bill-overlay { position: static !important; background: none !important;
+                display: block !important; opacity: 1 !important; }
+            .bill-modal { box-shadow: none !important; max-height: none !important;
+                width: 100% !important; border-radius: 0 !important; }
+            .bill-toolbar { display: none !important; }
+            .bill-receipt { padding: 0 !important; }
+        }
+
         .btn-cancel {
             background: #ef4444; color: #fff; border: none; border-radius: 8px;
             padding: 0 20px; height: 44px; font-size: 14px; font-weight: 600;
@@ -1184,21 +1275,6 @@
                         </select>
                         <button class="ctrl-add-btn" id="open-add-customer-btn" title="Add Customer">+</button>
                     </div>
-                    <div class="ctrl-row">
-                        <div class="ctrl-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
-                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                <rect x="2" y="5" width="20" height="14" rx="2"/>
-                                <line x1="2" y1="10" x2="22" y2="10"/>
-                            </svg>
-                        </div>
-                        <select class="ctrl-select" id="price-select">
-                            <option>Default Selling Price</option>
-                            <option>Wholesale Price</option>
-                            <option>Retail Price</option>
-                        </select>
-                        <button class="ctrl-info-btn" title="Price Info">i</button>
-                    </div>
                 </div>
 
                 <!-- Right: Product Search -->
@@ -1247,37 +1323,28 @@
             <!-- Card Footer Totals -->
             <div class="pos-card-footer">
                 <div class="total-row">
-                    <strong>Items:</strong>
-                    <span id="total-items">0.00</span>
+                    <strong>Total Qty:</strong>
+                    <span id="total-items">0</span>
                 </div>
                 <div class="total-row">
                     <strong>Total:</strong>
                     <span id="total-amount">0.00</span>
                 </div>
                 <div class="total-row">
-                    <strong>Discount</strong>
-                    <span class="total-info">i</span>
-                    <strong>(-):</strong>
-                    <span class="edit-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                        </svg>
-                    </span>
-                    <span id="total-discount">0.00</span>
+                    <strong>Products:</strong>
+                    <span id="total-products">0</span>
                 </div>
                 <div class="total-row">
-                    <strong>Shipping(+):</strong>
-                    <span class="total-info">i</span>
-                    <span class="edit-icon">
+                    <strong>Discount</strong>
+                    <strong>(-):</strong>
+                    <button class="edit-icon" id="btn-subtotal-disc" title="Set order discount" onclick="openSubtotalDisc()" style="background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:4px;display:inline-flex;align-items:center;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                         </svg>
-                    </span>
-                    <span id="total-shipping">0.00</span>
+                    </button>
+                    <span id="total-discount">0.00</span>
                 </div>
             </div>
 
@@ -1813,6 +1880,43 @@
         </div>
     </div>
 
+    <!-- ===== SUBTOTAL DISCOUNT MODAL ===== -->
+    <div class="disc-overlay" id="sd-overlay" role="dialog" aria-modal="true">
+        <div class="disc-modal">
+            <div class="disc-header">
+                <h3>Set Order Discount</h3>
+                <button class="disc-close" id="sd-close" title="Close">✕</button>
+            </div>
+            <div class="disc-body">
+                <div class="disc-product-name" id="sd-subtitle">Applied to the entire order subtotal</div>
+                <div class="disc-type-row">
+                    <label class="disc-type-label">
+                        <input type="radio" name="sd-type" value="fixed" id="sd-fixed" checked/>
+                        <span class="disc-type-icon">🔒</span> Fixed Amount
+                    </label>
+                    <label class="disc-type-label">
+                        <input type="radio" name="sd-type" value="percentage" id="sd-percentage"/>
+                        <span class="disc-type-icon">%</span> Percentage
+                    </label>
+                </div>
+                <div class="disc-amount-wrap">
+                    <span class="disc-amount-prefix" id="sd-prefix">LKR</span>
+                    <input class="disc-amount-input" type="number" id="sd-amount-input"
+                           placeholder="0" min="0" step="0.01" autocomplete="off"/>
+                    <span class="disc-amount-suffix" id="sd-suffix">fixed</span>
+                </div>
+                <div class="disc-preview" id="sd-preview">
+                    Discount: <strong id="sd-preview-val">—</strong> off the order total
+                </div>
+            </div>
+            <div class="disc-footer">
+                <button class="disc-btn-cancel" id="sd-btn-cancel">Cancel</button>
+                <button class="disc-btn-remove" id="sd-btn-remove">Remove</button>
+                <button class="disc-btn-apply" id="sd-btn-apply">Apply</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ═══════════ DRAFT MODAL ═══════════ -->
     <div class="sc-overlay" id="draft-overlay" role="dialog" aria-modal="true">
         <div class="sc-modal" id="draft-modal">
@@ -2194,6 +2298,30 @@
     </div>
     <!-- ═══════════════════════════ /ADD NEW PRODUCT MODAL ═══════════════════════════ -->
 
+    <!-- ===== BILL / RECEIPT MODAL ===== -->
+    <div class="bill-overlay" id="bill-overlay" role="dialog" aria-modal="true">
+        <div class="bill-modal">
+            <div class="bill-toolbar">
+                <span class="bill-toolbar-title">🧾 Receipt Preview</span>
+                <div class="bill-toolbar-actions">
+                    <button class="bill-btn-print" id="bill-btn-print">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none"
+                             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <polyline points="6 9 6 2 18 2 18 9"/>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                            <rect x="6" y="14" width="12" height="8"/>
+                        </svg>
+                        Print
+                    </button>
+                    <button class="bill-btn-close" id="bill-btn-close">Close</button>
+                </div>
+            </div>
+            <!-- Receipt content injected by JS -->
+            <div class="bill-receipt" id="bill-receipt"></div>
+        </div>
+    </div>
+    <!-- ===== /BILL RECEIPT MODAL ===== -->
+
     <script src="assets/js/utils.js"></script>    <script src="assets/js/auth.js"></script>
     <script src="assets/js/toast.js"></script>
     <script>
@@ -2293,16 +2421,39 @@
             updateTotals();
         }
 
+        /* ===== Subtotal (Order-level) Discount State ===== */
+        window.subtotalDiscount = { type: 'fixed', value: 0 };
+
         function updateTotals() {
+            const totalProducts = cartItems.length;
             const totalQty      = cartItems.reduce((s,i) => s + i.qty, 0);
             const totalAmt      = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
-            const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const itemDiscount  = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const subtotalBase  = totalAmt - itemDiscount;
+
+            // Calculate order-level discount
+            const sd = window.subtotalDiscount;
+            let sdAmt = 0;
+            if (sd && sd.value > 0) {
+                if (sd.type === 'percentage') {
+                    sdAmt = Math.min((sd.value / 100) * subtotalBase, subtotalBase);
+                } else {
+                    sdAmt = Math.min(sd.value, subtotalBase);
+                }
+            }
+
+            const totalDiscount = itemDiscount + sdAmt;
             const totalPayable  = totalAmt - totalDiscount;
             const fmt = v => v.toLocaleString('en-LK', {minimumFractionDigits:2, maximumFractionDigits:2});
-            document.getElementById('total-items').textContent    = fmt(totalQty);
+            document.getElementById('total-products').textContent = totalProducts;
+            document.getElementById('total-items').textContent    = totalQty;
             document.getElementById('total-amount').textContent   = fmt(totalAmt);
             document.getElementById('total-discount').textContent = fmt(totalDiscount);
             document.getElementById('total-payable').textContent  = fmt(totalPayable);
+
+            // Highlight discount row if order discount is active
+            const discRow = document.getElementById('btn-subtotal-disc');
+            if (discRow) discRow.style.color = sd && sd.value > 0 ? '#16a34a' : '';
         }
 
         window.changeQty = function(idx, delta) {
@@ -2417,6 +2568,83 @@
             closeDiscModal();
         });
 
+        /* ===== SUBTOTAL (ORDER-LEVEL) DISCOUNT MODAL ===== */
+        window.openSubtotalDisc = function() {
+            const sd = window.subtotalDiscount;
+            document.getElementById('sd-fixed').checked      = sd.type === 'fixed';
+            document.getElementById('sd-percentage').checked = sd.type === 'percentage';
+            document.getElementById('sd-amount-input').value = sd.value > 0 ? sd.value : '';
+            sdUpdatePreview();
+            document.getElementById('sd-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('sd-amount-input').focus(), 80);
+        };
+
+        function sdUpdatePreview() {
+            const isPerc = document.getElementById('sd-percentage').checked;
+            const val    = parseFloat(document.getElementById('sd-amount-input').value) || 0;
+            const prev   = document.getElementById('sd-preview');
+            const prevVal = document.getElementById('sd-preview-val');
+            if (val <= 0) { prev.classList.remove('show'); return; }
+            const totalAmt     = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const itemDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const subtotalBase = totalAmt - itemDiscount;
+            let discAmt;
+            if (isPerc) {
+                discAmt = Math.min((val / 100) * subtotalBase, subtotalBase);
+                prevVal.textContent = `LKR ${discAmt.toLocaleString('en-LK',{minimumFractionDigits:2})} (${val}% of LKR ${subtotalBase.toLocaleString('en-LK',{minimumFractionDigits:2})})`;
+            } else {
+                discAmt = Math.min(val, subtotalBase);
+                prevVal.textContent = `LKR ${discAmt.toLocaleString('en-LK',{minimumFractionDigits:2})}`;
+            }
+            prev.classList.add('show');
+        }
+
+        function sdClose() {
+            document.getElementById('sd-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('input[name="sd-type"]').forEach(r =>
+            r.addEventListener('change', sdUpdatePreview)
+        );
+        document.getElementById('sd-amount-input').addEventListener('input', sdUpdatePreview);
+        document.getElementById('sd-close').addEventListener('click', sdClose);
+        document.getElementById('sd-btn-cancel').addEventListener('click', sdClose);
+        document.getElementById('sd-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('sd-overlay')) sdClose();
+        });
+
+        document.getElementById('sd-btn-remove').addEventListener('click', () => {
+            window.subtotalDiscount = { type: 'fixed', value: 0 };
+            updateTotals();
+            Toast.info('Order discount removed.');
+            sdClose();
+        });
+
+        document.getElementById('sd-btn-apply').addEventListener('click', () => {
+            const val = parseFloat(document.getElementById('sd-amount-input').value);
+            if (isNaN(val) || val < 0) { Toast.warning('Please enter a valid discount value.'); return; }
+            const isPerc = document.getElementById('sd-percentage').checked;
+            if (isPerc && val > 100) { Toast.warning('Percentage cannot exceed 100%.'); return; }
+            const totalAmt     = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const itemDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const subtotalBase = totalAmt - itemDiscount;
+            if (!isPerc && val > subtotalBase) {
+                Toast.warning(`Fixed discount cannot exceed the order subtotal (LKR ${subtotalBase.toLocaleString('en-LK',{minimumFractionDigits:2})}).`);
+                return;
+            }
+            if (val === 0) {
+                window.subtotalDiscount = { type: 'fixed', value: 0 };
+                Toast.info('Order discount cleared.');
+            } else {
+                window.subtotalDiscount = { type: isPerc ? 'percentage' : 'fixed', value: val };
+                Toast.success(`Order discount of ${isPerc ? val + '%' : 'LKR ' + val} applied.`);
+            }
+            updateTotals();
+            sdClose();
+        });
+
         /* Demo products for search */
         const demoProducts = [
             { name: 'Anchor Milk Powder 400g',   sku: 'AMP400',  price: 1250 },
@@ -2472,15 +2700,123 @@
             }
         });
 
+        /* ===== BILL / RECEIPT ===== */
+        function openBill(paymentMethod) {
+            const now = new Date();
+            const pad = n => String(n).padStart(2,'0');
+            const dateStr = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()}`;
+            const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+            const invNo   = 'INV-' + Date.now();
+
+            const custSel  = document.getElementById('customer-select');
+            const customer = custSel.options[custSel.selectedIndex].text || 'Walk-In Customer';
+
+            const totalAmt     = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const itemDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const subtotalBase = totalAmt - itemDiscount;
+            const sd = window.subtotalDiscount;
+            let sdAmt = 0;
+            if (sd && sd.value > 0) {
+                sdAmt = sd.type === 'percentage'
+                    ? Math.min((sd.value / 100) * subtotalBase, subtotalBase)
+                    : Math.min(sd.value, subtotalBase);
+            }
+            const totalDiscount = itemDiscount + sdAmt;
+            const grandTotal    = totalAmt - totalDiscount;
+            const fmt = v => v.toLocaleString('en-LK', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+            // Build item rows HTML
+            let itemsHTML = '';
+            cartItems.forEach(item => {
+                const lineTotal = item.price * item.qty;
+                const discAmt   = calcItemDiscount(item);
+                const lineNet   = lineTotal - discAmt;
+                itemsHTML += `
+                <div class="bill-item-row">
+                    <span>${item.name}</span>
+                    <span>${item.qty}</span>
+                    <span>${fmt(item.price)}</span>
+                    <span>${fmt(lineNet)}</span>
+                </div>`;
+                if (discAmt > 0) {
+                    const dLabel = item.discount.type === 'percentage'
+                        ? `Disc: ${item.discount.value}% (−LKR ${fmt(discAmt)})`
+                        : `Disc: −LKR ${fmt(discAmt)}`;
+                    itemsHTML += `<div class="bill-item-disc">${dLabel}</div>`;
+                }
+            });
+
+            // Order discount line
+            let orderDiscHTML = '';
+            if (sdAmt > 0) {
+                const sdLabel = sd.type === 'percentage' ? `${sd.value}%` : `LKR ${fmt(sd.value)}`;
+                orderDiscHTML = `<div class="bill-total-line disc-line"><span>Order Discount (${sdLabel})</span><span>−LKR ${fmt(sdAmt)}</span></div>`;
+            }
+            // Item discount summary line
+            let itemDiscHTML = '';
+            if (itemDiscount > 0) {
+                itemDiscHTML = `<div class="bill-total-line disc-line"><span>Item Discounts</span><span>−LKR ${fmt(itemDiscount)}</span></div>`;
+            }
+
+            document.getElementById('bill-receipt').innerHTML = `
+                <div class="bill-shop-name">JR MARKETING</div>
+                <div class="bill-shop-sub">JR Marketing Shop · Tel: 011-XXXXXXX</div>
+                <hr class="bill-divider"/>
+                <div class="bill-meta">Invoice No: <span>${invNo}</span></div>
+                <div class="bill-meta">Date: <span>${dateStr} ${timeStr}</span></div>
+                <div class="bill-meta">Customer: <span>${customer}</span></div>
+                <div class="bill-meta">Payment: <span>${paymentMethod}</span></div>
+                <hr class="bill-divider"/>
+                <div class="bill-col-header">
+                    <span>Item</span><span>Qty</span><span>Price</span><span>Total</span>
+                </div>
+                ${itemsHTML}
+                <hr class="bill-divider"/>
+                <div class="bill-totals">
+                    <div class="bill-total-line"><span>Subtotal</span><span>LKR ${fmt(totalAmt)}</span></div>
+                    ${itemDiscHTML}
+                    ${orderDiscHTML}
+                    <div class="bill-total-line grand"><span>TOTAL PAYABLE</span><span>LKR ${fmt(grandTotal)}</span></div>
+                </div>
+                <hr class="bill-divider"/>
+                <div class="bill-footer-msg">
+                    Thank you for shopping at JR Marketing!<br>
+                    Please keep this receipt for your records.<br>
+                    <strong>— Come Again —</strong>
+                </div>
+            `;
+
+            document.getElementById('bill-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            // Store snapshot to clear cart after closing
+            document.getElementById('bill-overlay').dataset.readyToClear = '1';
+        }
+
+        function closeBill() {
+            const overlay = document.getElementById('bill-overlay');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+            if (overlay.dataset.readyToClear === '1') {
+                overlay.dataset.readyToClear = '0';
+                cartItems.splice(0, cartItems.length);
+                window.subtotalDiscount = { type: 'fixed', value: 0 };
+                renderCart();
+            }
+        }
+
+        document.getElementById('bill-btn-close').addEventListener('click', closeBill);
+        document.getElementById('bill-overlay').addEventListener('click', e => {
+            if (e.target === document.getElementById('bill-overlay')) closeBill();
+        });
+        document.getElementById('bill-btn-print').addEventListener('click', () => {
+            window.print();
+        });
+
         /* Cash pay */
         document.getElementById('btn-cash').addEventListener('click', () => {
             if (cartItems.length === 0) { Toast.warning('Add items to cart first.'); return; }
-            const totalAmt      = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
-            const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
-            const total         = totalAmt - totalDiscount;
-            Toast.success(`Cash payment of LKR ${total.toLocaleString('en-LK', {minimumFractionDigits:2})} processed!`);
-            cartItems.splice(0, cartItems.length);
-            renderCart();
+            openBill('Cash');
         });
 
         /* Multiple pay */
@@ -2762,6 +3098,7 @@
                 closeModal();
                 closeMultiplePayModal();
                 closeDiscModal();
+                closeBill();
                 ['draft-overlay','quotation-overlay','suspend-overlay','credit-overlay'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el && el.classList.contains('open')) scCloseOverlay(id);
