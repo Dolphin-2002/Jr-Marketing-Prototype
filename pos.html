@@ -205,19 +205,11 @@
             overflow: hidden; height: 40px; background: #fff;
         }
         .disc-amount-wrap:focus-within { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
-        .disc-amount-prefix {
-            padding: 0 12px; background: #f9fafb; border-right: 1px solid #e5e7eb;
-            height: 100%; display: flex; align-items: center;
-            font-size: 14px; font-weight: 700; color: #6b7280; flex-shrink: 0;
-        }
+        .disc-amount-prefix { display: none; }
+        .disc-amount-suffix { display: none; }
         .disc-amount-input {
-            flex: 1; border: none; outline: none; padding: 0 12px;
-            font-size: 15px; font-weight: 700; color: #111827;
-        }
-        .disc-amount-suffix {
-            padding: 0 12px; background: #f9fafb; border-left: 1px solid #e5e7eb;
-            height: 100%; display: flex; align-items: center;
-            font-size: 13px; font-weight: 600; color: #9ca3af; flex-shrink: 0;
+            flex: 1; border: none; outline: none; padding: 0 14px;
+            font-size: 15px; font-weight: 700; color: #111827; text-align: center;
         }
         /* Preview */
         .disc-preview {
@@ -983,9 +975,144 @@
         .ac-error-msg { font-size: 11px; color: #ef4444; margin-top: 2px; display: none; }
         .ac-error-msg.show { display: block; }
 
+        /* ===== PRODUCT CATALOG GRID ===== */
+        /* ===== SHOW ALL PRICES BUTTON ===== */
+        .btn-show-prices {
+            display: flex; align-items: center; gap: 6px;
+            background: #0a5c2e; border: 1.5px solid #0a5c2e;
+            border-radius: 8px; color: #fff; padding: 0 13px; height: 36px;
+            font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
+            transition: background .15s, box-shadow .15s;
+            box-shadow: 0 2px 6px rgba(10,92,46,0.3);
+        }
+        .btn-show-prices:hover { background: #0d7a3e; border-color: #0d7a3e; box-shadow: 0 4px 12px rgba(10,92,46,0.4); }
+
+        /* ===== ALL PRICES POPUP ===== */
+        .sap-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+            z-index: 9999; align-items: center; justify-content: center;
+        }
+        .sap-overlay.open { display: flex; }
+        .sap-modal {
+            background: #fff; border-radius: 14px; width: 420px; max-width: 96vw;
+            max-height: 88vh; display: flex; flex-direction: column;
+            box-shadow: 0 20px 56px rgba(0,0,0,.24);
+            animation: ppSlideIn .16s ease;
+        }
+        .sap-header {
+            background: linear-gradient(135deg, #0a5c2e 0%, #16a34a 100%);
+            padding: 15px 18px; border-radius: 14px 14px 0 0;
+            display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+        }
+        .sap-header h3 { font-size: 14.5px; font-weight: 700; color: #fff; margin: 0; }
+        .sap-header-sub { font-size: 11.5px; color: rgba(255,255,255,.75); margin-top: 2px; }
+        .sap-close {
+            background: rgba(255,255,255,.2); border: none; border-radius: 6px;
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 15px; cursor: pointer; flex-shrink: 0;
+        }
+        .sap-close:hover { background: rgba(255,255,255,.35); }
+        .sap-body { overflow-y: auto; padding: 14px 16px 8px; flex: 1; }
+        .sap-empty { text-align: center; padding: 32px 0; color: #9ca3af; font-size: 13px; }
+        .sap-table { width: 100%; border-collapse: collapse; }
+        .sap-table thead th {
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+            color: #6b7280; padding: 6px 10px; border-bottom: 2px solid #e5e7eb; text-align: left;
+        }
+        .sap-table thead th:last-child { text-align: right; }
+        .sap-table tbody tr { transition: background .1s; }
+        .sap-table tbody tr:hover { background: #f9fafb; }
+        .sap-table tbody td {
+            padding: 10px 10px; font-size: 13px; color: #111827;
+            border-bottom: 1px solid #f3f4f6; vertical-align: middle;
+        }
+        .sap-table tbody td:last-child { text-align: right; font-weight: 700; color: #16a34a; white-space: nowrap; }
+        .sap-table-icon { font-size: 18px; line-height: 1; }
+        .sap-prod-name { font-weight: 600; font-size: 12.5px; }
+        .sap-prod-sku { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+        .sap-footer { padding: 12px 16px; border-top: 1px solid #f3f4f6; flex-shrink: 0; text-align: right; }
+        .sap-footer-total { font-size: 13px; color: #374151; }
+        .sap-footer-total strong { font-size: 15px; color: #0a5c2e; }
+
+        /* ===== PRODUCT PRICE POPUP ===== */
+        .prod-popup-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+            z-index: 9998; align-items: center; justify-content: center;
+        }
+        .prod-popup-overlay.open { display: flex; }
+        .prod-popup {
+            background: #fff; border-radius: 12px; width: 320px; max-width: 96vw;
+            box-shadow: 0 16px 48px rgba(0,0,0,.22);
+            animation: ppSlideIn .16s ease;
+        }
+        @keyframes ppSlideIn {
+            from { opacity:0; transform: scale(.95) translateY(-10px); }
+            to   { opacity:1; transform: scale(1) translateY(0); }
+        }
+        .prod-popup-header {
+            background: linear-gradient(135deg, #0a5c2e 0%, #16a34a 100%);
+            padding: 16px 18px; border-radius: 12px 12px 0 0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .prod-popup-header h3 { font-size: 14px; font-weight: 700; color: #fff; margin: 0; flex: 1; margin-right: 10px; }
+        .prod-popup-close {
+            background: rgba(255,255,255,.2); border: none; border-radius: 6px;
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 16px; cursor: pointer;
+        }
+        .prod-popup-close:hover { background: rgba(255,255,255,.35); }
+        .prod-popup-body { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+        .prod-popup-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 13px; padding: 6px 0; border-bottom: 1px solid #f3f4f6;
+        }
+        .prod-popup-row:last-child { border-bottom: none; }
+        .prod-popup-row span:first-child { color: #6b7280; font-weight: 500; }
+        .prod-popup-row span:last-child { font-weight: 700; color: #111827; }
+        .prod-popup-price { font-size: 22px; font-weight: 800; color: #16a34a; }
+        .prod-popup-footer { padding: 0 18px 16px; }
+        .prod-popup-add-btn {
+            width: 100%; height: 40px; border: none; border-radius: 8px;
+            background: #16a34a; color: #fff; font-size: 13px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+            transition: background .15s;
+        }
+        .prod-popup-add-btn:hover { background: #15803d; }
+
         @media (max-width: 600px) {
             .ac-grid-2, .ac-grid-3, .ac-grid-4, .ac-grid-5 { grid-template-columns: 1fr 1fr; }
             .ac-col-span3 { grid-column: span 2; }
+        }
+
+        /* ===== POS RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .pos-topbar { flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px 12px; height: auto; }
+            .pos-topbar-right { width: 100%; justify-content: flex-end; }
+            .pos-controls { gap: 8px; }
+        }
+        @media (max-width: 700px) {
+            .pos-body { padding: 8px; gap: 8px; }
+            .pos-card { padding: 10px; }
+            .pos-card-footer { grid-template-columns: 1fr; gap: 4px; }
+            .pos-table { font-size: 12px; }
+            .pos-table thead th, .pos-table tbody td { padding: 8px 8px; }
+            .pos-actionbar { flex-wrap: wrap; gap: 8px; padding: 8px 10px; }
+            .action-shortcuts { gap: 10px; }
+            .action-btns { flex-wrap: wrap; gap: 8px; }
+            .btn-multiple-pay, .btn-cash, .btn-cancel, .btn-show-prices { height: 38px; font-size: 13px; padding: 0 14px; }
+            .total-payable-wrap { width: 100%; text-align: right; }
+            .total-payable-value { font-size: 18px; }
+            .btn-recent-tx { height: 38px; font-size: 12px; padding: 0 12px; }
+        }
+        @media (max-width: 480px) {
+            .pos-topbar-left { flex-direction: column; gap: 4px; }
+            .action-shortcuts { display: none; }
+            .action-divider { display: none; }
+            .mp-body { flex-direction: column; }
+            .mp-right { width: 100%; border-radius: 0 0 12px 12px; }
+            .mp-notes-row { grid-template-columns: 1fr; }
+            .ap-grid-3 { grid-template-columns: 1fr 1fr; }
+            .ae-grid-2 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1155,6 +1282,7 @@
             </div>
 
         </div><!-- /pos-card -->
+
     </div><!-- /pos-body -->
 
     <!-- ===== BOTTOM ACTION BAR ===== -->
@@ -1200,6 +1328,19 @@
         <div class="action-divider"></div>
 
         <div class="action-btns">
+            <!-- Show All Prices -->
+            <button class="btn-show-prices" id="btn-show-prices" onclick="openAllPrices()" title="View all cart item prices">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <line x1="8" y1="6" x2="21" y2="6"/>
+                    <line x1="8" y1="12" x2="21" y2="12"/>
+                    <line x1="8" y1="18" x2="21" y2="18"/>
+                    <line x1="3" y1="6" x2="3.01" y2="6"/>
+                    <line x1="3" y1="12" x2="3.01" y2="12"/>
+                    <line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+                Show All Prices
+            </button>
             <button class="btn-multiple-pay" id="btn-multiple-pay">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -2075,7 +2216,8 @@
         setInterval(updateTime, 60000);
 
         /* ===== Cart State ===== */
-        let cartItems = [];
+        window.cartItems = [];
+        let cartItems = window.cartItems;
         let discModalIdx = -1; // which item index the discount modal is open for
 
         /* ---- Discount helpers ---- */
@@ -2125,10 +2267,11 @@
                 tr.innerHTML = `
                     <td>${item.name}</td>
                     <td style="text-align:center">
-                        <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-                            <button onclick="changeQty(${idx},-1)" style="width:24px;height:24px;border:1px solid #d1d5db;border-radius:4px;background:#f9fafb;cursor:pointer;font-size:14px;line-height:1;">−</button>
-                            <span style="min-width:28px;text-align:center;font-weight:600;">${item.qty}</span>
-                            <button onclick="changeQty(${idx},1)"  style="width:24px;height:24px;border:1px solid #d1d5db;border-radius:4px;background:#f9fafb;cursor:pointer;font-size:14px;line-height:1;">+</button>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:4px;">
+                            <button onclick="changeQty(${idx},-1)" style="width:24px;height:24px;border:1px solid #d1d5db;border-radius:4px;background:#f9fafb;cursor:pointer;font-size:14px;line-height:1;flex-shrink:0;">−</button>
+                            <input type="number" value="${item.qty}" min="1" onchange="setQty(${idx},this.value)" oninput="setQty(${idx},this.value)"
+                                   style="width:46px;height:24px;border:1px solid #d1d5db;border-radius:4px;text-align:center;font-weight:600;font-size:13px;font-family:inherit;outline:none;padding:0 4px;"/>
+                            <button onclick="changeQty(${idx},1)"  style="width:24px;height:24px;border:1px solid #d1d5db;border-radius:4px;background:#f9fafb;cursor:pointer;font-size:14px;line-height:1;flex-shrink:0;">+</button>
                         </div>
                     </td>
                     <td style="text-align:center">
@@ -2165,6 +2308,14 @@
         window.changeQty = function(idx, delta) {
             cartItems[idx].qty = Math.max(1, cartItems[idx].qty + delta);
             renderCart();
+        };
+
+        window.setQty = function(idx, val) {
+            const n = parseInt(val, 10);
+            if (!isNaN(n) && n >= 1) {
+                cartItems[idx].qty = n;
+                renderCart();
+            }
         };
 
         window.removeItem = function(idx) {
@@ -2315,7 +2466,7 @@
         document.getElementById('btn-cancel').addEventListener('click', () => {
             if (cartItems.length === 0) { Toast.warning('Cart is already empty.'); return; }
             if (confirm('Clear all items from cart?')) {
-                cartItems = [];
+                cartItems.splice(0, cartItems.length);
                 renderCart();
                 Toast.info('Cart cleared.');
             }
@@ -2328,7 +2479,7 @@
             const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
             const total         = totalAmt - totalDiscount;
             Toast.success(`Cash payment of LKR ${total.toLocaleString('en-LK', {minimumFractionDigits:2})} processed!`);
-            cartItems = [];
+            cartItems.splice(0, cartItems.length);
             renderCart();
         });
 
@@ -2563,7 +2714,7 @@
 
             const changeAmt = totalPaying - totalPayable;
             Toast.success(`Payment finalized! ${balance > 0 ? 'Balance: ' + mpFmt(balance) : changeAmt > 0 ? 'Change: ' + mpFmt(changeAmt) : 'Fully paid.'}`);
-            cartItems = [];
+            cartItems.splice(0, cartItems.length);
             renderCart();
             closeMultiplePayModal();
         });
@@ -2854,7 +3005,7 @@
             const drafts = getDrafts();
             drafts.push(draft);
             saveDraftsToStorage(drafts);
-            cartItems = []; renderCart(); updateTotals();
+            cartItems.splice(0, cartItems.length); renderCart(); updateTotals();
             scCloseOverlay('draft-overlay');
             Toast.success(`Draft ${draft.id} saved! Cart cleared.`);
         });
@@ -3043,7 +3194,7 @@
             list.push(suspended);
             saveSuspendedToStorage(list);
             updateSuspendBadge();
-            cartItems = []; renderCart(); updateTotals();
+            cartItems.splice(0, cartItems.length); renderCart(); updateTotals();
             scCloseOverlay('suspend-overlay');
             Toast.success(`Sale ${suspended.id} parked. Cart cleared.`);
         });
@@ -3159,7 +3310,7 @@
                 localStorage.setItem(CREDIT_KEY, JSON.stringify(list));
             } catch(e) {}
 
-            cartItems = []; renderCart(); updateTotals();
+            cartItems.splice(0, cartItems.length); renderCart(); updateTotals();
             scCloseOverlay('credit-overlay');
             Toast.success(`Credit Sale ${record.id} recorded for ${custName}. Total: ${scFmt(payable)}`);
         });
@@ -3434,6 +3585,74 @@
             history.replaceState(null, '', window.location.pathname);
         }
 
+    });
+    </script>
+
+
+    <!-- ===== ALL PRICES POPUP ===== -->
+    <div class="sap-overlay" id="sap-overlay">
+        <div class="sap-modal">
+            <div class="sap-header">
+                <div>
+                    <h3>Cart Prices</h3>
+                    <div class="sap-header-sub" id="sap-header-sub">0 items in cart</div>
+                </div>
+                <button class="sap-close" onclick="closeAllPrices()">&#x2715;</button>
+            </div>
+            <div class="sap-body" id="sap-body">
+                <div class="sap-empty">No items in cart yet.</div>
+            </div>
+            <div class="sap-footer">
+                <span class="sap-footer-total">Total Payable: &nbsp;<strong id="sap-total">LKR 0.00</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* ===== ALL PRICES POPUP ===== */
+    window.openAllPrices = function() {
+        const items = (typeof cartItems !== 'undefined') ? cartItems : [];
+        const body  = document.getElementById('sap-body');
+        const sub   = document.getElementById('sap-header-sub');
+        const tot   = document.getElementById('sap-total');
+
+        if (items.length === 0) {
+            body.innerHTML = '<div class="sap-empty">No items in cart yet.</div>';
+            if (sub) sub.textContent = '0 items in cart';
+            if (tot) tot.textContent = 'LKR 0.00';
+        } else {
+            const totalPay = items.reduce((s, i) => s + i.price * i.qty, 0);
+            if (sub) sub.textContent = items.length + ' item' + (items.length > 1 ? 's' : '') + ' in cart';
+            if (tot) tot.textContent = 'LKR ' + totalPay.toLocaleString('en-LK', {minimumFractionDigits:2});
+            const rows = items.map(function(item, idx) {
+                const lineTotal = item.price * item.qty;
+                return '<tr>' +
+                    '<td style="width:28px;text-align:center;color:#9ca3af;font-size:12px;">' + (idx + 1) + '</td>' +
+                    '<td><div class="sap-prod-name">' + item.name + '</div><div class="sap-prod-sku">' + item.sku + '</div></td>' +
+                    '<td style="text-align:center;color:#374151;">' + item.qty + '</td>' +
+                    '<td>LKR ' + item.price.toLocaleString('en-LK', {minimumFractionDigits:2}) + '</td>' +
+                    '<td>LKR ' + lineTotal.toLocaleString('en-LK', {minimumFractionDigits:2}) + '</td>' +
+                    '</tr>';
+            }).join('');
+            body.innerHTML = '<table class="sap-table">' +
+                '<thead><tr>' +
+                '<th>#</th><th>Product</th><th style="text-align:center;">Qty</th><th>Unit Price</th><th>Total</th>' +
+                '</tr></thead>' +
+                '<tbody>' + rows + '</tbody>' +
+                '</table>';
+        }
+
+        document.getElementById('sap-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeAllPrices = function() {
+        document.getElementById('sap-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    };
+
+    document.getElementById('sap-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeAllPrices();
     });
     </script>
 </body>
