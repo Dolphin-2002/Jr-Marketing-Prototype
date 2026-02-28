@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JR MARKETING SHOP — Add Sale</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a5c2e'/><text x='50%25' y='55%25' font-size='13' font-weight='900' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='Arial'>JR</text></svg>">
+    <link rel="stylesheet" href="assets/css/variables.css"><link rel="stylesheet" href="assets/css/base.css">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#eef1f8;min-height:100vh;display:flex;flex-direction:column}.navbar{background:#0a5c2e;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 0;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(10,92,46,0.4);flex-shrink:0}.navbar-left{display:flex;align-items:center;height:100%}.nav-sidebar-toggle{width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.8);transition:background .2s}.nav-sidebar-toggle:hover{background:rgba(255,255,255,0.1)}.navbar-brand{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;padding:0 14px 0 8px;white-space:nowrap}.brand-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;display:inline-block}.navbar-right{display:flex;align-items:center;gap:5px}.nav-pos-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;padding:0 12px;height:34px;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s}.nav-pos-btn:hover{background:rgba(255,255,255,0.22)}.nav-divider{width:1px;height:22px;background:rgba(255,255,255,0.2);margin:0 4px}.nav-date{color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;padding:0 4px;white-space:nowrap}.nav-icon-btn{width:36px;height:36px;border-radius:8px;background:transparent;border:none;color:rgba(255,255,255,0.75);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}.nav-icon-btn:hover{background:rgba(255,255,255,0.12);color:white}.nav-user{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:0 10px;height:34px;color:white;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}.nav-user:hover{background:rgba(255,255,255,0.2)}.nav-user-avatar{width:24px;height:24px;border-radius:50%;background:#16a34a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+        .layout{display:flex;flex:1;min-height:calc(100vh - 52px)}.sidebar{width:240px;background:#f8f9fc;border-right:1px solid #dde3f0;flex-shrink:0;overflow-y:auto;overflow-x:hidden;transition:width .28s ease}.sidebar.collapsed{width:0}.sidebar-inner{padding:6px 0 28px}.sidebar-menu{list-style:none}.menu-item{position:relative}.menu-link{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 10px 14px;color:#374151;font-size:13.5px;font-weight:500;text-decoration:none;cursor:pointer;transition:background .15s,color .15s;border-left:3px solid transparent;user-select:none;white-space:nowrap}.menu-link:hover{background:#dcfce7;color:#15803d}.menu-link.active{background:#dcfce7;color:#15803d;border-left-color:#16a34a;font-weight:700}.menu-link-left{display:flex;align-items:center;gap:10px}.menu-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#6b7280}.menu-link.active .menu-icon,.menu-link:hover .menu-icon{color:#16a34a}.menu-chevron{font-size:10px;color:#9ca3af;transition:transform .2s}.menu-item.open>.menu-link .menu-chevron{transform:rotate(90deg)}.submenu{display:none;background:#f0fdf4;list-style:none}.menu-item.open .submenu{display:block}.submenu-link{display:flex;align-items:center;gap:8px;padding:8px 16px 8px 40px;color:#4b5563;font-size:12.5px;text-decoration:none;transition:color .15s,background .15s;cursor:pointer;white-space:nowrap}.submenu-link:hover{color:#15803d;background:#bbf7d0}.submenu-link.active{color:#15803d;background:#bbf7d0;font-weight:600}
+        .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}.content-header{background:#0a5c2e;padding:22px 26px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}.page-title{font-size:22px;font-weight:800;color:#fff;display:flex;align-items:center;gap:10px}.content-body{padding:20px;background:#eef1f8;flex:1}
+        .card{background:#fff;border-radius:12px;box-shadow:0 1px 5px rgba(0,0,0,.07);padding:20px;margin-bottom:18px}
+        .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.form-group{display:flex;flex-direction:column;gap:4px}.form-group label{font-size:12px;font-weight:600;color:#374151}.form-group input,.form-group select,.form-group textarea{height:36px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;font-size:13px;outline:none}.form-group textarea{height:60px;padding:8px 10px;resize:vertical}.form-group input:focus,.form-group select:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12)}
+        .btn{height:36px;padding:0 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s}.btn-primary{background:#16a34a;color:#fff}.btn-primary:hover{background:#15803d}.btn-outline{background:#fff;color:#374151;border:1px solid #d1d5db}.btn-outline:hover{background:#f3f4f6}
+        table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:10px 12px;font-size:12px;font-weight:600;color:#6b7280;text-align:left;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e5e7eb}td{padding:10px 12px;font-size:13px;color:#374151;border-bottom:1px solid #f3f4f6}tr:hover{background:#f0fdf4}
+        .sale-total{font-size:20px;font-weight:800;color:#16a34a}
+        @media(max-width:768px){.sidebar{display:none}.sidebar.mobile-open{display:flex;position:fixed;left:0;top:52px;height:calc(100vh - 52px);z-index:300;width:240px;box-shadow:4px 0 20px rgba(0,0,0,.2)}.form-grid{grid-template-columns:1fr}.nav-date{display:none}}
+    </style>
+</head>
+<body>
+    <nav class="navbar"><div class="navbar-left"><div class="nav-sidebar-toggle" id="sidebar-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><div class="navbar-brand">JR MARKETING SHOP <span class="brand-dot"></span></div></div><div class="navbar-right"><button class="nav-pos-btn" onclick="location.href='pos.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> POS</button><div class="nav-divider"></div><span class="nav-date" id="nav-date"></span><div class="nav-divider"></div><button class="nav-icon-btn" title="Notifications"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><div class="nav-user" id="nav-user"><div class="nav-user-avatar" id="nav-avatar">A</div><span id="nav-username">Admin</span></div></div></nav>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar"><div class="sidebar-inner"><ul class="sidebar-menu">
+            <li class="menu-item"><a href="dashboard.html" class="menu-link"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</span></a></li>
+            <li class="menu-item" data-menu="contacts"><div class="menu-link" onclick="toggleMenu('contacts')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Contacts</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="customers.html">&#8227;&nbsp; Customers</a></li><li><a class="submenu-link" href="suppliers.html">&#8227;&nbsp; Suppliers</a></li></ul></li>
+            <li class="menu-item" data-menu="products"><div class="menu-link" onclick="toggleMenu('products')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>Products</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="products.html">&#8227;&nbsp; Products List</a></li><li><a class="submenu-link" href="products.html#add">&#8227;&nbsp; Add New Product</a></li><li><a class="submenu-link" href="categories.html">&#8227;&nbsp; Categories</a></li><li><a class="submenu-link" href="brands.html">&#8227;&nbsp; Brands</a></li><li><a class="submenu-link" href="units.html">&#8227;&nbsp; Units</a></li><li><a class="submenu-link" href="stock.html">&#8227;&nbsp; Stock</a></li></ul></li>
+            <li class="menu-item" data-menu="purchases"><div class="menu-link" onclick="toggleMenu('purchases')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg></span>Purchases</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="purchases.html">&#8227;&nbsp; Purchase List</a></li><li><a class="submenu-link" href="purchases.html#add">&#8227;&nbsp; Add Purchase</a></li><li><a class="submenu-link" href="purchases.html#return">&#8227;&nbsp; Purchase Return</a></li></ul></li>
+            <li class="menu-item open" data-menu="sell"><div class="menu-link active" onclick="toggleMenu('sell')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>Sell</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="sales.html">&#8227;&nbsp; All Sales</a></li><li><a class="submenu-link active" href="add-sale.html">&#8227;&nbsp; Add Sale</a></li><li><a class="submenu-link" href="sale-return.html">&#8227;&nbsp; Sale Return</a></li><li><a class="submenu-link" href="sales.html#quotations">&#8227;&nbsp; Quotations</a></li><li><a class="submenu-link" href="sales.html#credit">&#8227;&nbsp; Credit Sales</a></li></ul></li>
+            <li class="menu-item" data-menu="expenses"><div class="menu-link" onclick="toggleMenu('expenses')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Expenses</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="expenses.html">&#8227;&nbsp; Expense List</a></li><li><a class="submenu-link" href="expenses.html#add">&#8227;&nbsp; Add Expense</a></li><li><a class="submenu-link" href="expense-categories.html">&#8227;&nbsp; Expense Categories</a></li></ul></li>
+            <li class="menu-item"><a href="payments.html" class="menu-link"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="10" y2="15"/><line x1="13" y1="15" x2="17" y2="15"/></svg></span>Payments</span></a></li>
+            <li class="menu-item" data-menu="reports"><div class="menu-link" onclick="toggleMenu('reports')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>Reports</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="profit-loss.html">&#8227;&nbsp; Profit / Loss</a></li><li><a class="submenu-link" href="purchase-report.html">&#8227;&nbsp; Purchase Report</a></li><li><a class="submenu-link" href="sales-report.html">&#8227;&nbsp; Sales Report</a></li><li><a class="submenu-link" href="expense-report.html">&#8227;&nbsp; Expense Report</a></li><li><a class="submenu-link" href="stock-report.html">&#8227;&nbsp; Stock Report</a></li><li><a class="submenu-link" href="tax-report.html">&#8227;&nbsp; Tax Report</a></li></ul></li>
+        </ul></div></aside>
+        <main class="main">
+            <div class="content-header"><div class="page-title"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg> Add Sale</div></div>
+            <div class="content-body">
+                <div class="card">
+                    <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">New Sale Invoice</h3>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Customer *</label><select id="s-customer"><option value="">Walk-in Customer</option></select></div>
+                        <div class="form-group"><label>Date *</label><input type="date" id="s-date"></div>
+                        <div class="form-group"><label>Invoice No</label><input type="text" id="s-invoice" placeholder="Auto-generated"></div>
+                        <div class="form-group"><label>Payment Method</label><select id="s-method"><option>Cash</option><option>Card</option><option>Bank Transfer</option><option>Credit</option></select></div>
+                        <div class="form-group"><label>Discount (%)</label><input type="number" id="s-discount" value="0" min="0" max="100" oninput="calcTotal()"></div>
+                        <div class="form-group"><label>Tax (%)</label><input type="number" id="s-tax" value="0" min="0" max="100" oninput="calcTotal()"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">Add Products</h4>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+                        <div class="form-group" style="flex:2;min-width:200px"><label>Product</label><select id="s-product"><option value="">Select product</option></select></div>
+                        <div class="form-group" style="flex:0 0 100px"><label>Qty</label><input type="number" id="s-qty" placeholder="1" min="1"></div>
+                        <div class="form-group" style="flex:0 0 120px"><label>Price</label><input type="number" id="s-price" step="0.01"></div>
+                        <button class="btn btn-primary" onclick="addItem()">Add</button>
+                    </div>
+                    <table style="margin-top:14px"><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th><th></th></tr></thead><tbody id="item-tbody"></tbody></table>
+                    <div style="display:flex;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:2px solid #e5e7eb">
+                        <div style="text-align:right;min-width:240px">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:#6b7280">Subtotal:</span><span id="disp-sub">LKR 0.00</span></div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:#6b7280">Discount:</span><span id="disp-disc" style="color:#dc2626">- LKR 0.00</span></div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:#6b7280">Tax:</span><span id="disp-tax">+ LKR 0.00</span></div>
+                            <div style="display:flex;justify-content:space-between;border-top:2px solid #16a34a;padding-top:8px"><span style="font-weight:700;font-size:16px">Grand Total:</span><span class="sale-total" id="disp-total">LKR 0.00</span></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
+                        <button class="btn btn-outline" onclick="clearAll()">Clear</button>
+                        <button class="btn btn-primary" style="background:#0369a1" onclick="saveSale('draft')">📋 Save Draft</button>
+                        <button class="btn btn-primary" onclick="saveSale('completed')">💾 Complete Sale</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="assets/js/utils.js"></script><script src="assets/js/auth.js"></script><script src="assets/js/toast.js"></script>
+    <script>
+    const SALE_KEY = 'jr_sales';
+    let saleItems = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        Auth.requireAuth();
+        const session = Auth.getSession(); if (session && session.user) { document.getElementById('nav-username').textContent = session.user.name || session.user.username; document.getElementById('nav-avatar').textContent = (session.user.name || session.user.username).charAt(0).toUpperCase(); }
+        document.getElementById('nav-date').textContent = new Date().toLocaleDateString('en-GB');
+        document.getElementById('sidebar-toggle').addEventListener('click', () => { const sb = document.getElementById('sidebar'); if (window.innerWidth <= 768) sb.classList.toggle('mobile-open'); else sb.classList.toggle('collapsed'); });
+        document.getElementById('nav-user').addEventListener('click', () => { if (confirm('Logout?')) Auth.logout(); });
+        document.getElementById('s-date').value = new Date().toISOString().split('T')[0];
+        loadDropdowns();
+        document.getElementById('s-product').addEventListener('change', function() {
+            const products = JSON.parse(localStorage.getItem('jr_products')||'[]');
+            const p = products.find(pr => (pr.id||pr.sku) === this.value);
+            if (p) document.getElementById('s-price').value = p.price||0;
+        });
+    });
+    function toggleMenu(id) { const item = document.querySelector(`[data-menu="${id}"]`); if (!item) return; const w = item.classList.contains('open'); document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open')); if (!w) item.classList.add('open'); }
+    function fmtC(v) { return 'LKR ' + parseFloat(v||0).toLocaleString('en-LK',{minimumFractionDigits:2}); }
+    function loadDropdowns() {
+        const customers = JSON.parse(localStorage.getItem('jr_customers')||'[]');
+        const products = JSON.parse(localStorage.getItem('jr_products')||'[]');
+        const cs = document.getElementById('s-customer');
+        customers.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; cs.appendChild(o); });
+        const ps = document.getElementById('s-product');
+        products.forEach(p => { const o = document.createElement('option'); o.value = p.id||p.sku; o.textContent = p.name + (p.sku?' ('+p.sku+')':'') + ' — '+fmtC(p.price); ps.appendChild(o); });
+    }
+    function addItem() {
+        const sel = document.getElementById('s-product');
+        if (!sel.value) { Toast.warning('Select a product'); return; }
+        const qty = parseInt(document.getElementById('s-qty').value)||1;
+        const price = parseFloat(document.getElementById('s-price').value)||0;
+        if (price <= 0) { Toast.warning('Enter valid price'); return; }
+        saleItems.push({ product: sel.options[sel.selectedIndex].textContent.split(' — ')[0], productId: sel.value, qty, price, subtotal: qty*price });
+        renderItems(); sel.value=''; document.getElementById('s-qty').value=''; document.getElementById('s-price').value='';
+    }
+    function removeItem(i) { saleItems.splice(i,1); renderItems(); }
+    function renderItems() {
+        const tbody = document.getElementById('item-tbody');
+        tbody.innerHTML = saleItems.map((it,i)=>`<tr><td>${it.product}</td><td>${it.qty}</td><td>${fmtC(it.price)}</td><td>${fmtC(it.subtotal)}</td><td><button style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-weight:600" onclick="removeItem(${i})">✕</button></td></tr>`).join('');
+        calcTotal();
+    }
+    function calcTotal() {
+        const sub = saleItems.reduce((s,it)=>s+it.subtotal,0);
+        const disc = sub * (parseFloat(document.getElementById('s-discount').value)||0) / 100;
+        const tax = (sub - disc) * (parseFloat(document.getElementById('s-tax').value)||0) / 100;
+        const total = sub - disc + tax;
+        document.getElementById('disp-sub').textContent = fmtC(sub);
+        document.getElementById('disp-disc').textContent = '- '+fmtC(disc);
+        document.getElementById('disp-tax').textContent = '+ '+fmtC(tax);
+        document.getElementById('disp-total').textContent = fmtC(total);
+    }
+    function saveSale(status) {
+        if (!saleItems.length) { Toast.warning('Add at least one product'); return; }
+        const date = document.getElementById('s-date').value;
+        const customer = document.getElementById('s-customer');
+        const method = document.getElementById('s-method').value;
+        const discount = parseFloat(document.getElementById('s-discount').value)||0;
+        const tax = parseFloat(document.getElementById('s-tax').value)||0;
+        const sub = saleItems.reduce((s,it)=>s+it.subtotal,0);
+        const discAmt = sub * discount / 100;
+        const taxAmt = (sub-discAmt) * tax / 100;
+        const total = sub - discAmt + taxAmt;
+        const all = JSON.parse(localStorage.getItem(SALE_KEY)||'[]');
+        const invoice = document.getElementById('s-invoice').value.trim() || ('INV-'+Date.now());
+        all.unshift({ id:'SALE-'+Date.now(), invoice, date, customer: customer.options[customer.selectedIndex].textContent, method, items:[...saleItems], subtotal:sub, discount, discountAmt:discAmt, tax, taxAmt, total, status, created:new Date().toISOString() });
+        localStorage.setItem(SALE_KEY, JSON.stringify(all));
+        if (status==='draft') { Toast.success('Sale saved as draft!'); }
+        else { Toast.success('Sale completed!'); }
+        clearAll();
+    }
+    function clearAll() {
+        saleItems = [];
+        document.getElementById('s-customer').value='';
+        document.getElementById('s-date').value=new Date().toISOString().split('T')[0];
+        document.getElementById('s-invoice').value='';
+        document.getElementById('s-method').value='Cash';
+        document.getElementById('s-discount').value='0';
+        document.getElementById('s-tax').value='0';
+        renderItems();
+    }
+    </script>
+</body>
+</html>

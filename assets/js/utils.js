@@ -2,7 +2,7 @@
  * ============================================
  * UTILITY HELPERS
  * General-purpose utility functions
- * PRO DATA - Sri Lanka
+ * JR Marketing - Sri Lanka
  * ============================================
  */
 
@@ -106,7 +106,36 @@ const Utils = {
         clear() {
             try { localStorage.clear(); } catch(e) {}
         }
+    },
+
+    /**
+     * Migrate old prodata_ localStorage keys to jr_ prefix (one-time)
+     */
+    migrateStorageKeys() {
+        if (localStorage.getItem('jr_migrated')) return;
+        const map = {
+            'prodata_session':      'jr_session',
+            'prodata_remember':     'jr_remember',
+            'prodata_products':     'jr_products',
+            'prodata_payments':     'jr_payments',
+            'prodata_drafts':       'jr_drafts',
+            'prodata_quotations':   'jr_quotations',
+            'prodata_suspended':    'jr_suspended',
+            'prodata_credit_sales': 'jr_credit_sales',
+            'prodata_expenses':     'jr_expenses'
+        };
+        Object.entries(map).forEach(([oldKey, newKey]) => {
+            const val = localStorage.getItem(oldKey);
+            if (val !== null && localStorage.getItem(newKey) === null) {
+                localStorage.setItem(newKey, val);
+            }
+            localStorage.removeItem(oldKey);
+        });
+        localStorage.setItem('jr_migrated', '1');
     }
 };
 
 window.Utils = Utils;
+
+/* Auto-migrate old prodata_ keys on first load */
+Utils.migrateStorageKeys();

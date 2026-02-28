@@ -1,6 +1,6 @@
-# PRO DATA — Prototype Website
+# JR Marketing — Prototype Website
 **POS, ERP, Stock Management & Invoicing Application**  
-Sri Lanka | NGT Lanka (Pvt) Ltd.
+Sri Lanka | JR Marketing
 
 ---
 
@@ -95,4 +95,4 @@ Modify them once to update the entire site's appearance.
 
 ---
 
-*PRO DATA — V6.3 | © 2025 NGT Lanka (Pvt) Ltd.*
+*JR Marketing — V6.3 | © 2025 JR Marketing*

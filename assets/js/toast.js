@@ -2,7 +2,7 @@
  * ============================================
  * TOAST NOTIFICATION COMPONENT
  * Lightweight toast messages
- * PRO DATA - Sri Lanka
+ * JR Marketing - Sri Lanka
  * ============================================
  */
 

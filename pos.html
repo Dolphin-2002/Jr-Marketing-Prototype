@@ -3007,9 +3007,9 @@
             };
 
             // Save to localStorage
-            const existing = JSON.parse(localStorage.getItem('prodata_payments') || '[]');
+            const existing = JSON.parse(localStorage.getItem('jr_payments') || '[]');
             existing.unshift(record);
-            localStorage.setItem('prodata_payments', JSON.stringify(existing));
+            localStorage.setItem('jr_payments', JSON.stringify(existing));
 
             const changeAmt = totalPaying - totalPayable;
             Toast.success(`Payment finalized! ${balance > 0 ? 'Balance: ' + mpFmt(balance) : changeAmt > 0 ? 'Change: ' + mpFmt(changeAmt) : 'Fully paid.'}`);
@@ -3191,7 +3191,7 @@
         /* ══════════════════════════════════════════════════════════════════
            DRAFT
         ══════════════════════════════════════════════════════════════════ */
-        const DRAFTS_KEY = 'prodata_drafts';
+        const DRAFTS_KEY = 'jr_drafts';
 
         function getDrafts() {
             try { return JSON.parse(localStorage.getItem(DRAFTS_KEY)) || []; }
@@ -3319,7 +3319,7 @@
         /* ══════════════════════════════════════════════════════════════════
            QUOTATION
         ══════════════════════════════════════════════════════════════════ */
-        const QUOTATIONS_KEY = 'prodata_quotations';
+        const QUOTATIONS_KEY = 'jr_quotations';
 
         document.querySelector('.shortcut-item[title="Quotation"]').addEventListener('click', () => {
             if (scCartEmpty()) { Toast.warning('Add items to the cart before creating a quotation.'); return; }
@@ -3363,7 +3363,7 @@
         /* ══════════════════════════════════════════════════════════════════
            SUSPEND
         ══════════════════════════════════════════════════════════════════ */
-        const SUSPENDED_KEY = 'prodata_suspended';
+        const SUSPENDED_KEY = 'jr_suspended';
 
         function getSuspended() {
             try { return JSON.parse(localStorage.getItem(SUSPENDED_KEY)) || []; }
@@ -3511,7 +3511,7 @@
         /* ══════════════════════════════════════════════════════════════════
            CREDIT SALE
         ══════════════════════════════════════════════════════════════════ */
-        const CREDIT_KEY = 'prodata_credit_sales';
+        const CREDIT_KEY = 'jr_credit_sales';
 
         function renderCreditModal() {
             const body       = document.getElementById('credit-body');
@@ -3624,7 +3624,7 @@
         /* ══════════════════════════════════════════════════════════════════
            ADD EXPENSE
         ══════════════════════════════════════════════════════════════════ */
-        const AE_KEY = 'prodata_expenses';
+        const AE_KEY = 'jr_expenses';
 
         function aeNow() {
             const d = new Date();
@@ -3863,9 +3863,9 @@
             demoProducts.push({ name: record.name, sku: record.sku, price: record.price });
 
             /* Persist to localStorage */
-            const existing = JSON.parse(localStorage.getItem('prodata_products') || '[]');
+            const existing = JSON.parse(localStorage.getItem('jr_products') || '[]');
             existing.unshift(record);
-            localStorage.setItem('prodata_products', JSON.stringify(existing));
+            localStorage.setItem('jr_products', JSON.stringify(existing));
 
             closeAddNewProduct();
             Toast.success(`Product "${record.name}" added! SKU: ${record.sku}`);
