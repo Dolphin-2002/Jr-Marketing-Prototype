@@ -97,12 +97,7 @@
             flex: 1; border: none; outline: none; font-size: 13px; color: #374151; background: transparent;
         }
         .product-search-input::placeholder { color: #9ca3af; }
-        .product-add-btn {
-            width: 36px; height: 36px; background: linear-gradient(135deg,#0a5c2e,#16a34a); border: none; border-radius: 6px;
-            color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: 300; flex-shrink: 0; transition: opacity .15s;
-        }
-        .product-add-btn:hover { opacity: .85; }
+
 
         /* ===== ITEMS TABLE ===== */
         .pos-table-wrap {
@@ -1288,7 +1283,7 @@
                                placeholder="Enter Product name / SKU / Scan bar code"
                                autocomplete="off"/>
                     </div>
-                    <button class="product-add-btn" title="Add Product" id="add-product-btn">+</button>
+
                 </div>
             </div>
 
@@ -1297,12 +1292,7 @@
                 <table class="pos-table">
                     <thead>
                         <tr>
-                            <th>
-                                <span class="th-info">
-                                    Product
-                                    <span class="th-info-icon">i</span>
-                                </span>
-                            </th>
+                            <th>Product</th>
                             <th style="text-align:center">Quantity</th>
                             <th style="text-align:center">Discount</th>
                             <th style="text-align:right">Subtotal</th>
@@ -2187,10 +2177,7 @@
                         <span class="ap-error-msg" id="ap-name-err">Product name is required.</span>
                     </div>
                     <div class="ap-field">
-                        <label class="ap-label" for="ap-sku">
-                            SKU
-                            <span class="ap-info-icon" title="Stock Keeping Unit — a unique product identifier">i</span>
-                        </label>
+                        <label class="ap-label" for="ap-sku">SKU</label>
                         <input type="text" id="ap-sku" class="ap-input" placeholder="Auto-generated if left empty">
                     </div>
                     <div class="ap-field">
@@ -2200,8 +2187,8 @@
                     </div>
                 </div>
 
-                <!-- Row 2: Barcode Type | Unit | Warranty -->
-                <div class="ap-grid-3">
+                <!-- Row 2: Barcode Type | Unit -->
+                <div class="ap-grid-2">
                     <div class="ap-field">
                         <label class="ap-label" for="ap-barcode">Barcode Type <span class="req">*</span></label>
                         <select id="ap-barcode" class="ap-select">
@@ -2221,18 +2208,9 @@
                             <option value="">— Select Unit —</option>
                             <option value="Pieces">Pieces</option>
                             <option value="Boxes">Boxes</option>
+                            <option value="Rolls">Rolls</option>
                         </select>
                         <span class="ap-error-msg" id="ap-unit-err">Unit is required.</span>
-                    </div>
-                    <div class="ap-field">
-                        <label class="ap-label" for="ap-warranty">Warranty</label>
-                        <select id="ap-warranty" class="ap-select">
-                            <option value="">— No Warranty —</option>
-                            <option value="6 Months">6 Months</option>
-                            <option value="1 Year">1 Year</option>
-                            <option value="2 Years">2 Years</option>
-                            <option value="5 Years">5 Years</option>
-                        </select>
                     </div>
                 </div>
 
@@ -2245,24 +2223,14 @@
                     </div>
                 </div>
 
-                <!-- Row 4: Alert Qty | Weight (alert qty conditional) -->
-                <div class="ap-grid-2" id="ap-stock-fields">
+                <!-- Row 4: Alert Qty (alert qty conditional) -->
+                <div class="ap-grid-1" id="ap-stock-fields">
                     <div class="ap-field">
                         <label class="ap-label" for="ap-alert-qty">Alert Quantity</label>
                         <input type="number" id="ap-alert-qty" class="ap-input" placeholder="e.g. 5" min="0">
                     </div>
-                    <div class="ap-field">
-                        <label class="ap-label" for="ap-weight">Weight (kg)</label>
-                        <input type="number" id="ap-weight" class="ap-input" placeholder="e.g. 0.5" min="0" step="0.01">
-                    </div>
                 </div>
-                <div class="ap-grid-2" id="ap-no-stock-weight" style="display:none;">
-                    <div></div><!-- spacer -->
-                    <div class="ap-field">
-                        <label class="ap-label" for="ap-weight-ns">Weight (kg)</label>
-                        <input type="number" id="ap-weight-ns" class="ap-input" placeholder="e.g. 0.5" min="0" step="0.01">
-                    </div>
-                </div>
+                <div id="ap-no-stock-weight" style="display:none;"></div>
 
                 <hr class="ap-section-divider">
 
@@ -2683,11 +2651,6 @@
                     Toast.error('Product not found. Try: Milk Powder, Milo, Rice, Soap...');
                 }
             }
-        });
-
-        /* Add button — opens Add New Product modal */
-        document.getElementById('add-product-btn').addEventListener('click', () => {
-            openAddNewProduct();
         });
 
         /* Cancel */
@@ -3808,11 +3771,8 @@
             document.getElementById('ap-price').value       = '';
             document.getElementById('ap-barcode').value     = '';
             document.getElementById('ap-unit').value        = '';
-            document.getElementById('ap-warranty').value    = '';
             document.getElementById('ap-manage-stock').checked = true;
             document.getElementById('ap-alert-qty').value   = '';
-            document.getElementById('ap-weight').value      = '';
-            document.getElementById('ap-weight-ns').value   = '';
             document.getElementById('ap-description').innerHTML = '';
             /* Show/hide stock fields */
             document.getElementById('ap-stock-fields').style.display    = 'grid';
@@ -3879,9 +3839,6 @@
             if (!valid) return;
 
             const manageStock = document.getElementById('ap-manage-stock').checked;
-            const weightVal   = manageStock
-                ? parseFloat(document.getElementById('ap-weight').value)    || null
-                : parseFloat(document.getElementById('ap-weight-ns').value) || null;
 
             /* Generate SKU if not provided */
             let sku = document.getElementById('ap-sku').value.trim();
@@ -3898,8 +3855,6 @@
                 unit:        unitEl.value,
                 manageStock: manageStock,
                 alertQty:    manageStock ? (parseInt(document.getElementById('ap-alert-qty').value) || null) : null,
-                warranty:    document.getElementById('ap-warranty').value,
-                weight:      weightVal,
                 description: document.getElementById('ap-description').innerHTML.trim(),
                 date:        new Date().toISOString()
             };

@@ -98,6 +98,10 @@
         .field-error { font-size: 11px; color: #ef4444; display: none; margin-top: 1px; }
         .field-error.show { display: block; }
         .field-hint { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+        .margin-badge { display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-left: 6px; vertical-align: middle; }
+        .margin-badge.positive { background: #dcfce7; color: #15803d; }
+        .margin-badge.negative { background: #fee2e2; color: #dc2626; }
+        .margin-badge.zero     { background: #f3f4f6; color: #6b7280; }
 
         /* Manage stock checkbox row */
         .manage-stock-row { display: flex; align-items: flex-start; gap: 10px; background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 9px; padding: 12px 16px; margin-bottom: 16px; }
@@ -141,11 +145,75 @@
         .unit-badge { font-size: 11.5px; background: #f3f4f6; color: #374151; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
         .stock-badge-on  { font-size: 11.5px; background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
         .stock-badge-off { font-size: 11.5px; background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+        .margin-up   { font-size: 11.5px; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+        .margin-down { font-size: 11.5px; background: #fee2e2; color: #dc2626; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+        .margin-zero { font-size: 11.5px; background: #f3f4f6; color: #6b7280; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
         .action-btn { background: none; border: none; cursor: pointer; padding: 5px 7px; border-radius: 5px; color: #6b7280; transition: background .12s, color .12s; }
         .action-btn:hover.del { color: #ef4444; background: #fee2e2; }
         .empty-state { padding: 60px 20px; text-align: center; color: #9ca3af; }
         .empty-state p { font-size: 14px; font-weight: 600; color: #6b7280; margin-top: 10px; }
         .empty-state span { font-size: 12.5px; margin-top: 4px; display: block; }
+
+        /* ── EXCEL IMPORT BUTTON ── */
+        .btn-excel-import { display: flex; align-items: center; gap: 7px; padding: 0 16px; height: 38px; background: #fff; border: 1.5px solid #16a34a; border-radius: 8px; color: #15803d; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background .15s; }
+        .btn-excel-import:hover { background: #f0fdf4; }
+        .btn-excel-template { display: flex; align-items: center; gap: 7px; padding: 0 16px; height: 38px; background: #fff; border: 1.5px solid #6b7280; border-radius: 8px; color: #374151; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background .15s; }
+        .btn-excel-template:hover { background: #f3f4f6; }
+
+        /* ── IMPORT MODAL OVERLAY ── */
+        .xl-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 900; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .xl-overlay.open { display: flex; }
+        .xl-modal { background: #fff; border-radius: 16px; width: 100%; max-width: 1050px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.25); overflow: hidden; }
+        .xl-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; background: linear-gradient(135deg,#0a5c2e,#16a34a); color: #fff; flex-shrink: 0; }
+        .xl-header h3 { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .xl-close { background: rgba(255,255,255,.2); border: none; color: #fff; width: 32px; height: 32px; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .xl-close:hover { background: rgba(255,255,255,.35); }
+        .xl-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+        .xl-drop-zone { border: 2.5px dashed #d1d5db; border-radius: 12px; padding: 36px 20px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; margin-bottom: 20px; }
+        .xl-drop-zone:hover, .xl-drop-zone.dragging { border-color: #16a34a; background: #f0fdf4; }
+        .xl-drop-zone svg { color: #9ca3af; margin-bottom: 10px; }
+        .xl-drop-zone.dragging svg { color: #16a34a; }
+        .xl-drop-title { font-size: 15px; font-weight: 700; color: #374151; margin-bottom: 4px; }
+        .xl-drop-hint { font-size: 12.5px; color: #6b7280; }
+        .xl-drop-hint span { color: #16a34a; font-weight: 600; cursor: pointer; }
+        .xl-file-input { display: none; }
+        /* Stats bar */
+        .xl-stats { display: flex; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+        .xl-stat { background: #f8f9fc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px 16px; font-size: 12.5px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 6px; }
+        .xl-stat.ok  { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+        .xl-stat.err { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+        .xl-stat.warn{ background: #fef3c7; border-color: #fcd34d; color: #92400e; }
+        /* Data grid */
+        .xl-grid-wrap { border: 1.5px solid #e5e7eb; border-radius: 10px; overflow: auto; max-height: 360px; }
+        .xl-grid { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+        .xl-grid thead tr { background: #f8f9fc; position: sticky; top: 0; z-index: 2; }
+        .xl-grid thead th { padding: 9px 12px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; white-space: nowrap; font-size: 12px; }
+        .xl-grid tbody tr { border-bottom: 1px solid #f3f4f6; }
+        .xl-grid tbody tr:hover { background: #f9fafb; }
+        .xl-grid tbody tr.row-error { background: #fff5f5; }
+        .xl-grid tbody tr.row-error:hover { background: #fee2e2; }
+        .xl-grid tbody td { padding: 7px 10px; vertical-align: middle; }
+        .xl-grid td input, .xl-grid td select { border: 1.5px solid transparent; border-radius: 5px; padding: 3px 7px; font-size: 12px; width: 100%; min-width: 80px; font-family: inherit; background: transparent; color: #374151; outline: none; }
+        .xl-grid td input:focus, .xl-grid td select:focus { border-color: #16a34a; background: #fff; box-shadow: 0 0 0 2px rgba(22,163,74,.12); }
+        .xl-grid td.cell-error input, .xl-grid td.cell-error select { border-color: #ef4444; background: #fff5f5; }
+        .xl-grid td.cell-error input:focus { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239,68,68,.12); }
+        .cell-err-msg { font-size: 10.5px; color: #ef4444; display: block; margin-top: 1px; }
+        .row-num { color: #9ca3af; font-weight: 700; text-align: center; width: 36px; }
+        .row-del-btn { background: none; border: none; color: #d1d5db; cursor: pointer; padding: 3px 5px; border-radius: 4px; }
+        .row-del-btn:hover { color: #ef4444; background: #fee2e2; }
+        /* Footer */
+        .xl-footer { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-top: 1.5px solid #f3f4f6; flex-shrink: 0; gap: 10px; flex-wrap: wrap; }
+        .xl-footer-left { font-size: 12.5px; color: #6b7280; }
+        .xl-footer-right { display: flex; gap: 10px; }
+        .xl-btn-cancel { padding: 0 20px; height: 38px; border: 1.5px solid #d1d5db; border-radius: 8px; background: #fff; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer; }
+        .xl-btn-cancel:hover { background: #f3f4f6; }
+        .xl-btn-import { display: flex; align-items: center; gap: 7px; padding: 0 22px; height: 38px; border: none; border-radius: 8px; background: linear-gradient(135deg,#0a5c2e,#16a34a); font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; }
+        .xl-btn-import:hover { opacity: .88; }
+        .xl-btn-import:disabled { opacity: .45; cursor: not-allowed; }
+        /* Error legend */
+        .xl-legend { margin-top: 14px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 11.5px; color: #6b7280; }
+        .xl-legend span { display: flex; align-items: center; gap: 5px; }
+        .xl-legend-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
 
         /* Toast override */
         @media (max-width: 1100px) {
@@ -180,7 +248,7 @@
             </div>
             <div class="navbar-brand">JR MARKETING SHOP <span class="brand-dot"></span></div>
         </div>
-        <div class="navbar-center"><button class="nav-info-btn" title="System Info">i</button></div>
+        <div class="navbar-center"></div>
         <div class="navbar-right">
             <button class="nav-pos-btn" title="Point of Sale" onclick="window.location.href='pos.html'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -337,6 +405,16 @@
                         <div class="search-bar">
                             <input type="text" class="search-input" id="search-input" placeholder="Search by name or SKU...">
                         </div>
+                        <!-- Excel template download -->
+                        <button class="btn-excel-template" id="btn-download-template" title="Download Excel template">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Template
+                        </button>
+                        <!-- Import from Excel -->
+                        <button class="btn-excel-import" id="btn-import-excel" title="Import products from Excel / CSV">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            Import Excel
+                        </button>
                         <button class="btn-add-new" onclick="switchTab('add')">
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                             Add New Product
@@ -351,9 +429,10 @@
                                     <th>SKU</th>
                                     <th>Barcode</th>
                                     <th>Unit</th>
-                                    <th>Price (LKR)</th>
+                                    <th>Buy Price (LKR)</th>
+                                    <th>Sell Price (LKR)</th>
+                                    <th>Margin %</th>
                                     <th>Stock</th>
-                                    <th>Warranty</th>
                                     <th>Added On</th>
                                     <th>Action</th>
                                 </tr>
@@ -373,7 +452,7 @@
                     <div class="form-card">
                         <div class="form-section-title">Product Information</div>
 
-                        <div class="form-grid-3">
+                        <div class="form-grid-2">
                             <div class="form-field">
                                 <label class="form-label" for="f-name">Product Name <span class="req">*</span></label>
                                 <input type="text" id="f-name" class="form-input" placeholder="e.g. Milo 400g">
@@ -386,14 +465,25 @@
                                 <input type="text" id="f-sku" class="form-input" placeholder="Auto-generated if empty">
                                 <span class="field-hint">Leave blank to auto-generate</span>
                             </div>
+                        </div>
+
+                        <div class="form-grid-2">
                             <div class="form-field">
-                                <label class="form-label" for="f-price">Selling Price (LKR) <span class="req">*</span></label>
+                                <label class="form-label" for="f-buying-price">Buying Price (LKR)</label>
+                                <input type="number" id="f-buying-price" class="form-input" placeholder="0.00" min="0" step="0.01">
+                                <span class="field-hint">Cost price / purchase price</span>
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label" for="f-price">
+                                    Selling Price (LKR) <span class="req">*</span>
+                                    <span class="margin-badge" id="margin-badge" style="display:none;"></span>
+                                </label>
                                 <input type="number" id="f-price" class="form-input" placeholder="0.00" min="0" step="0.01">
                                 <span class="field-error" id="err-price">A valid selling price is required.</span>
                             </div>
                         </div>
 
-                        <div class="form-grid-3">
+                        <div class="form-grid-2">
                             <div class="form-field">
                                 <label class="form-label" for="f-barcode">Barcode Type <span class="req">*</span></label>
                                 <select id="f-barcode" class="form-select">
@@ -413,18 +503,9 @@
                                     <option value="">— Select Unit —</option>
                                     <option value="Pieces">Pieces</option>
                                     <option value="Boxes">Boxes</option>
+                                    <option value="Rolls">Rolls</option>
                                 </select>
                                 <span class="field-error" id="err-unit">Unit is required.</span>
-                            </div>
-                            <div class="form-field">
-                                <label class="form-label" for="f-warranty">Warranty</label>
-                                <select id="f-warranty" class="form-select">
-                                    <option value="">— No Warranty —</option>
-                                    <option value="6 Months">6 Months</option>
-                                    <option value="1 Year">1 Year</option>
-                                    <option value="2 Years">2 Years</option>
-                                    <option value="5 Years">5 Years</option>
-                                </select>
                             </div>
                         </div>
 
@@ -436,23 +517,14 @@
                             </div>
                         </div>
 
-                        <div class="form-grid-2" id="stock-fields">
+                        <div class="form-grid-1" id="stock-fields">
                             <div class="form-field">
                                 <label class="form-label" for="f-alert-qty">Alert Quantity</label>
                                 <input type="number" id="f-alert-qty" class="form-input" placeholder="e.g. 5" min="0">
                                 <span class="field-hint">Warn when stock falls below this number</span>
                             </div>
-                            <div class="form-field">
-                                <label class="form-label" for="f-weight">Weight (kg)</label>
-                                <input type="number" id="f-weight" class="form-input" placeholder="e.g. 0.5" min="0" step="0.01">
-                            </div>
                         </div>
-                        <div class="form-grid-1" id="no-stock-weight" style="display:none;">
-                            <div class="form-field">
-                                <label class="form-label" for="f-weight-ns">Weight (kg)</label>
-                                <input type="number" id="f-weight-ns" class="form-input" placeholder="e.g. 0.5" min="0" step="0.01">
-                            </div>
-                        </div>
+                        <div id="no-stock-weight" style="display:none;"></div>
 
                         <div class="form-section-title" style="margin-top:8px;">Product Description</div>
                         <div class="editor-wrap">
@@ -482,9 +554,71 @@
         </main>
     </div>
 
+    <!-- ═══════════════════ EXCEL IMPORT MODAL ═══════════════════ -->
+    <div class="xl-overlay" id="xl-overlay" role="dialog" aria-modal="true" aria-labelledby="xl-title">
+        <div class="xl-modal">
+
+            <div class="xl-header">
+                <h3 id="xl-title">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+                    Import Products from Excel
+                </h3>
+                <button class="xl-close" id="xl-close-btn" title="Close">✕</button>
+            </div>
+
+            <div class="xl-body">
+
+                <!-- Drop Zone (shown when no file loaded) -->
+                <div class="xl-drop-zone" id="xl-drop-zone">
+                    <input type="file" class="xl-file-input" id="xl-file-input" accept=".xlsx,.xls,.csv">
+                    <svg width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/>
+                        <line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/>
+                    </svg>
+                    <div class="xl-drop-title">Drop your Excel / CSV file here</div>
+                    <div class="xl-drop-hint">or <span id="xl-browse-link">browse to upload</span> &nbsp;·&nbsp; Supports .xlsx, .xls, .csv</div>
+                </div>
+
+                <!-- Stats (shown after parse) -->
+                <div class="xl-stats" id="xl-stats" style="display:none;"></div>
+
+                <!-- Data Grid (shown after parse) -->
+                <div class="xl-grid-wrap" id="xl-grid-wrap" style="display:none;">
+                    <table class="xl-grid" id="xl-grid">
+                        <thead id="xl-grid-head"></thead>
+                        <tbody id="xl-grid-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="xl-legend" id="xl-legend" style="display:none;">
+                    <span><span class="xl-legend-dot" style="background:#fca5a5;"></span> Required field missing</span>
+                    <span><span class="xl-legend-dot" style="background:#fcd34d;"></span> Auto-value will be assigned</span>
+                    <span><span class="xl-legend-dot" style="background:#d1fae5;"></span> Valid row ready to import</span>
+                </div>
+
+            </div>
+
+            <div class="xl-footer">
+                <div class="xl-footer-left" id="xl-footer-info">Select a file to preview rows before importing.</div>
+                <div class="xl-footer-right">
+                    <button class="xl-btn-cancel" id="xl-btn-cancel">Cancel</button>
+                    <button class="xl-btn-import" id="xl-btn-import" disabled>
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        Import Products
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- ═══════════════════ /EXCEL IMPORT MODAL ═══════════════════ -->
+
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/toast.js"></script>
+    <!-- SheetJS for real Excel read/write -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -536,6 +670,23 @@
         /* Save */
         document.getElementById('save-btn').addEventListener('click', saveProduct);
 
+        /* Live margin calculation */
+        function updateMarginBadge() {
+            const buy  = parseFloat(document.getElementById('f-buying-price').value) || 0;
+            const sell = parseFloat(document.getElementById('f-price').value)         || 0;
+            const mb   = document.getElementById('margin-badge');
+            if (buy > 0 && sell > 0) {
+                const pct = ((sell - buy) / buy * 100).toFixed(1);
+                mb.textContent  = (pct > 0 ? '+' : '') + pct + '% margin';
+                mb.className    = 'margin-badge ' + (pct > 0 ? 'positive' : (pct < 0 ? 'negative' : 'zero'));
+                mb.style.display = 'inline-flex';
+            } else {
+                mb.style.display = 'none';
+            }
+        }
+        document.getElementById('f-buying-price').addEventListener('input', updateMarginBadge);
+        document.getElementById('f-price').addEventListener('input', updateMarginBadge);
+
         renderList();
     });
 
@@ -547,16 +698,17 @@
     }
 
     function resetForm() {
-        ['f-name','f-sku','f-price','f-alert-qty','f-weight','f-weight-ns'].forEach(id => document.getElementById(id).value = '');
+        ['f-name','f-sku','f-buying-price','f-price','f-alert-qty'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('f-barcode').value  = '';
         document.getElementById('f-unit').value     = '';
-        document.getElementById('f-warranty').value = '';
         document.getElementById('f-manage-stock').checked = true;
         document.getElementById('f-description').innerHTML = '';
         document.getElementById('stock-fields').style.display    = 'grid';
         document.getElementById('no-stock-weight').style.display = 'none';
         ['f-name','f-price','f-barcode','f-unit'].forEach(id => document.getElementById(id).classList.remove('error'));
         ['err-name','err-price','err-barcode','err-unit'].forEach(id => document.getElementById(id).classList.remove('show'));
+        const mb = document.getElementById('margin-badge');
+        mb.style.display = 'none'; mb.textContent = ''; mb.className = 'margin-badge';
     }
 
     function saveProduct() {
@@ -576,18 +728,17 @@
         let sku   = document.getElementById('f-sku').value.trim() || ('SKU-' + Date.now().toString(36).toUpperCase());
 
         const record = {
-            id:          'PRD-' + Date.now(),
-            name:        document.getElementById('f-name').value.trim(),
+            id:           'PRD-' + Date.now(),
+            name:         document.getElementById('f-name').value.trim(),
             sku,
-            price:       parseFloat(document.getElementById('f-price').value),
-            barcodeType: document.getElementById('f-barcode').value,
-            unit:        document.getElementById('f-unit').value,
-            manageStock: ms,
-            alertQty:    ms ? (parseInt(document.getElementById('f-alert-qty').value) || null) : null,
-            warranty:    document.getElementById('f-warranty').value,
-            weight:      parseFloat((ms ? document.getElementById('f-weight') : document.getElementById('f-weight-ns')).value) || null,
-            description: document.getElementById('f-description').innerHTML.trim(),
-            date:        new Date().toISOString()
+            buyingPrice:  parseFloat(document.getElementById('f-buying-price').value) || 0,
+            price:        parseFloat(document.getElementById('f-price').value),
+            barcodeType:  document.getElementById('f-barcode').value,
+            unit:         document.getElementById('f-unit').value,
+            manageStock:  ms,
+            alertQty:     ms ? (parseInt(document.getElementById('f-alert-qty').value) || null) : null,
+            description:  document.getElementById('f-description').innerHTML.trim(),
+            date:         new Date().toISOString()
         };
 
         const all = JSON.parse(localStorage.getItem('prodata_products') || '[]');
@@ -614,16 +765,28 @@
             return;
         }
         empty.style.display = 'none';
-        tbody.innerHTML = items.map((p, i) => `
+        tbody.innerHTML = items.map((p, i) => {
+            const buy  = parseFloat(p.buyingPrice) || 0;
+            const sell = parseFloat(p.price)       || 0;
+            let marginHtml;
+            if (buy > 0 && sell > 0) {
+                const pct = ((sell - buy) / buy * 100).toFixed(1);
+                const cls = pct > 0 ? 'margin-up' : (pct < 0 ? 'margin-down' : 'margin-zero');
+                marginHtml = `<span class="${cls}">${pct > 0 ? '+' : ''}${pct}%</span>`;
+            } else {
+                marginHtml = `<span class="margin-zero">—</span>`;
+            }
+            return `
             <tr>
                 <td>${i + 1}</td>
                 <td><strong>${p.name}</strong></td>
                 <td><span class="sku-badge">${p.sku}</span></td>
                 <td>${p.barcodeType || '—'}</td>
                 <td><span class="unit-badge">${p.unit}</span></td>
-                <td><strong>LKR ${Number(p.price).toLocaleString('en-LK', {minimumFractionDigits:2})}</strong></td>
+                <td>${buy > 0 ? `LKR ${buy.toLocaleString('en-LK', {minimumFractionDigits:2})}` : '—'}</td>
+                <td><strong>LKR ${sell.toLocaleString('en-LK', {minimumFractionDigits:2})}</strong></td>
+                <td>${marginHtml}</td>
                 <td>${p.manageStock ? `<span class="stock-badge-on">Managed</span>` : `<span class="stock-badge-off">Unmanaged</span>`}</td>
-                <td>${p.warranty || '—'}</td>
                 <td class="date-cell">${new Date(p.date).toLocaleDateString('en-GB')}</td>
                 <td>
                     <button class="action-btn del" title="Delete" onclick="deleteProduct('${p.id}')">
@@ -631,7 +794,7 @@
                     </button>
                 </td>
             </tr>
-        `).join('');
+        `}).join('');
     }
 
     function deleteProduct(id) {
@@ -648,6 +811,341 @@
         const wasOpen = item.classList.contains('open');
         document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open'));
         if (!wasOpen) item.classList.add('open');
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       EXCEL IMPORT / TEMPLATE  (uses SheetJS)
+    ═══════════════════════════════════════════════════════ */
+
+    /* ── Column definitions (order = template column order) ── */
+    const XL_COLS = [
+        { key: 'name',         label: 'Product Name',      required: true,  type: 'text'   },
+        { key: 'sku',          label: 'SKU',               required: false, type: 'text'   },
+        { key: 'buyingPrice',  label: 'Buying Price',      required: false, type: 'number' },
+        { key: 'price',        label: 'Selling Price',     required: true,  type: 'number' },
+        { key: 'barcodeType',  label: 'Barcode Type',      required: true,  type: 'select',
+          options: ['C128','C39','EAN13','EAN8','UPCA','UPCE'] },
+        { key: 'unit',         label: 'Unit',              required: true,  type: 'select',
+          options: ['Pieces','Boxes','Rolls'] },
+        { key: 'manageStock',  label: 'Manage Stock',      required: false, type: 'select',
+          options: ['Yes','No'] },
+        { key: 'alertQty',     label: 'Alert Quantity',    required: false, type: 'number' },
+    ];
+
+    /* Parsed rows cache */
+    let xlRows = [];
+
+    /* ── Download Template ── */
+    document.getElementById('btn-download-template').addEventListener('click', () => {
+        if (typeof XLSX === 'undefined') { Toast.warning('SheetJS not loaded yet. Check your internet connection.'); return; }
+
+        const headers = XL_COLS.map(c => c.label);
+        const sample  = [
+            ['Milo 400g',                  'MLT400', 750,  980,  'C128', 'Pieces', 'Yes', 5],
+            ['Anchor Milk Powder 400g',    '',       950,  1250, 'EAN13','Pieces', 'Yes', 3],
+            ['Sunlight Soap Bar',          '',       55,   85,   'C128', 'Pieces', 'No',  ''],
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet([headers, ...sample]);
+
+        /* Column widths */
+        ws['!cols'] = [
+            {wch:28},{wch:14},{wch:14},{wch:14},{wch:14},{wch:12},{wch:14},{wch:14}
+        ];
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Products');
+
+        /* Info sheet */
+        const info = [
+            ['Field','Required','Accepted Values'],
+            ...XL_COLS.map(c => [
+                c.label,
+                c.required ? 'Yes' : 'No',
+                c.options ? c.options.join(', ') : (c.type === 'number' ? 'Number' : 'Any text')
+            ])
+        ];
+        const wsInfo = XLSX.utils.aoa_to_sheet(info);
+        wsInfo['!cols'] = [{wch:22},{wch:10},{wch:50}];
+        XLSX.utils.book_append_sheet(wb, wsInfo, 'Column Guide');
+
+        XLSX.writeFile(wb, 'JR_Marketing_Products_Template.xlsx');
+        Toast.success('Template downloaded!');
+    });
+
+    /* ── Open Import Modal ── */
+    document.getElementById('btn-import-excel').addEventListener('click', openXlModal);
+
+    function openXlModal() {
+        resetXlModal();
+        document.getElementById('xl-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeXlModal() {
+        document.getElementById('xl-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+        resetXlModal();
+    }
+
+    function resetXlModal() {
+        xlRows = [];
+        document.getElementById('xl-drop-zone').style.display  = '';
+        document.getElementById('xl-stats').style.display      = 'none';
+        document.getElementById('xl-grid-wrap').style.display  = 'none';
+        document.getElementById('xl-legend').style.display     = 'none';
+        document.getElementById('xl-stats').innerHTML          = '';
+        document.getElementById('xl-grid-body').innerHTML      = '';
+        document.getElementById('xl-btn-import').disabled      = true;
+        document.getElementById('xl-footer-info').textContent  = 'Select a file to preview rows before importing.';
+        document.getElementById('xl-file-input').value         = '';
+    }
+
+    document.getElementById('xl-close-btn').addEventListener('click', closeXlModal);
+    document.getElementById('xl-btn-cancel').addEventListener('click', closeXlModal);
+    document.getElementById('xl-overlay').addEventListener('click', e => {
+        if (e.target === document.getElementById('xl-overlay')) closeXlModal();
+    });
+
+    /* ── Browse link ── */
+    document.getElementById('xl-browse-link').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('xl-file-input').click();
+    });
+
+    /* ── Click on drop zone ── */
+    document.getElementById('xl-drop-zone').addEventListener('click', () => {
+        document.getElementById('xl-file-input').click();
+    });
+
+    /* ── Drag & drop ── */
+    const dropZone = document.getElementById('xl-drop-zone');
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragging'); });
+    dropZone.addEventListener('dragleave', ()  => dropZone.classList.remove('dragging'));
+    dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.classList.remove('dragging');
+        const file = e.dataTransfer.files[0];
+        if (file) processXlFile(file);
+    });
+
+    /* ── File input change ── */
+    document.getElementById('xl-file-input').addEventListener('change', function() {
+        if (this.files[0]) processXlFile(this.files[0]);
+    });
+
+    /* ── Parse file using SheetJS ── */
+    function processXlFile(file) {
+        if (typeof XLSX === 'undefined') { Toast.error('SheetJS library not loaded. Check internet.'); return; }
+
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!['xlsx','xls','csv'].includes(ext)) {
+            Toast.warning('Please upload an .xlsx, .xls or .csv file.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const wb   = XLSX.read(data, { type: 'array' });
+                const ws   = wb.Sheets[wb.SheetNames[0]];
+                const raw  = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+                if (!raw || raw.length < 2) {
+                    Toast.warning('The file appears to be empty or has no data rows.');
+                    return;
+                }
+
+                /* Map header row → column keys */
+                const headerRow = raw[0].map(h => String(h).trim().toLowerCase());
+                const colMap    = {}; // xlCol.key → fileColumnIndex
+                XL_COLS.forEach(col => {
+                    const idx = headerRow.findIndex(h =>
+                        h === col.label.toLowerCase() ||
+                        h === col.key.toLowerCase()
+                    );
+                    if (idx !== -1) colMap[col.key] = idx;
+                });
+
+                /* Build rows */
+                xlRows = raw.slice(1).filter(r => r.some(c => String(c).trim() !== '')).map((r, i) => {
+                    const row = { _idx: i + 2, _errors: {} };
+                    XL_COLS.forEach(col => {
+                        const v = colMap[col.key] !== undefined ? String(r[colMap[col.key]] ?? '').trim() : '';
+                        row[col.key] = v;
+                    });
+                    return row;
+                });
+
+                validateAllRows();
+                renderXlGrid();
+                document.getElementById('xl-drop-zone').style.display = 'none';
+
+            } catch(err) {
+                Toast.error('Could not parse the file: ' + err.message);
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    /* ── Validate a single row, writing errors into row._errors ── */
+    function validateRow(row) {
+        row._errors = {};
+        XL_COLS.forEach(col => {
+            const v = (row[col.key] || '').trim();
+            if (col.required && v === '') {
+                row._errors[col.key] = 'Required';
+            } else if (col.type === 'number' && v !== '' && (isNaN(parseFloat(v)) || parseFloat(v) < 0)) {
+                row._errors[col.key] = 'Must be a positive number';
+            } else if (col.options && v !== '' && !col.options.map(o=>o.toLowerCase()).includes(v.toLowerCase())) {
+                row._errors[col.key] = 'Invalid value';
+            }
+        });
+        return Object.keys(row._errors).length === 0;
+    }
+
+    function validateAllRows() { xlRows.forEach(r => validateRow(r)); }
+
+    /* ── Render the data grid ── */
+    function renderXlGrid() {
+        const totalRows  = xlRows.length;
+        const errorRows  = xlRows.filter(r => Object.keys(r._errors).length > 0).length;
+        const validRows  = totalRows - errorRows;
+
+        /* Stats */
+        const statsEl = document.getElementById('xl-stats');
+        statsEl.innerHTML = `
+            <div class="xl-stat ok"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ${validRows} valid row${validRows !== 1 ? 's' : ''}</div>
+            ${errorRows > 0 ? `<div class="xl-stat err"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> ${errorRows} row${errorRows !== 1 ? 's' : ''} with errors</div>` : ''}
+            <div class="xl-stat"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="3" x2="9" y2="21"/></svg> ${totalRows} total rows</div>
+        `;
+        statsEl.style.display = 'flex';
+
+        /* Header */
+        document.getElementById('xl-grid-head').innerHTML = `
+            <tr>
+                <th class="row-num">#</th>
+                ${XL_COLS.map(c => `<th>${c.label}${c.required ? ' <span style="color:#ef4444">*</span>' : ''}</th>`).join('')}
+                <th></th>
+            </tr>
+        `;
+
+        /* Body */
+        document.getElementById('xl-grid-body').innerHTML = xlRows.map((row, ri) => {
+            const hasErr  = Object.keys(row._errors).length > 0;
+            const cells   = XL_COLS.map(col => {
+                const cellErr = row._errors[col.key];
+                const cls     = cellErr ? 'cell-error' : '';
+                let input;
+                if (col.options) {
+                    input = `<select onchange="xlCellChange(${ri},'${col.key}',this.value)">
+                        <option value="">— Select —</option>
+                        ${col.options.map(o => `<option value="${o}" ${row[col.key].toLowerCase() === o.toLowerCase() ? 'selected' : ''}>${o}</option>`).join('')}
+                    </select>`;
+                } else {
+                    input = `<input type="${col.type === 'number' ? 'number' : 'text'}" value="${escHtml(row[col.key])}" ${col.type === 'number' ? 'min="0" step="0.01"' : ''} onchange="xlCellChange(${ri},'${col.key}',this.value)">`;
+                }
+                return `<td class="${cls}">${input}${cellErr ? `<span class="cell-err-msg">${cellErr}</span>` : ''}</td>`;
+            }).join('');
+            return `<tr class="${hasErr ? 'row-error' : ''}" id="xl-row-${ri}">
+                <td class="row-num">${ri + 1}</td>
+                ${cells}
+                <td><button class="row-del-btn" title="Remove row" onclick="xlDeleteRow(${ri})">✕</button></td>
+            </tr>`;
+        }).join('');
+
+        document.getElementById('xl-grid-wrap').style.display = '';
+        document.getElementById('xl-legend').style.display    = 'flex';
+
+        updateXlImportBtn();
+    }
+
+    /* ── Cell edit callback ── */
+    window.xlCellChange = function(ri, key, value) {
+        xlRows[ri][key] = value.trim();
+        validateRow(xlRows[ri]);
+        /* Re-render just this row */
+        const hasErr = Object.keys(xlRows[ri]._errors).length > 0;
+        const tr = document.getElementById('xl-row-' + ri);
+        if (!tr) return;
+        tr.className = hasErr ? 'row-error' : '';
+        XL_COLS.forEach((col, ci) => {
+            const td = tr.cells[ci + 1]; // +1 for row-num col
+            if (!td) return;
+            const cellErr = xlRows[ri]._errors[col.key];
+            td.className = cellErr ? 'cell-error' : '';
+            let errSpan = td.querySelector('.cell-err-msg');
+            if (cellErr) {
+                if (!errSpan) { errSpan = document.createElement('span'); errSpan.className = 'cell-err-msg'; td.appendChild(errSpan); }
+                errSpan.textContent = cellErr;
+            } else if (errSpan) {
+                errSpan.remove();
+            }
+        });
+        updateXlImportBtn();
+    };
+
+    /* ── Delete a row from grid ── */
+    window.xlDeleteRow = function(ri) {
+        xlRows.splice(ri, 1);
+        if (xlRows.length === 0) { resetXlModal(); document.getElementById('xl-drop-zone').style.display = ''; return; }
+        renderXlGrid();
+    };
+
+    /* ── Update the Import button state ── */
+    function updateXlImportBtn() {
+        const validRows = xlRows.filter(r => Object.keys(r._errors).length === 0).length;
+        const btn = document.getElementById('xl-btn-import');
+        btn.disabled = validRows === 0;
+        const errorRows = xlRows.length - validRows;
+        document.getElementById('xl-footer-info').textContent =
+            validRows === 0
+                ? 'Fix all errors before importing.'
+                : errorRows > 0
+                    ? `${validRows} valid row${validRows !== 1 ? 's' : ''} will be imported. ${errorRows} row${errorRows !== 1 ? 's' : ''} with errors will be skipped.`
+                    : `${validRows} product${validRows !== 1 ? 's' : ''} ready to import.`;
+    }
+
+    /* ── Confirm import ── */
+    document.getElementById('xl-btn-import').addEventListener('click', () => {
+        const validRows = xlRows.filter(r => Object.keys(r._errors).length === 0);
+        if (validRows.length === 0) return;
+
+        const existing = JSON.parse(localStorage.getItem('prodata_products') || '[]');
+        const now      = new Date().toISOString();
+
+        const newRecords = validRows.map(row => {
+            const ms = (row.manageStock || 'yes').toLowerCase() !== 'no';
+            return {
+                id:               'PRD-' + Date.now() + '-' + Math.random().toString(36).slice(2,7),
+                name:             row.name.trim(),
+                sku:              row.sku.trim() || ('SKU-' + Date.now().toString(36).toUpperCase()),
+                buyingPrice:      parseFloat(row.buyingPrice) || 0,
+                price:            parseFloat(row.price) || 0,
+                barcodeType:      row.barcodeType || 'C128',
+                unit:             row.unit || 'Pieces',
+                manageStock:      ms,
+                alertQty:         ms && row.alertQty ? (parseInt(row.alertQty) || null) : null,
+                description:      '',
+                date:             now,
+                importedViaExcel: true
+            };
+        });
+
+        /* Prepend new records */
+        const merged = [...newRecords, ...existing];
+        localStorage.setItem('prodata_products', JSON.stringify(merged));
+
+        Toast.success(`${newRecords.length} product${newRecords.length !== 1 ? 's' : ''} imported successfully!`);
+        closeXlModal();
+        renderList();
+        switchTab('list');
+    });
+
+    /* ── HTML escape helper ── */
+    function escHtml(str) {
+        return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
     </script>
 </body>
