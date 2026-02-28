@@ -1,0 +1,1 @@
+i noticed that inside the product home page section there's a add product link like a navigation if i click that will do nothing beacse inside that product page there's a swith that decides whenever go to 

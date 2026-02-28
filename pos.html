@@ -836,8 +836,8 @@
         }
         .bill-overlay.open { opacity: 1; pointer-events: all; }
         .bill-modal {
-            background: #fff; border-radius: 12px; width: 420px; max-width: 96vw;
-            max-height: 92vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25);
+            background: #fff; border-radius: 12px; width: 780px; max-width: 96vw;
+            max-height: 94vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25);
             display: flex; flex-direction: column;
         }
         /* Header toolbar (screen-only) */
@@ -861,51 +861,94 @@
             padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s;
         }
         .bill-btn-close:hover { background: #e5e7eb; }
-        /* Receipt body */
+
+        /* ===== INVOICE BODY (A4-style) ===== */
         .bill-receipt {
-            padding: 24px 28px; font-family: 'Courier New', monospace;
-            font-size: 12.5px; color: #111827; line-height: 1.55;
+            padding: 40px 48px; font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 13px; color: #111827; line-height: 1.5;
         }
-        .bill-shop-name {
-            text-align: center; font-size: 17px; font-weight: 700;
-            letter-spacing: .5px; margin-bottom: 2px;
+
+        /* Company header */
+        .inv-header { text-align: center; margin-bottom: 6px; }
+        .inv-company { font-size: 28px; font-weight: 900; letter-spacing: 2px; margin: 0; }
+        .inv-address { font-size: 12px; color: #374151; margin: 2px 0 0; line-height: 1.6; }
+        .inv-title {
+            text-align: center; font-size: 22px; font-weight: 600;
+            margin: 16px 0 18px; letter-spacing: 1px;
         }
-        .bill-shop-sub {
-            text-align: center; font-size: 11px; color: #6b7280; margin-bottom: 14px;
+
+        /* Meta info row */
+        .inv-meta-row {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 18px;
         }
-        .bill-divider { border: none; border-top: 1px dashed #9ca3af; margin: 10px 0; }
-        .bill-meta { font-size: 11.5px; color: #374151; margin-bottom: 8px; }
-        .bill-meta span { float: right; }
-        .bill-meta::after { content:''; display:table; clear:both; }
-        .bill-col-header {
-            display: grid; grid-template-columns: 1fr 42px 70px 72px;
-            font-weight: 700; font-size: 11px; padding: 4px 0;
-            border-bottom: 1px solid #d1d5db; margin-bottom: 4px; text-transform: uppercase;
+        .inv-meta-left, .inv-meta-right { font-size: 12.5px; line-height: 1.8; }
+        .inv-meta-left strong, .inv-meta-right strong { font-weight: 700; }
+        .inv-meta-right { text-align: right; }
+
+        /* Items table */
+        .inv-table {
+            width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12.5px;
         }
-        .bill-col-header span:nth-child(2),
-        .bill-col-header span:nth-child(3),
-        .bill-col-header span:nth-child(4) { text-align: right; }
-        .bill-item-row {
-            display: grid; grid-template-columns: 1fr 42px 70px 72px;
-            padding: 3px 0; font-size: 12px; border-bottom: 1px dotted #e5e7eb;
+        .inv-table thead th {
+            border-top: 1.5px solid #111; border-bottom: 1.5px solid #111;
+            padding: 8px 6px; text-align: left; font-weight: 700; font-size: 12px;
         }
-        .bill-item-row span:nth-child(2),
-        .bill-item-row span:nth-child(3),
-        .bill-item-row span:nth-child(4) { text-align: right; }
-        .bill-item-disc { font-size: 10.5px; color: #dc2626; grid-column: 1/-1; padding-left: 8px; }
-        .bill-totals { margin-top: 10px; }
-        .bill-total-line {
-            display: flex; justify-content: space-between;
-            font-size: 12.5px; padding: 2px 0;
+        .inv-table thead th:nth-child(1) { width: 30px; text-align: center; }
+        .inv-table thead th:nth-child(2) { width: 60px; }
+        .inv-table thead th:nth-child(4) { width: 80px; text-align: right; }
+        .inv-table thead th:nth-child(5) { width: 85px; text-align: right; }
+        .inv-table thead th:nth-child(6) { width: 90px; text-align: right; }
+        .inv-table tbody td {
+            padding: 6px 6px; border-bottom: none; vertical-align: top;
         }
-        .bill-total-line.grand {
-            font-size: 15px; font-weight: 800; padding: 6px 0 2px;
-            border-top: 1.5px solid #111827; margin-top: 4px;
+        .inv-table tbody td:nth-child(1) { text-align: center; }
+        .inv-table tbody td:nth-child(4) { text-align: right; }
+        .inv-table tbody td:nth-child(5) { text-align: right; }
+        .inv-table tbody td:nth-child(6) { text-align: right; }
+        .inv-table tbody tr.inv-disc-row td {
+            padding: 0 6px 4px; font-size: 11px; color: #dc2626; border-bottom: none;
         }
-        .bill-total-line.disc-line { color: #dc2626; }
-        .bill-footer-msg {
-            text-align: center; font-size: 11px; color: #6b7280;
-            margin-top: 18px; line-height: 1.6;
+
+        /* Totals section */
+        .inv-totals-wrap {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            border-top: 1.5px solid #111; padding-top: 14px; margin-bottom: 10px;
+        }
+        .inv-totals-left { font-size: 12.5px; line-height: 1.9; }
+        .inv-totals-left strong { font-weight: 700; }
+        .inv-totals-right { text-align: right; font-size: 12.5px; line-height: 1.9; }
+        .inv-totals-right strong { font-weight: 700; }
+
+        .inv-total-words {
+            text-align: right; font-size: 11.5px; color: #555; font-style: italic;
+            margin-top: -2px; margin-bottom: 16px; line-height: 1.5;
+        }
+
+        /* Divider */
+        .inv-divider {
+            border: none; border-top: 1.5px solid #111; margin: 16px 0;
+        }
+
+        /* Terms */
+        .inv-terms { margin: 20px 0 24px; font-size: 12px; line-height: 1.7; }
+        .inv-terms-title { font-weight: 700; margin-bottom: 2px; }
+        .inv-terms-body { font-weight: 700; color: #111; }
+
+        /* Signature */
+        .inv-signature {
+            text-align: right; margin-top: 30px; font-size: 12.5px;
+        }
+        .inv-sig-line {
+            display: inline-block; width: 200px;
+            border-bottom: 1px dotted #999; margin-bottom: 4px;
+        }
+        .inv-sig-label { font-weight: 700; }
+
+        /* Footer line */
+        .inv-footer-line {
+            border-top: 1.5px solid #111; margin-top: 16px; padding-top: 8px;
+            display: flex; justify-content: flex-end; font-size: 12px; color: #555;
         }
 
         /* Print styles — hide everything except .bill-receipt */
@@ -916,7 +959,11 @@
             .bill-modal { box-shadow: none !important; max-height: none !important;
                 width: 100% !important; border-radius: 0 !important; }
             .bill-toolbar { display: none !important; }
-            .bill-receipt { padding: 0 !important; }
+            .bill-receipt { padding: 20px 30px !important; }
+            .inv-table thead th { border-top: 1.5px solid #000 !important; border-bottom: 1.5px solid #000 !important; }
+            .inv-totals-wrap { border-top: 1.5px solid #000 !important; }
+            .inv-divider { border-top: 1.5px solid #000 !important; }
+            .inv-footer-line { border-top: 1.5px solid #000 !important; }
         }
 
         .btn-cancel {
@@ -2270,7 +2317,7 @@
     <div class="bill-overlay" id="bill-overlay" role="dialog" aria-modal="true">
         <div class="bill-modal">
             <div class="bill-toolbar">
-                <span class="bill-toolbar-title">🧾 Receipt Preview</span>
+                <span class="bill-toolbar-title">📄 Invoice Preview</span>
                 <div class="bill-toolbar-actions">
                     <button class="bill-btn-print" id="bill-btn-print">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none"
@@ -2664,15 +2711,77 @@
         });
 
         /* ===== BILL / RECEIPT ===== */
+
+        /* Number to words helper (LKR) */
+        function numberToWords(num) {
+            if (num === 0) return 'zero';
+            const ones = ['','one','two','three','four','five','six','seven','eight','nine',
+                          'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen',
+                          'seventeen','eighteen','nineteen'];
+            const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+            const scales = ['','thousand','million','billion'];
+            function chunk(n) {
+                let s = '';
+                if (n >= 100) { s += ones[Math.floor(n/100)] + ' hundred'; n %= 100; if(n) s += ' '; }
+                if (n >= 20) { s += tens[Math.floor(n/10)]; n %= 10; if(n) s += '-'; }
+                if (n > 0) s += ones[n];
+                return s;
+            }
+            const parts = []; let i = 0;
+            while (num > 0) {
+                const rem = num % 1000;
+                if (rem) parts.unshift(chunk(rem) + (scales[i] ? ' ' + scales[i] : ''));
+                num = Math.floor(num / 1000); i++;
+            }
+            return parts.join(' ');
+        }
+        function amountToWords(amount) {
+            const whole = Math.floor(amount);
+            const cents = Math.round((amount - whole) * 100);
+            let words = numberToWords(whole);
+            words = words.charAt(0).toUpperCase() + words.slice(1);
+            if (cents > 0) {
+                words += ' and ' + numberToWords(cents) + ' cents';
+            }
+            return '(' + words + ')';
+        }
+
+        /* Invoice counter for sequential numbering */
+        let invoiceCounter = parseInt(localStorage.getItem('jr_invoice_counter') || '739');
+
         function openBill(paymentMethod) {
+            invoiceCounter++;
+            localStorage.setItem('jr_invoice_counter', invoiceCounter);
+
             const now = new Date();
             const pad = n => String(n).padStart(2,'0');
             const dateStr = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()}`;
-            const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-            const invNo   = 'INV-' + Date.now();
+            const hh = now.getHours();
+            const ampm = hh >= 12 ? 'PM' : 'AM';
+            const hh12 = hh % 12 || 12;
+            const timeStr = `${pad(hh12)}:${pad(now.getMinutes())} ${ampm}`;
+            const invNo = 'INV' + String(invoiceCounter).padStart(4,'0');
 
             const custSel  = document.getElementById('customer-select');
-            const customer = custSel.options[custSel.selectedIndex].text || 'Walk-In Customer';
+            const custOpt  = custSel.options[custSel.selectedIndex];
+            const customer = custOpt ? custOpt.text : 'Walk-In Customer';
+
+            /* Try to get customer details from jr_customers */
+            let custMobile = '—';
+            let custClientId = '—';
+            const allCustomers = JSON.parse(localStorage.getItem('jr_customers') || '[]');
+            const custMatch = allCustomers.find(c => {
+                const fullName = [c.prefix, c.firstName, c.middleName, c.lastName].filter(Boolean).join(' ');
+                return fullName === customer || c.businessName === customer || c.firstName === customer;
+            });
+            if (custMatch) {
+                custMobile = custMatch.mobile ? ('+94' + custMatch.mobile) : '—';
+                custClientId = custMatch.contactId || '—';
+            }
+
+            /* Sales Rep = logged-in user */
+            const session = Auth.getSession();
+            const salesRep = session && session.user ? session.user.name : '—';
 
             const totalAmt     = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
             const itemDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
@@ -2686,66 +2795,121 @@
             }
             const totalDiscount = itemDiscount + sdAmt;
             const grandTotal    = totalAmt - totalDiscount;
+            const totalQty      = cartItems.reduce((s,i) => s + i.qty, 0);
+            const totalItems    = cartItems.length;
             const fmt = v => v.toLocaleString('en-LK', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-            // Build item rows HTML
-            let itemsHTML = '';
-            cartItems.forEach(item => {
+            /* Build table rows */
+            let rowsHTML = '';
+            cartItems.forEach((item, idx) => {
                 const lineTotal = item.price * item.qty;
                 const discAmt   = calcItemDiscount(item);
                 const lineNet   = lineTotal - discAmt;
-                itemsHTML += `
-                <div class="bill-item-row">
-                    <span>${item.name}</span>
-                    <span>${item.qty}</span>
-                    <span>${fmt(item.price)}</span>
-                    <span>${fmt(lineNet)}</span>
-                </div>`;
+                rowsHTML += `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${item.sku || '—'}</td>
+                    <td>${item.name}</td>
+                    <td style="text-align:right;">${item.qty.toFixed(2)} PCS</td>
+                    <td style="text-align:right;">${fmt(item.price)}</td>
+                    <td style="text-align:right;">${fmt(lineNet)}</td>
+                </tr>`;
                 if (discAmt > 0) {
                     const dLabel = item.discount.type === 'percentage'
                         ? `Disc: ${item.discount.value}% (−LKR ${fmt(discAmt)})`
                         : `Disc: −LKR ${fmt(discAmt)}`;
-                    itemsHTML += `<div class="bill-item-disc">${dLabel}</div>`;
+                    rowsHTML += `<tr class="inv-disc-row"><td></td><td></td><td colspan="4">${dLabel}</td></tr>`;
                 }
             });
 
-            // Order discount line
-            let orderDiscHTML = '';
-            if (sdAmt > 0) {
-                const sdLabel = sd.type === 'percentage' ? `${sd.value}%` : `LKR ${fmt(sd.value)}`;
-                orderDiscHTML = `<div class="bill-total-line disc-line"><span>Order Discount (${sdLabel})</span><span>−LKR ${fmt(sdAmt)}</span></div>`;
-            }
-            // Item discount summary line
-            let itemDiscHTML = '';
-            if (itemDiscount > 0) {
-                itemDiscHTML = `<div class="bill-total-line disc-line"><span>Item Discounts</span><span>−LKR ${fmt(itemDiscount)}</span></div>`;
-            }
+            /* Outstanding balance (sum of unpaid balances from jr_payments for this customer) */
+            let totalOutstanding = grandTotal;
+            const paymentRecords = JSON.parse(localStorage.getItem('jr_payments') || '[]');
+            const custPayments = paymentRecords.filter(r => r.customer === customer && (r.balance || 0) > 0);
+            const prevOutstanding = custPayments.reduce((s, r) => s + (r.balance || 0), 0);
+            totalOutstanding = grandTotal + prevOutstanding;
+
+            /* Words for grand total */
+            const totalWords = amountToWords(grandTotal);
 
             document.getElementById('bill-receipt').innerHTML = `
-                <div class="bill-shop-name">JR MARKETING</div>
-                <div class="bill-shop-sub">JR Marketing Shop · Tel: 011-XXXXXXX</div>
-                <hr class="bill-divider"/>
-                <div class="bill-meta">Invoice No: <span>${invNo}</span></div>
-                <div class="bill-meta">Date: <span>${dateStr} ${timeStr}</span></div>
-                <div class="bill-meta">Customer: <span>${customer}</span></div>
-                <div class="bill-meta">Payment: <span>${paymentMethod}</span></div>
-                <hr class="bill-divider"/>
-                <div class="bill-col-header">
-                    <span>Item</span><span>Qty</span><span>Price</span><span>Total</span>
+                <!-- Company Header -->
+                <div class="inv-header">
+                    <h1 class="inv-company">JR MARKETING</h1>
+                    <p class="inv-address">
+                        Periya Palam Mutur, Trincomalee. SL<br>
+                        0772627178 , 0752627166<br>
+                        jrmarketing.m@gmail.com
+                    </p>
                 </div>
-                ${itemsHTML}
-                <hr class="bill-divider"/>
-                <div class="bill-totals">
-                    <div class="bill-total-line"><span>Subtotal</span><span>LKR ${fmt(totalAmt)}</span></div>
-                    ${itemDiscHTML}
-                    ${orderDiscHTML}
-                    <div class="bill-total-line grand"><span>TOTAL PAYABLE</span><span>LKR ${fmt(grandTotal)}</span></div>
+
+                <div class="inv-title">Invoice</div>
+
+                <!-- Meta Info -->
+                <div class="inv-meta-row">
+                    <div class="inv-meta-left">
+                        <strong>Invoice No.</strong> ${invNo}<br>
+                        <strong>Customer</strong><br>
+                        ${customer}<br>
+                        <strong>Mobile</strong>: ${custMobile}<br><br>
+                        <strong>Client ID</strong> ${custClientId}<br>
+                        <strong>Sales Rep</strong> ${salesRep}
+                    </div>
+                    <div class="inv-meta-right">
+                        <strong>Date</strong> ${dateStr} ${timeStr}
+                    </div>
                 </div>
-                <hr class="bill-divider"/>
-                <div class="bill-footer-msg">
-                    Thank you for shopping at JR Marketing!<br>
-                    Please keep this receipt for your records.<br>
-                    <strong>— Come Again —</strong>
+
+                <!-- Items Table -->
+                <table class="inv-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>SKU</th>
+                            <th>Items Name</th>
+                            <th style="text-align:right;">Qty</th>
+                            <th style="text-align:right;">Unit Price</th>
+                            <th style="text-align:right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHTML}
+                    </tbody>
+                </table>
+
+                <!-- Totals -->
+                <div class="inv-totals-wrap">
+                    <div class="inv-totals-left">
+                        <strong>Total Due</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LKR ${fmt(grandTotal)}<br>
+                        <strong>Total Outstanding</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LKR ${fmt(totalOutstanding)}
+                    </div>
+                    <div class="inv-totals-right">
+                        <strong>Total Qty</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${totalQty.toFixed(2)}<br>
+                        <strong>Total Items</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${totalItems}<br>
+                        <strong>Total:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LKR ${fmt(grandTotal)}
+                    </div>
+                </div>
+                <div class="inv-total-words">${totalWords}</div>
+
+                <hr class="inv-divider"/>
+
+                <!-- Terms & Conditions -->
+                <div class="inv-terms">
+                    <div class="inv-terms-title">Terms and Conditions :</div>
+                    <div class="inv-terms-body">
+                        if you don't clear the chq within 45 days, our system will not issue the next bill, Balance due in 75 days.
+                    </div>
+                </div>
+
+                <!-- Signature -->
+                <div class="inv-signature">
+                    <div class="inv-sig-line"></div><br>
+                    <span class="inv-sig-label">Approved by</span>
+                </div>
+
+                <!-- Footer -->
+                <div class="inv-footer-line">
+                    <span>1/1</span>
                 </div>
             `;
 
