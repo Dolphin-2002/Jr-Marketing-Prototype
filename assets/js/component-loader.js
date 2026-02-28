@@ -2,7 +2,7 @@
  * ============================================
  * COMPONENT LOADER
  * Loads HTML components into placeholders
- * PRO DATA - Sri Lanka
+ * JR Marketing - Sri Lanka
  * ============================================
  */
 

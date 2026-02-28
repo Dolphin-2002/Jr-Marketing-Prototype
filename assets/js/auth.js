@@ -2,13 +2,13 @@
  * ============================================
  * AUTH MODULE
  * Handles login, session, and validation
- * PRO DATA - Sri Lanka
+ * JR Marketing - Sri Lanka
  * ============================================
  */
 
 const Auth = {
-    SESSION_KEY: 'prodata_session',
-    REMEMBER_KEY: 'prodata_remember',
+    SESSION_KEY: 'jr_session',
+    REMEMBER_KEY: 'jr_remember',
 
     /**
      * Demo credentials (replace with real API in production)

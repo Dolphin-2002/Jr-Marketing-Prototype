@@ -145,9 +145,6 @@
         .unit-badge { font-size: 11.5px; background: #f3f4f6; color: #374151; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
         .stock-badge-on  { font-size: 11.5px; background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
         .stock-badge-off { font-size: 11.5px; background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
-        .margin-up   { font-size: 11.5px; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
-        .margin-down { font-size: 11.5px; background: #fee2e2; color: #dc2626; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
-        .margin-zero { font-size: 11.5px; background: #f3f4f6; color: #6b7280; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
         .action-btn { background: none; border: none; cursor: pointer; padding: 5px 7px; border-radius: 5px; color: #6b7280; transition: background .12s, color .12s; }
         .action-btn:hover.del { color: #ef4444; background: #fee2e2; }
         .empty-state { padding: 60px 20px; text-align: center; color: #9ca3af; }
@@ -299,8 +296,8 @@
                             <span class="menu-chevron">&#9654;</span>
                         </div>
                         <ul class="submenu">
-                            <li><a class="submenu-link" href="#">&#8227;&nbsp; Customers</a></li>
-                            <li><a class="submenu-link" href="#">&#8227;&nbsp; Suppliers</a></li>
+                            <li><a class="submenu-link" href="customers.html">&#8227;&nbsp; Customers</a></li>
+                            <li><a class="submenu-link" href="suppliers.html">&#8227;&nbsp; Suppliers</a></li>
                         </ul>
                     </li>
                     <li class="menu-item open" data-menu="products">
@@ -314,6 +311,10 @@
                         <ul class="submenu">
                             <li><a class="submenu-link active" href="products.html">&#8227;&nbsp; Products List</a></li>
                             <li><a class="submenu-link" href="products.html#add">&#8227;&nbsp; Add New Product</a></li>
+                            <li><a class="submenu-link" href="categories.html">&#8227;&nbsp; Categories</a></li>
+                            <li><a class="submenu-link" href="brands.html">&#8227;&nbsp; Brands</a></li>
+                            <li><a class="submenu-link" href="units.html">&#8227;&nbsp; Units</a></li>
+                            <li><a class="submenu-link" href="stock.html">&#8227;&nbsp; Stock</a></li>
                         </ul>
                     </li>
                     <li class="menu-item" data-menu="purchases">
@@ -325,8 +326,9 @@
                             <span class="menu-chevron">&#9654;</span>
                         </div>
                         <ul class="submenu">
-                            <li><a class="submenu-link" href="#">&#8227;&nbsp; Purchase List</a></li>
-                            <li><a class="submenu-link" href="#">&#8227;&nbsp; Add Purchase</a></li>
+                            <li><a class="submenu-link" href="purchases.html">&#8227;&nbsp; Purchase List</a></li>
+                            <li><a class="submenu-link" href="purchases.html#add">&#8227;&nbsp; Add Purchase</a></li>
+                            <li><a class="submenu-link" href="purchases.html#return">&#8227;&nbsp; Purchase Return</a></li>
                         </ul>
                     </li>
                     <li class="menu-item" data-menu="sell">
@@ -339,8 +341,10 @@
                         </div>
                         <ul class="submenu">
                             <li><a class="submenu-link" href="sales.html">&#8227;&nbsp; All Sales</a></li>
-                            <li><a class="submenu-link" href="#">&#8227;&nbsp; Sale Return</a></li>
+                            <li><a class="submenu-link" href="add-sale.html">&#8227;&nbsp; Add Sale</a></li>
+                            <li><a class="submenu-link" href="sale-return.html">&#8227;&nbsp; Sale Return</a></li>
                             <li><a class="submenu-link" href="sales.html#quotations">&#8227;&nbsp; Quotations</a></li>
+                            <li><a class="submenu-link" href="sales.html#credit">&#8227;&nbsp; Credit Sales</a></li>
                         </ul>
                     </li>
                     <li class="menu-item" data-menu="expenses">
@@ -354,6 +358,7 @@
                         <ul class="submenu">
                             <li><a class="submenu-link" href="expenses.html">&#8227;&nbsp; Expense List</a></li>
                             <li><a class="submenu-link" href="expenses.html#add">&#8227;&nbsp; Add Expense</a></li>
+                            <li><a class="submenu-link" href="expense-categories.html">&#8227;&nbsp; Expense Categories</a></li>
                         </ul>
                     </li>
                     <li class="menu-item">
@@ -373,9 +378,12 @@
                             <span class="menu-chevron">&#9654;</span>
                         </div>
                         <ul class="submenu">
-                            <li><a class="submenu-link" href="#">&#8227;&nbsp; Profit / Loss</a></li>
-                            <li><a class="submenu-link" href="#">&#8227;&nbsp; Sales Report</a></li>
-                            <li><a class="submenu-link" href="#">&#8227;&nbsp; Stock Report</a></li>
+                            <li><a class="submenu-link" href="profit-loss.html">&#8227;&nbsp; Profit / Loss</a></li>
+                            <li><a class="submenu-link" href="purchase-report.html">&#8227;&nbsp; Purchase Report</a></li>
+                            <li><a class="submenu-link" href="sales-report.html">&#8227;&nbsp; Sales Report</a></li>
+                            <li><a class="submenu-link" href="expense-report.html">&#8227;&nbsp; Expense Report</a></li>
+                            <li><a class="submenu-link" href="stock-report.html">&#8227;&nbsp; Stock Report</a></li>
+                            <li><a class="submenu-link" href="tax-report.html">&#8227;&nbsp; Tax Report</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -429,10 +437,9 @@
                                     <th>SKU</th>
                                     <th>Barcode</th>
                                     <th>Unit</th>
-                                    <th>Buy Price (LKR)</th>
-                                    <th>Sell Price (LKR)</th>
-                                    <th>Margin %</th>
+                                    <th>Price (LKR)</th>
                                     <th>Stock</th>
+                                    <th>Warranty</th>
                                     <th>Added On</th>
                                     <th>Action</th>
                                 </tr>
@@ -670,23 +677,6 @@
         /* Save */
         document.getElementById('save-btn').addEventListener('click', saveProduct);
 
-        /* Live margin calculation */
-        function updateMarginBadge() {
-            const buy  = parseFloat(document.getElementById('f-buying-price').value) || 0;
-            const sell = parseFloat(document.getElementById('f-price').value)         || 0;
-            const mb   = document.getElementById('margin-badge');
-            if (buy > 0 && sell > 0) {
-                const pct = ((sell - buy) / buy * 100).toFixed(1);
-                mb.textContent  = (pct > 0 ? '+' : '') + pct + '% margin';
-                mb.className    = 'margin-badge ' + (pct > 0 ? 'positive' : (pct < 0 ? 'negative' : 'zero'));
-                mb.style.display = 'inline-flex';
-            } else {
-                mb.style.display = 'none';
-            }
-        }
-        document.getElementById('f-buying-price').addEventListener('input', updateMarginBadge);
-        document.getElementById('f-price').addEventListener('input', updateMarginBadge);
-
         renderList();
     });
 
@@ -698,7 +688,7 @@
     }
 
     function resetForm() {
-        ['f-name','f-sku','f-buying-price','f-price','f-alert-qty'].forEach(id => document.getElementById(id).value = '');
+        ['f-name','f-sku','f-price','f-alert-qty'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('f-barcode').value  = '';
         document.getElementById('f-unit').value     = '';
         document.getElementById('f-manage-stock').checked = true;
@@ -707,8 +697,6 @@
         document.getElementById('no-stock-weight').style.display = 'none';
         ['f-name','f-price','f-barcode','f-unit'].forEach(id => document.getElementById(id).classList.remove('error'));
         ['err-name','err-price','err-barcode','err-unit'].forEach(id => document.getElementById(id).classList.remove('show'));
-        const mb = document.getElementById('margin-badge');
-        mb.style.display = 'none'; mb.textContent = ''; mb.className = 'margin-badge';
     }
 
     function saveProduct() {
@@ -728,22 +716,21 @@
         let sku   = document.getElementById('f-sku').value.trim() || ('SKU-' + Date.now().toString(36).toUpperCase());
 
         const record = {
-            id:           'PRD-' + Date.now(),
-            name:         document.getElementById('f-name').value.trim(),
+            id:          'PRD-' + Date.now(),
+            name:        document.getElementById('f-name').value.trim(),
             sku,
-            buyingPrice:  parseFloat(document.getElementById('f-buying-price').value) || 0,
-            price:        parseFloat(document.getElementById('f-price').value),
-            barcodeType:  document.getElementById('f-barcode').value,
-            unit:         document.getElementById('f-unit').value,
-            manageStock:  ms,
-            alertQty:     ms ? (parseInt(document.getElementById('f-alert-qty').value) || null) : null,
-            description:  document.getElementById('f-description').innerHTML.trim(),
-            date:         new Date().toISOString()
+            price:       parseFloat(document.getElementById('f-price').value),
+            barcodeType: document.getElementById('f-barcode').value,
+            unit:        document.getElementById('f-unit').value,
+            manageStock: ms,
+            alertQty:    ms ? (parseInt(document.getElementById('f-alert-qty').value) || null) : null,
+            description: document.getElementById('f-description').innerHTML.trim(),
+            date:        new Date().toISOString()
         };
 
-        const all = JSON.parse(localStorage.getItem('prodata_products') || '[]');
+        const all = JSON.parse(localStorage.getItem('jr_products') || '[]');
         all.unshift(record);
-        localStorage.setItem('prodata_products', JSON.stringify(all));
+        localStorage.setItem('jr_products', JSON.stringify(all));
 
         Toast.success(`Product "${record.name}" saved! SKU: ${record.sku}`);
         resetForm();
@@ -753,7 +740,7 @@
 
     function renderList() {
         const query  = (document.getElementById('search-input').value || '').trim().toLowerCase();
-        const all    = JSON.parse(localStorage.getItem('prodata_products') || '[]');
+        const all    = JSON.parse(localStorage.getItem('jr_products') || '[]');
         const items  = query ? all.filter(p => p.name.toLowerCase().includes(query) || (p.sku||'').toLowerCase().includes(query)) : all;
 
         const tbody  = document.getElementById('products-tbody');
@@ -765,28 +752,16 @@
             return;
         }
         empty.style.display = 'none';
-        tbody.innerHTML = items.map((p, i) => {
-            const buy  = parseFloat(p.buyingPrice) || 0;
-            const sell = parseFloat(p.price)       || 0;
-            let marginHtml;
-            if (buy > 0 && sell > 0) {
-                const pct = ((sell - buy) / buy * 100).toFixed(1);
-                const cls = pct > 0 ? 'margin-up' : (pct < 0 ? 'margin-down' : 'margin-zero');
-                marginHtml = `<span class="${cls}">${pct > 0 ? '+' : ''}${pct}%</span>`;
-            } else {
-                marginHtml = `<span class="margin-zero">—</span>`;
-            }
-            return `
+        tbody.innerHTML = items.map((p, i) => `
             <tr>
                 <td>${i + 1}</td>
                 <td><strong>${p.name}</strong></td>
                 <td><span class="sku-badge">${p.sku}</span></td>
                 <td>${p.barcodeType || '—'}</td>
                 <td><span class="unit-badge">${p.unit}</span></td>
-                <td>${buy > 0 ? `LKR ${buy.toLocaleString('en-LK', {minimumFractionDigits:2})}` : '—'}</td>
-                <td><strong>LKR ${sell.toLocaleString('en-LK', {minimumFractionDigits:2})}</strong></td>
-                <td>${marginHtml}</td>
+                <td><strong>LKR ${Number(p.price).toLocaleString('en-LK', {minimumFractionDigits:2})}</strong></td>
                 <td>${p.manageStock ? `<span class="stock-badge-on">Managed</span>` : `<span class="stock-badge-off">Unmanaged</span>`}</td>
+                <td>${p.warranty || '—'}</td>
                 <td class="date-cell">${new Date(p.date).toLocaleDateString('en-GB')}</td>
                 <td>
                     <button class="action-btn del" title="Delete" onclick="deleteProduct('${p.id}')">
@@ -794,13 +769,13 @@
                     </button>
                 </td>
             </tr>
-        `}).join('');
+        `).join('');
     }
 
     function deleteProduct(id) {
         if (!confirm('Delete this product?')) return;
-        const all = JSON.parse(localStorage.getItem('prodata_products') || '[]');
-        localStorage.setItem('prodata_products', JSON.stringify(all.filter(p => p.id !== id)));
+        const all = JSON.parse(localStorage.getItem('jr_products') || '[]');
+        localStorage.setItem('jr_products', JSON.stringify(all.filter(p => p.id !== id)));
         Toast.success('Product deleted.');
         renderList();
     }
@@ -819,17 +794,16 @@
 
     /* ── Column definitions (order = template column order) ── */
     const XL_COLS = [
-        { key: 'name',         label: 'Product Name',      required: true,  type: 'text'   },
-        { key: 'sku',          label: 'SKU',               required: false, type: 'text'   },
-        { key: 'buyingPrice',  label: 'Buying Price',      required: false, type: 'number' },
-        { key: 'price',        label: 'Selling Price',     required: true,  type: 'number' },
-        { key: 'barcodeType',  label: 'Barcode Type',      required: true,  type: 'select',
+        { key: 'name',        label: 'Product Name',      required: true,  type: 'text'   },
+        { key: 'sku',         label: 'SKU',               required: false, type: 'text'   },
+        { key: 'price',       label: 'Selling Price',     required: true,  type: 'number' },
+        { key: 'barcodeType', label: 'Barcode Type',      required: true,  type: 'select',
           options: ['C128','C39','EAN13','EAN8','UPCA','UPCE'] },
-        { key: 'unit',         label: 'Unit',              required: true,  type: 'select',
+        { key: 'unit',        label: 'Unit',              required: true,  type: 'select',
           options: ['Pieces','Boxes','Rolls'] },
-        { key: 'manageStock',  label: 'Manage Stock',      required: false, type: 'select',
+        { key: 'manageStock', label: 'Manage Stock',      required: false, type: 'select',
           options: ['Yes','No'] },
-        { key: 'alertQty',     label: 'Alert Quantity',    required: false, type: 'number' },
+        { key: 'alertQty',    label: 'Alert Quantity',    required: false, type: 'number' },
     ];
 
     /* Parsed rows cache */
@@ -841,16 +815,16 @@
 
         const headers = XL_COLS.map(c => c.label);
         const sample  = [
-            ['Milo 400g',                  'MLT400', 750,  980,  'C128', 'Pieces', 'Yes', 5],
-            ['Anchor Milk Powder 400g',    '',       950,  1250, 'EAN13','Pieces', 'Yes', 3],
-            ['Sunlight Soap Bar',          '',       55,   85,   'C128', 'Pieces', 'No',  ''],
+            ['Milo 400g', 'MLT400', 980, 'C128', 'Pieces', 'Yes', 5],
+            ['Anchor Milk Powder 400g', '', 1250, 'EAN13', 'Pieces', 'Yes', 3],
+            ['Sunlight Soap Bar', '', 85, 'C128', 'Pieces', 'No', ''],
         ];
 
         const ws = XLSX.utils.aoa_to_sheet([headers, ...sample]);
 
         /* Column widths */
         ws['!cols'] = [
-            {wch:28},{wch:14},{wch:14},{wch:14},{wch:14},{wch:12},{wch:14},{wch:14}
+            {wch:28},{wch:14},{wch:14},{wch:14},{wch:12},{wch:14},{wch:14}
         ];
 
         const wb = XLSX.utils.book_new();
@@ -1112,30 +1086,29 @@
         const validRows = xlRows.filter(r => Object.keys(r._errors).length === 0);
         if (validRows.length === 0) return;
 
-        const existing = JSON.parse(localStorage.getItem('prodata_products') || '[]');
+        const existing = JSON.parse(localStorage.getItem('jr_products') || '[]');
         const now      = new Date().toISOString();
 
         const newRecords = validRows.map(row => {
             const ms = (row.manageStock || 'yes').toLowerCase() !== 'no';
             return {
-                id:               'PRD-' + Date.now() + '-' + Math.random().toString(36).slice(2,7),
-                name:             row.name.trim(),
-                sku:              row.sku.trim() || ('SKU-' + Date.now().toString(36).toUpperCase()),
-                buyingPrice:      parseFloat(row.buyingPrice) || 0,
-                price:            parseFloat(row.price) || 0,
-                barcodeType:      row.barcodeType || 'C128',
-                unit:             row.unit || 'Pieces',
-                manageStock:      ms,
-                alertQty:         ms && row.alertQty ? (parseInt(row.alertQty) || null) : null,
-                description:      '',
-                date:             now,
+                id:          'PRD-' + Date.now() + '-' + Math.random().toString(36).slice(2,7),
+                name:        row.name.trim(),
+                sku:         row.sku.trim() || ('SKU-' + Date.now().toString(36).toUpperCase()),
+                price:       parseFloat(row.price) || 0,
+                barcodeType: row.barcodeType || 'C128',
+                unit:        row.unit || 'Pieces',
+                manageStock: ms,
+                alertQty:    ms && row.alertQty ? (parseInt(row.alertQty) || null) : null,
+                description: '',
+                date:        now,
                 importedViaExcel: true
             };
         });
 
         /* Prepend new records */
         const merged = [...newRecords, ...existing];
-        localStorage.setItem('prodata_products', JSON.stringify(merged));
+        localStorage.setItem('jr_products', JSON.stringify(merged));
 
         Toast.success(`${newRecords.length} product${newRecords.length !== 1 ? 's' : ''} imported successfully!`);
         closeXlModal();

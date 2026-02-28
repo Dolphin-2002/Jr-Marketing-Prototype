@@ -2,7 +2,7 @@
  * ============================================
  * LOGIN PAGE CONTROLLER
  * Handles the login form behaviour
- * PRO DATA - Sri Lanka
+ * JR Marketing - Sri Lanka
  * ============================================
  */
 
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         techTeamBtn.addEventListener('click', () => {
             Toast.info('Opening Technical Team Portal...');
             setTimeout(() => {
-                alert('Technical Team Portal\n\nContact: support@prodata.ngtlanka.com\nPhone: +94 11 234 5678\n\nSupport Hours: Mon-Fri 8:00AM - 6:00PM (IST)');
+                alert('Technical Team Portal\n\nContact: support@jr-marketing.com\nPhone: +94 11 234 5678\n\nSupport Hours: Mon-Fri 8:00AM - 6:00PM (IST)');
             }, 400);
         });
     }

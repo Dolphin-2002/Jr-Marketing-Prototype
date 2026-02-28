@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JR MARKETING SHOP — Customers</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a5c2e'/><text x='50%25' y='55%25' font-size='13' font-weight='900' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='Arial'>JR</text></svg>">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/base.css">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Segoe UI',Arial,sans-serif;background:#eef1f8;min-height:100vh;display:flex;flex-direction:column}
+        .navbar{background:#0a5c2e;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 0;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(10,92,46,0.4);flex-shrink:0}
+        .navbar-left{display:flex;align-items:center;height:100%}
+        .nav-sidebar-toggle{width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.8);transition:background .2s;flex-shrink:0}
+        .nav-sidebar-toggle:hover{background:rgba(255,255,255,0.1)}
+        .navbar-brand{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;padding:0 14px 0 8px;white-space:nowrap}
+        .brand-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;display:inline-block;flex-shrink:0;margin-left:2px}
+        .navbar-right{display:flex;align-items:center;gap:5px}
+        .nav-pos-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;padding:0 12px;height:34px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:background .2s}
+        .nav-pos-btn:hover{background:rgba(255,255,255,0.22)}
+        .nav-divider{width:1px;height:22px;background:rgba(255,255,255,0.2);margin:0 4px}
+        .nav-date{color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;padding:0 4px;white-space:nowrap}
+        .nav-icon-btn{width:36px;height:36px;border-radius:8px;background:transparent;border:none;color:rgba(255,255,255,0.75);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .2s,color .2s}
+        .nav-icon-btn:hover{background:rgba(255,255,255,0.12);color:white}
+        .nav-user{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:0 10px;height:34px;color:white;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+        .nav-user:hover{background:rgba(255,255,255,0.2)}
+        .nav-user-avatar{width:24px;height:24px;border-radius:50%;background:#16a34a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+        .layout{display:flex;flex:1;min-height:calc(100vh - 52px)}
+        .sidebar{width:240px;background:#f8f9fc;border-right:1px solid #dde3f0;flex-shrink:0;overflow-y:auto;overflow-x:hidden;transition:width .28s ease}
+        .sidebar.collapsed{width:0}
+        .sidebar-inner{padding:6px 0 28px}
+        .sidebar-menu{list-style:none}
+        .menu-item{position:relative}
+        .menu-link{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 10px 14px;color:#374151;font-size:13.5px;font-weight:500;text-decoration:none;cursor:pointer;transition:background .15s,color .15s;border-left:3px solid transparent;user-select:none;white-space:nowrap}
+        .menu-link:hover{background:#dcfce7;color:#15803d;text-decoration:none}
+        .menu-link.active{background:#dcfce7;color:#15803d;border-left-color:#16a34a;font-weight:700}
+        .menu-link-left{display:flex;align-items:center;gap:10px}
+        .menu-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#6b7280}
+        .menu-link.active .menu-icon,.menu-link:hover .menu-icon{color:#16a34a}
+        .menu-chevron{font-size:10px;color:#9ca3af;transition:transform .2s;flex-shrink:0}
+        .menu-item.open>.menu-link .menu-chevron{transform:rotate(90deg)}
+        .submenu{display:none;background:#f0fdf4;list-style:none}
+        .menu-item.open .submenu{display:block}
+        .submenu-link{display:flex;align-items:center;gap:8px;padding:8px 16px 8px 40px;color:#4b5563;font-size:12.5px;text-decoration:none;transition:color .15s,background .15s;cursor:pointer;white-space:nowrap}
+        .submenu-link:hover{color:#15803d;background:#bbf7d0;text-decoration:none}
+        .submenu-link.active{color:#15803d;background:#bbf7d0;font-weight:600}
+        .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+        .content-header{background:#0a5c2e;padding:22px 26px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+        .page-title{font-size:22px;font-weight:800;color:#fff;display:flex;align-items:center;gap:10px}
+        .content-body{padding:20px;background:#eef1f8;flex:1}
+
+        /* Card + Table */
+        .card{background:#fff;border-radius:12px;box-shadow:0 1px 5px rgba(0,0,0,.07);padding:20px;margin-bottom:18px}
+        .card-title{font-size:15px;font-weight:700;color:#111827;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+        .toolbar input,.toolbar select{height:36px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;font-size:13px;outline:none}
+        .toolbar input:focus,.toolbar select:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12)}
+        .btn{height:36px;padding:0 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s}
+        .btn-primary{background:linear-gradient(135deg,#0a5c2e 0%,#16a34a 100%);color:#fff}
+        .btn-primary:hover{opacity:.9}
+        .btn-danger{background:#ef4444;color:#fff}
+        .btn-danger:hover{background:#dc2626}
+        .btn-outline{background:#fff;color:#374151;border:1px solid #d1d5db}
+        .btn-outline:hover{background:#f3f4f6}
+        table{width:100%;border-collapse:collapse}
+        th{background:#f9fafb;padding:10px 12px;font-size:12px;font-weight:600;color:#6b7280;text-align:left;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e5e7eb}
+        td{padding:10px 12px;font-size:13px;color:#374151;border-bottom:1px solid #f3f4f6}
+        tr:hover{background:#f0fdf4}
+        .empty-state{text-align:center;padding:40px;color:#9ca3af;font-size:14px}
+
+        .tabs{display:flex;gap:0;border-bottom:2px solid #e5e7eb;margin-bottom:18px}
+        .tab{padding:10px 20px;font-size:13px;font-weight:600;color:#6b7280;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+        .tab:hover{color:#15803d}
+        .tab.active{color:#16a34a;border-bottom-color:#16a34a}
+        .tab-content{display:none}
+        .tab-content.active{display:block}
+
+        .badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600}
+        .badge-green{background:#dcfce7;color:#16a34a}
+        .badge-blue{background:#dbeafe;color:#2563eb}
+        .badge-red{background:#fee2e2;color:#dc2626}
+        .badge-yellow{background:#fef9c3;color:#ca8a04}
+        .action-btn{width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .2s}
+        .action-btn-view{background:#dbeafe;color:#2563eb}
+        .action-btn-view:hover{background:#bfdbfe}
+        .action-btn-del{background:#fee2e2;color:#ef4444}
+        .action-btn-del:hover{background:#fecaca}
+
+        /* ===== ADD CUSTOMER FORM (matching POS modal exactly) ===== */
+        .ac-section{display:flex;flex-direction:column;gap:18px}
+        .ac-toggle-row{display:flex;align-items:center;gap:20px}
+        .ac-radio-label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;font-weight:500;color:#374151}
+        .ac-radio-label input[type="radio"]{accent-color:#3b82f6;width:16px;height:16px;cursor:pointer}
+        .ac-section-title{font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+        .ac-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .ac-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+        .ac-grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+        .ac-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+        .ac-col-span2{grid-column:span 2}
+        .ac-field{display:flex;flex-direction:column;gap:5px}
+        .ac-label{font-size:12px;font-weight:600;color:#374151}
+        .ac-label .req{color:#ef4444}
+        .ac-input,.ac-select{height:36px;border:1.5px solid #d1d5db;border-radius:6px;padding:0 10px;font-size:13px;color:#374151;background:#fff;outline:none;width:100%}
+        .ac-input:focus,.ac-select:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12)}
+        .ac-input.error{border-color:#ef4444}
+        .ac-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+        .ac-input-icon{position:relative}
+        .ac-input-icon .ac-input{padding-left:34px}
+        .ac-input-icon .icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9ca3af;pointer-events:none}
+        .ac-phone-wrap{display:flex;gap:0}
+        .ac-phone-prefix{height:36px;background:#f3f4f6;border:1.5px solid #d1d5db;border-right:none;border-radius:6px 0 0 6px;padding:0 10px;font-size:13px;color:#374151;display:flex;align-items:center;white-space:nowrap;flex-shrink:0}
+        .ac-phone-wrap .ac-input{border-radius:0 6px 6px 0}
+        .ac-payterm-wrap{display:flex;gap:0}
+        .ac-payterm-wrap .ac-input{border-radius:6px 0 0 6px;border-right:none;width:90px;flex-shrink:0}
+        .ac-payterm-wrap .ac-select{border-radius:0 6px 6px 0;flex:1}
+        .ac-divider{height:1px;background:#f3f4f6}
+        .ac-error-msg{font-size:11px;color:#ef4444;margin-top:2px;display:none}
+        .ac-error-msg.show{display:block}
+        .ac-more-btn{display:inline-flex;align-items:center;gap:7px;background:#f0fdf4;color:#166534;border:1.5px solid #bbf7d0;border-radius:6px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+        .ac-more-btn:hover{background:#dcfce7}
+        .ac-more-btn .chevron{transition:transform .2s}
+        .ac-more-btn.open .chevron{transform:rotate(180deg)}
+        .ac-more-section{display:none;margin-top:4px;border:1.5px solid #bbf7d0;border-radius:8px;padding:16px;background:#f0fdf4}
+        .ac-more-section.open{display:block}
+        .form-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+
+        /* View Modal */
+        .view-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;padding:16px}
+        .view-overlay.open{display:flex}
+        .view-modal{background:#fff;border-radius:12px;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.22);animation:vmSlideIn .18s ease}
+        @keyframes vmSlideIn{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+        .view-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #e5e7eb;flex-shrink:0}
+        .view-header h2{font-size:16px;font-weight:700;color:#111827}
+        .view-close{width:32px;height:32px;border:none;background:#f3f4f6;border-radius:6px;cursor:pointer;font-size:18px;color:#6b7280;display:flex;align-items:center;justify-content:center}
+        .view-close:hover{background:#fee2e2;color:#ef4444}
+        .view-body{flex:1;overflow-y:auto;padding:20px}
+        .view-row{display:flex;padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:13px}
+        .view-label{width:160px;color:#6b7280;font-weight:600;flex-shrink:0}
+        .view-val{flex:1;color:#111827;font-weight:500}
+
+        /* Stats cards */
+        .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+        .stat-card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center}
+        .stat-label{font-size:12px;color:#6b7280}
+        .stat-value{font-size:24px;font-weight:800;margin-top:4px;color:#111827}
+
+        @media(max-width:1100px){.ac-grid-5{grid-template-columns:repeat(3,1fr)}.ac-grid-4{grid-template-columns:1fr 1fr}.stats-row{grid-template-columns:1fr 1fr 1fr}}
+        @media(max-width:768px){
+            .sidebar{display:none}
+            .sidebar.mobile-open{display:flex;position:fixed;left:0;top:52px;height:calc(100vh - 52px);z-index:300;width:240px;box-shadow:4px 0 20px rgba(0,0,0,.2)}
+            .ac-grid-2,.ac-grid-3,.ac-grid-4,.ac-grid-5{grid-template-columns:1fr}
+            .ac-col-span2{grid-column:span 1}
+            .nav-date{display:none}
+            .stats-row{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="nav-sidebar-toggle" id="sidebar-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+            <div class="navbar-brand">JR MARKETING SHOP <span class="brand-dot"></span></div>
+        </div>
+        <div class="navbar-right">
+            <button class="nav-pos-btn" onclick="location.href='pos.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> POS</button>
+            <div class="nav-divider"></div>
+            <span class="nav-date" id="nav-date"></span>
+            <div class="nav-divider"></div>
+            <button class="nav-icon-btn" title="Notifications"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+            <div class="nav-user" id="nav-user"><div class="nav-user-avatar" id="nav-avatar">A</div><span id="nav-username">Admin</span></div>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <aside class="sidebar" id="sidebar"><div class="sidebar-inner"><ul class="sidebar-menu">
+            <li class="menu-item"><a href="dashboard.html" class="menu-link"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</span></a></li>
+            <li class="menu-item open" data-menu="contacts"><div class="menu-link active" onclick="toggleMenu('contacts')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Contacts</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link active" href="customers.html">&#8227;&nbsp; Customers</a></li><li><a class="submenu-link" href="suppliers.html">&#8227;&nbsp; Suppliers</a></li></ul></li>
+            <li class="menu-item" data-menu="products"><div class="menu-link" onclick="toggleMenu('products')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>Products</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="products.html">&#8227;&nbsp; Products List</a></li><li><a class="submenu-link" href="products.html#add">&#8227;&nbsp; Add New Product</a></li><li><a class="submenu-link" href="categories.html">&#8227;&nbsp; Categories</a></li><li><a class="submenu-link" href="brands.html">&#8227;&nbsp; Brands</a></li><li><a class="submenu-link" href="units.html">&#8227;&nbsp; Units</a></li><li><a class="submenu-link" href="stock.html">&#8227;&nbsp; Stock</a></li></ul></li>
+            <li class="menu-item" data-menu="purchases"><div class="menu-link" onclick="toggleMenu('purchases')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/></svg></span>Purchases</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="purchases.html">&#8227;&nbsp; Purchase List</a></li><li><a class="submenu-link" href="purchases.html#add">&#8227;&nbsp; Add Purchase</a></li><li><a class="submenu-link" href="purchases.html#return">&#8227;&nbsp; Purchase Return</a></li></ul></li>
+            <li class="menu-item" data-menu="sell"><div class="menu-link" onclick="toggleMenu('sell')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg></span>Sell</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="sales.html">&#8227;&nbsp; All Sales</a></li><li><a class="submenu-link" href="add-sale.html">&#8227;&nbsp; Add Sale</a></li><li><a class="submenu-link" href="sale-return.html">&#8227;&nbsp; Sale Return</a></li><li><a class="submenu-link" href="sales.html#quotations">&#8227;&nbsp; Quotations</a></li><li><a class="submenu-link" href="sales.html#credit">&#8227;&nbsp; Credit Sales</a></li></ul></li>
+            <li class="menu-item" data-menu="expenses"><div class="menu-link" onclick="toggleMenu('expenses')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Expenses</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="expenses.html">&#8227;&nbsp; Expense List</a></li><li><a class="submenu-link" href="expenses.html#add">&#8227;&nbsp; Add Expense</a></li><li><a class="submenu-link" href="expense-categories.html">&#8227;&nbsp; Expense Categories</a></li></ul></li>
+            <li class="menu-item"><a href="payments.html" class="menu-link"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Payments</span></a></li>
+            <li class="menu-item" data-menu="reports"><div class="menu-link" onclick="toggleMenu('reports')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>Reports</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="profit-loss.html">&#8227;&nbsp; Profit / Loss</a></li><li><a class="submenu-link" href="purchase-report.html">&#8227;&nbsp; Purchase Report</a></li><li><a class="submenu-link" href="sales-report.html">&#8227;&nbsp; Sales Report</a></li><li><a class="submenu-link" href="expense-report.html">&#8227;&nbsp; Expense Report</a></li><li><a class="submenu-link" href="stock-report.html">&#8227;&nbsp; Stock Report</a></li><li><a class="submenu-link" href="tax-report.html">&#8227;&nbsp; Tax Report</a></li></ul></li>
+        </ul></div></aside>
+
+        <main class="main">
+            <div class="content-header">
+                <div class="page-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Customers
+                </div>
+            </div>
+            <div class="content-body">
+
+                <!-- Stats Cards -->
+                <div class="stats-row">
+                    <div class="stat-card"><div class="stat-label">Total Customers</div><div class="stat-value" id="s-total">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Individual</div><div class="stat-value" id="s-individual" style="color:#16a34a">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Business</div><div class="stat-value" id="s-business" style="color:#2563eb">0</div></div>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('list')">Customer List</div>
+                    <div class="tab" onclick="switchTab('add')">+ Add Customer</div>
+                </div>
+
+                <!-- ═══════════════════ LIST TAB ═══════════════════ -->
+                <div class="tab-content active" id="tab-list">
+                    <div class="card">
+                        <div class="toolbar">
+                            <input type="text" id="search-input" placeholder="Search by name, phone, email, ID..." style="flex:1;min-width:200px" oninput="renderList()">
+                            <select id="filter-type" onchange="renderList()" style="width:150px"><option value="">All Types</option><option value="individual">Individual</option><option value="business">Business</option></select>
+                            <select id="filter-group" onchange="renderList()" style="width:150px"><option value="">All Groups</option><option value="Walk-In">Walk-In</option><option value="Wholesale">Wholesale</option><option value="Retail">Retail</option><option value="VIP">VIP</option></select>
+                            <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+                        </div>
+                        <div style="overflow-x:auto">
+                        <table>
+                            <thead><tr><th>#</th><th>Contact ID</th><th>Name</th><th>Type</th><th>Group</th><th>Mobile</th><th>Email</th><th>Balance</th><th>Credit Limit</th><th>Added</th><th style="text-align:center">Actions</th></tr></thead>
+                            <tbody id="customer-tbody"></tbody>
+                        </table>
+                        </div>
+                        <div class="empty-state" id="empty-state">No customers found. Add your first customer!</div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════ ADD TAB ═══════════════════ -->
+                <div class="tab-content" id="tab-add">
+                    <div class="card">
+                        <div class="card-title">Add Customer</div>
+                        <div class="ac-section">
+
+                            <!-- Individual / Business Toggle -->
+                            <div class="ac-toggle-row">
+                                <label class="ac-radio-label">
+                                    <input type="radio" name="ac-type" value="individual" checked id="ac-individual"/>
+                                    Individual
+                                </label>
+                                <label class="ac-radio-label">
+                                    <input type="radio" name="ac-type" value="business" id="ac-business"/>
+                                    Business
+                                </label>
+                            </div>
+
+                            <!-- Contact ID + Customer Group -->
+                            <div class="ac-grid-2">
+                                <div class="ac-field">
+                                    <label class="ac-label">Contact ID</label>
+                                    <input class="ac-input" type="text" id="ac-contact-id" placeholder="Auto-generated" readonly style="background:#f9fafb;color:#9ca3af;"/>
+                                </div>
+                                <div class="ac-field">
+                                    <label class="ac-label">Customer Group</label>
+                                    <select class="ac-select" id="ac-group">
+                                        <option value="">— Select Group —</option>
+                                        <option>Walk-In</option>
+                                        <option>Wholesale</option>
+                                        <option>Retail</option>
+                                        <option>VIP</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="ac-divider"></div>
+
+                            <!-- ── INDIVIDUAL FIELDS ── -->
+                            <div id="ac-individual-fields">
+                                <div class="ac-section-title">Personal Information</div>
+                                <div class="ac-grid-5">
+                                    <div class="ac-field">
+                                        <label class="ac-label">Prefix</label>
+                                        <select class="ac-select" id="ac-prefix">
+                                            <option value="">—</option>
+                                            <option>Mr.</option>
+                                            <option>Mrs.</option>
+                                            <option>Ms.</option>
+                                            <option>Dr.</option>
+                                            <option>Rev.</option>
+                                        </select>
+                                    </div>
+                                    <div class="ac-field ac-col-span2">
+                                        <label class="ac-label">First Name <span class="req">*</span></label>
+                                        <input class="ac-input" type="text" id="ac-first-name" placeholder="First name"/>
+                                        <span class="ac-error-msg" id="ac-first-name-err">First name is required.</span>
+                                    </div>
+                                    <div class="ac-field">
+                                        <label class="ac-label">Middle Name</label>
+                                        <input class="ac-input" type="text" id="ac-middle-name" placeholder="Middle"/>
+                                    </div>
+                                    <div class="ac-field">
+                                        <label class="ac-label">Last Name</label>
+                                        <input class="ac-input" type="text" id="ac-last-name" placeholder="Last name"/>
+                                    </div>
+                                </div>
+                                <div style="margin-top:12px;">
+                                    <div class="ac-field" style="max-width:200px;">
+                                        <label class="ac-label">Date of Birth</label>
+                                        <input class="ac-input" type="date" id="ac-dob"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── BUSINESS FIELDS ── -->
+                            <div id="ac-business-fields" style="display:none;">
+                                <div class="ac-section-title">Business Information</div>
+                                <div class="ac-field">
+                                    <label class="ac-label">Business Name <span class="req">*</span></label>
+                                    <input class="ac-input" type="text" id="ac-business-name" placeholder="Enter business name"/>
+                                    <span class="ac-error-msg" id="ac-business-name-err">Business name is required.</span>
+                                </div>
+                            </div>
+
+                            <div class="ac-divider"></div>
+
+                            <!-- Contact Information -->
+                            <div>
+                                <div class="ac-section-title">Contact Information</div>
+                                <div class="ac-grid-2">
+                                    <!-- Mobile -->
+                                    <div class="ac-field">
+                                        <label class="ac-label">Mobile <span class="req">*</span></label>
+                                        <div class="ac-phone-wrap">
+                                            <div class="ac-phone-prefix">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:4px;color:#6b7280;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 5.95 5.95l.77-.77a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                                +94
+                                            </div>
+                                            <input class="ac-input" type="tel" id="ac-mobile" placeholder="7X XXX XXXX" maxlength="10" style="border-radius:0 6px 6px 0;"/>
+                                        </div>
+                                        <span class="ac-error-msg" id="ac-mobile-err">Valid mobile number is required.</span>
+                                    </div>
+                                    <!-- Alternate Number -->
+                                    <div class="ac-field">
+                                        <label class="ac-label">Alternate Number</label>
+                                        <div class="ac-input-icon">
+                                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 5.95 5.95l.77-.77a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                                            <input class="ac-input" type="tel" id="ac-alt-number" placeholder="Alternate phone"/>
+                                        </div>
+                                    </div>
+                                    <!-- Landline -->
+                                    <div class="ac-field">
+                                        <label class="ac-label">Landline</label>
+                                        <div class="ac-input-icon">
+                                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.36a2 2 0 0 1 1.98-2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 5.95 5.95l.77-.77a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                                            <input class="ac-input" type="tel" id="ac-landline" placeholder="0XX XXX XXXX"/>
+                                        </div>
+                                    </div>
+                                    <!-- Email -->
+                                    <div class="ac-field">
+                                        <label class="ac-label">Email</label>
+                                        <div class="ac-input-icon">
+                                            <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                                            <input class="ac-input" type="email" id="ac-email" placeholder="example@email.com"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Assigned To -->
+                            <div class="ac-field" style="max-width:340px;">
+                                <label class="ac-label">Assigned To</label>
+                                <select class="ac-select" id="ac-assigned">
+                                    <option value="">— Select Staff —</option>
+                                    <option>System Admin</option>
+                                    <option>Branch Manager</option>
+                                    <option>Cash Counter 1</option>
+                                </select>
+                            </div>
+
+                            <!-- More Information Accordion -->
+                            <div>
+                                <button class="ac-more-btn" type="button" id="ac-more-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                                    More Information
+                                    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                                </button>
+                                <div class="ac-more-section" id="ac-more-section">
+                                    <!-- Row 1: Tax Number | Opening Balance | Pay Term -->
+                                    <div class="ac-grid-3" style="margin-bottom:14px;">
+                                        <div class="ac-field">
+                                            <label class="ac-label">Tax Number</label>
+                                            <div class="ac-input-icon">
+                                                <span class="icon" style="font-size:12px;font-weight:700;font-style:italic;color:#6b7280;">T</span>
+                                                <input class="ac-input" type="text" id="ac-tax" placeholder="Tax number"/>
+                                            </div>
+                                        </div>
+                                        <div class="ac-field">
+                                            <label class="ac-label">Opening Balance</label>
+                                            <div class="ac-input-icon">
+                                                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
+                                                <input class="ac-input" type="number" id="ac-opening-balance" placeholder="0" min="0" step="0.01"/>
+                                            </div>
+                                        </div>
+                                        <div class="ac-field">
+                                            <label class="ac-label">Pay Term</label>
+                                            <div class="ac-payterm-wrap">
+                                                <input class="ac-input" type="number" id="ac-payterm-val" placeholder="Pay term" min="0"/>
+                                                <select class="ac-select" id="ac-payterm-unit">
+                                                    <option value="">Please Select</option>
+                                                    <option value="days">Days</option>
+                                                    <option value="months">Months</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Row 2: Credit Limit -->
+                                    <div style="max-width:260px;">
+                                        <div class="ac-field">
+                                            <label class="ac-label">Credit Limit</label>
+                                            <div class="ac-input-icon">
+                                                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
+                                                <input class="ac-input" type="number" id="ac-credit-limit" placeholder="" min="0" step="0.01"/>
+                                            </div>
+                                            <span style="font-size:11px;color:#6b7280;margin-top:3px;">Keep blank for no limit</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ac-divider"></div>
+
+                            <!-- Address Section -->
+                            <div>
+                                <div class="ac-section-title">Address</div>
+                                <div style="display:flex;flex-direction:column;gap:12px;">
+                                    <div class="ac-field">
+                                        <label class="ac-label">Address Line 1</label>
+                                        <input class="ac-input" type="text" id="ac-addr1" placeholder="No, Street name"/>
+                                    </div>
+                                    <div class="ac-field">
+                                        <label class="ac-label">Address Line 2</label>
+                                        <input class="ac-input" type="text" id="ac-addr2" placeholder="Apartment, suite, unit"/>
+                                    </div>
+                                    <div class="ac-grid-4">
+                                        <div class="ac-field">
+                                            <label class="ac-label">City</label>
+                                            <input class="ac-input" type="text" id="ac-city" placeholder="Colombo"/>
+                                        </div>
+                                        <div class="ac-field">
+                                            <label class="ac-label">State / Province</label>
+                                            <input class="ac-input" type="text" id="ac-state" placeholder="Western"/>
+                                        </div>
+                                        <div class="ac-field">
+                                            <label class="ac-label">Country</label>
+                                            <select class="ac-select" id="ac-country">
+                                                <option value="LK" selected>Sri Lanka</option>
+                                                <option value="IN">India</option>
+                                                <option value="SG">Singapore</option>
+                                                <option value="AE">UAE</option>
+                                                <option value="GB">United Kingdom</option>
+                                                <option value="US">United States</option>
+                                                <option value="AU">Australia</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="ac-field">
+                                            <label class="ac-label">Zip / Postal Code</label>
+                                            <input class="ac-input" type="text" id="ac-zip" placeholder="00100"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="btn btn-outline" onclick="resetForm()" style="height:38px;padding:0 22px">Clear All</button>
+                                <button class="btn btn-primary" onclick="saveCustomer()" style="height:38px;padding:0 24px">💾 Save Customer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- View Customer Modal -->
+    <div class="view-overlay" id="view-overlay">
+        <div class="view-modal">
+            <div class="view-header"><h2 id="view-title">Customer Details</h2><button class="view-close" id="view-close" title="Close">✕</button></div>
+            <div class="view-body" id="view-body"></div>
+        </div>
+    </div>
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/toast.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        Auth.requireAuth();
+        const session = Auth.getSession();
+        if (session && session.user) {
+            document.getElementById('nav-username').textContent = session.user.name || session.user.username;
+            document.getElementById('nav-avatar').textContent = (session.user.name || session.user.username).charAt(0).toUpperCase();
+        }
+        document.getElementById('nav-date').textContent = new Date().toLocaleDateString('en-GB');
+        document.getElementById('sidebar-toggle').addEventListener('click', () => {
+            const sb = document.getElementById('sidebar');
+            if (window.innerWidth <= 768) sb.classList.toggle('mobile-open'); else sb.classList.toggle('collapsed');
+        });
+        document.getElementById('nav-user').addEventListener('click', () => { if (confirm('Logout?')) Auth.logout(); });
+
+        // Individual / Business toggle
+        document.querySelectorAll('input[name="ac-type"]').forEach(r => r.addEventListener('change', () => {
+            const isBiz = document.getElementById('ac-business').checked;
+            document.getElementById('ac-individual-fields').style.display = isBiz ? 'none' : '';
+            document.getElementById('ac-business-fields').style.display = isBiz ? '' : 'none';
+            clearErrors();
+        }));
+
+        // More Information accordion
+        document.getElementById('ac-more-btn').addEventListener('click', () => {
+            const sec = document.getElementById('ac-more-section');
+            const isOpen = sec.classList.toggle('open');
+            document.getElementById('ac-more-btn').classList.toggle('open', isOpen);
+        });
+
+        // View modal close
+        document.getElementById('view-close').addEventListener('click', closeViewModal);
+        document.getElementById('view-overlay').addEventListener('click', e => { if (e.target === document.getElementById('view-overlay')) closeViewModal(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewModal(); });
+
+        // Generate contact ID
+        document.getElementById('ac-contact-id').value = genContactId();
+
+        if (location.hash === '#add') switchTab('add');
+        renderList();
+        updateStats();
+    });
+
+    function toggleMenu(id) { const item = document.querySelector(`[data-menu="${id}"]`); if (!item) return; const w = item.classList.contains('open'); document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open')); if (!w) item.classList.add('open'); }
+
+    function genContactId() { return 'C-' + String(Date.now()).slice(-6); }
+
+    function switchTab(name) {
+        document.querySelectorAll('.tab').forEach((t, i) => { t.classList.toggle('active', (name === 'list' ? i === 0 : i === 1)); });
+        document.getElementById('tab-list').classList.toggle('active', name === 'list');
+        document.getElementById('tab-add').classList.toggle('active', name === 'add');
+        if (name === 'add') document.getElementById('ac-contact-id').value = genContactId();
+    }
+
+    function getAll() { return JSON.parse(localStorage.getItem('jr_customers') || '[]'); }
+    function saveAll(arr) { localStorage.setItem('jr_customers', JSON.stringify(arr)); }
+
+    function clearErrors() {
+        document.querySelectorAll('.ac-error-msg').forEach(e => e.classList.remove('show'));
+        document.querySelectorAll('.ac-input.error').forEach(e => e.classList.remove('error'));
+    }
+
+    function saveCustomer() {
+        clearErrors();
+        let valid = true;
+        const isBiz = document.getElementById('ac-business').checked;
+
+        if (isBiz) {
+            const bn = document.getElementById('ac-business-name');
+            if (!bn.value.trim()) { bn.classList.add('error'); document.getElementById('ac-business-name-err').classList.add('show'); valid = false; }
+        } else {
+            const fn = document.getElementById('ac-first-name');
+            if (!fn.value.trim()) { fn.classList.add('error'); document.getElementById('ac-first-name-err').classList.add('show'); valid = false; }
+        }
+
+        const mob = document.getElementById('ac-mobile');
+        if (!mob.value.trim() || !/^[0-9]{9,10}$/.test(mob.value.trim())) {
+            mob.classList.add('error'); document.getElementById('ac-mobile-err').classList.add('show'); valid = false;
+        }
+
+        if (!valid) return;
+
+        // Build display name
+        let displayName;
+        if (isBiz) {
+            displayName = document.getElementById('ac-business-name').value.trim();
+        } else {
+            const parts = [
+                document.getElementById('ac-prefix').value,
+                document.getElementById('ac-first-name').value.trim(),
+                document.getElementById('ac-middle-name').value.trim(),
+                document.getElementById('ac-last-name').value.trim()
+            ].filter(Boolean);
+            displayName = parts.join(' ');
+        }
+
+        const record = {
+            id: document.getElementById('ac-contact-id').value || genContactId(),
+            type: isBiz ? 'business' : 'individual',
+            name: displayName,
+            // Individual-specific
+            prefix: isBiz ? '' : document.getElementById('ac-prefix').value,
+            firstName: isBiz ? '' : document.getElementById('ac-first-name').value.trim(),
+            middleName: isBiz ? '' : document.getElementById('ac-middle-name').value.trim(),
+            lastName: isBiz ? '' : document.getElementById('ac-last-name').value.trim(),
+            dob: isBiz ? '' : document.getElementById('ac-dob').value,
+            // Business-specific
+            businessName: isBiz ? document.getElementById('ac-business-name').value.trim() : '',
+            // Contact info
+            group: document.getElementById('ac-group').value,
+            mobile: document.getElementById('ac-mobile').value.trim(),
+            altNumber: document.getElementById('ac-alt-number').value.trim(),
+            landline: document.getElementById('ac-landline').value.trim(),
+            email: document.getElementById('ac-email').value.trim(),
+            assignedTo: document.getElementById('ac-assigned').value,
+            // More information
+            taxNumber: document.getElementById('ac-tax').value.trim(),
+            balance: parseFloat(document.getElementById('ac-opening-balance').value) || 0,
+            payTermVal: document.getElementById('ac-payterm-val').value,
+            payTermUnit: document.getElementById('ac-payterm-unit').value,
+            creditLimit: document.getElementById('ac-credit-limit').value ? parseFloat(document.getElementById('ac-credit-limit').value) : null,
+            // Address
+            addr1: document.getElementById('ac-addr1').value.trim(),
+            addr2: document.getElementById('ac-addr2').value.trim(),
+            city: document.getElementById('ac-city').value.trim(),
+            state: document.getElementById('ac-state').value.trim(),
+            country: document.getElementById('ac-country').value,
+            zip: document.getElementById('ac-zip').value.trim(),
+            // Meta
+            status: 'Active',
+            createdAt: new Date().toISOString()
+        };
+
+        const all = getAll(); all.unshift(record); saveAll(all);
+        Toast.success(`Customer "${displayName}" saved successfully!`);
+        resetForm(); switchTab('list'); renderList(); updateStats();
+    }
+
+    function resetForm() {
+        // Reset radios to individual
+        document.getElementById('ac-individual').checked = true;
+        document.getElementById('ac-individual-fields').style.display = '';
+        document.getElementById('ac-business-fields').style.display = 'none';
+        clearErrors();
+        // Clear all inputs
+        const ids = ['ac-first-name','ac-middle-name','ac-last-name','ac-dob','ac-business-name','ac-mobile','ac-alt-number','ac-landline','ac-email','ac-tax','ac-opening-balance','ac-payterm-val','ac-credit-limit','ac-addr1','ac-addr2','ac-city','ac-state','ac-zip'];
+        ids.forEach(id => document.getElementById(id).value = '');
+        // Reset selects
+        document.getElementById('ac-prefix').value = '';
+        document.getElementById('ac-group').value = '';
+        document.getElementById('ac-assigned').value = '';
+        document.getElementById('ac-payterm-unit').value = '';
+        document.getElementById('ac-country').value = 'LK';
+        // New contact ID
+        document.getElementById('ac-contact-id').value = genContactId();
+        // Close More Information
+        document.getElementById('ac-more-section').classList.remove('open');
+        document.getElementById('ac-more-btn').classList.remove('open');
+    }
+
+    function updateStats() {
+        const all = getAll();
+        document.getElementById('s-total').textContent = all.length;
+        document.getElementById('s-individual').textContent = all.filter(c => c.type !== 'business').length;
+        document.getElementById('s-business').textContent = all.filter(c => c.type === 'business').length;
+    }
+
+    function renderList() {
+        const q = (document.getElementById('search-input').value || '').toLowerCase();
+        const ft = document.getElementById('filter-type').value;
+        const fg = document.getElementById('filter-group').value;
+        let items = getAll();
+        if (q) items = items.filter(c => (c.name||'').toLowerCase().includes(q) || (c.mobile||c.phone||'').includes(q) || (c.email||'').toLowerCase().includes(q) || (c.id||'').toLowerCase().includes(q) || (c.businessName||'').toLowerCase().includes(q));
+        if (ft) items = items.filter(c => ft === 'business' ? c.type === 'business' : c.type !== 'business');
+        if (fg) items = items.filter(c => c.group === fg);
+        const tbody = document.getElementById('customer-tbody');
+        const empty = document.getElementById('empty-state');
+        if (items.length === 0) { tbody.innerHTML = ''; empty.style.display = ''; return; }
+        empty.style.display = 'none';
+        tbody.innerHTML = items.map((c, i) => {
+            const typeBadge = c.type === 'business'
+                ? '<span class="badge badge-blue">Business</span>'
+                : '<span class="badge badge-green">Individual</span>';
+            const phone = c.mobile || c.phone || '—';
+            const cl = c.creditLimit !== null && c.creditLimit !== undefined ? fmtC(c.creditLimit) : 'No Limit';
+            return `<tr>
+                <td>${i + 1}</td>
+                <td style="font-family:monospace;font-size:12px;color:#6b7280">${c.id}</td>
+                <td><strong>${c.name}</strong></td>
+                <td>${typeBadge}</td>
+                <td>${c.group || '—'}</td>
+                <td>${phone}</td>
+                <td>${c.email || '—'}</td>
+                <td><strong>${fmtC(c.balance || 0)}</strong></td>
+                <td style="font-size:12px">${cl}</td>
+                <td style="font-size:12px;color:#6b7280">${new Date(c.createdAt).toLocaleDateString('en-GB')}</td>
+                <td style="text-align:center;white-space:nowrap">
+                    <button class="action-btn action-btn-view" onclick="viewCustomer('${c.id}')" title="View details"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    <button class="action-btn action-btn-del" onclick="deleteCustomer('${c.id}')" title="Delete" style="margin-left:4px"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function fmtC(v) { return 'LKR ' + parseFloat(v || 0).toLocaleString('en-LK', { minimumFractionDigits: 2 }); }
+
+    function viewCustomer(id) {
+        const c = getAll().find(x => x.id === id);
+        if (!c) return;
+        const countryNames = { LK:'Sri Lanka', IN:'India', SG:'Singapore', AE:'UAE', GB:'United Kingdom', US:'United States', AU:'Australia', other:'Other' };
+        const addr = [c.addr1, c.addr2, c.city, c.state, countryNames[c.country] || c.country, c.zip].filter(Boolean).join(', ') || c.address || '—';
+        const payTerm = c.payTermVal ? `${c.payTermVal} ${c.payTermUnit || ''}` : '—';
+        const cl = c.creditLimit !== null && c.creditLimit !== undefined ? fmtC(c.creditLimit) : 'No Limit';
+
+        let rows = `
+            <div class="view-row"><div class="view-label">Contact ID</div><div class="view-val" style="font-family:monospace">${c.id}</div></div>
+            <div class="view-row"><div class="view-label">Type</div><div class="view-val">${c.type === 'business' ? '<span class="badge badge-blue">Business</span>' : '<span class="badge badge-green">Individual</span>'}</div></div>
+            <div class="view-row"><div class="view-label">Name</div><div class="view-val"><strong>${c.name}</strong></div></div>`;
+        if (c.type === 'business') {
+            rows += `<div class="view-row"><div class="view-label">Business Name</div><div class="view-val">${c.businessName || '—'}</div></div>`;
+        } else {
+            if (c.dob) rows += `<div class="view-row"><div class="view-label">Date of Birth</div><div class="view-val">${new Date(c.dob).toLocaleDateString('en-GB')}</div></div>`;
+        }
+        rows += `
+            <div class="view-row"><div class="view-label">Customer Group</div><div class="view-val">${c.group || '—'}</div></div>
+            <div style="height:8px"></div>
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Contact Information</div>
+            <div class="view-row"><div class="view-label">Mobile</div><div class="view-val">+94 ${c.mobile || c.phone || '—'}</div></div>
+            <div class="view-row"><div class="view-label">Alternate Number</div><div class="view-val">${c.altNumber || '—'}</div></div>
+            <div class="view-row"><div class="view-label">Landline</div><div class="view-val">${c.landline || '—'}</div></div>
+            <div class="view-row"><div class="view-label">Email</div><div class="view-val">${c.email || '—'}</div></div>
+            <div class="view-row"><div class="view-label">Assigned To</div><div class="view-val">${c.assignedTo || '—'}</div></div>
+            <div style="height:8px"></div>
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Financial Information</div>
+            <div class="view-row"><div class="view-label">Tax Number</div><div class="view-val">${c.taxNumber || '—'}</div></div>
+            <div class="view-row"><div class="view-label">Opening Balance</div><div class="view-val"><strong>${fmtC(c.balance || 0)}</strong></div></div>
+            <div class="view-row"><div class="view-label">Pay Term</div><div class="view-val">${payTerm}</div></div>
+            <div class="view-row"><div class="view-label">Credit Limit</div><div class="view-val">${cl}</div></div>
+            <div style="height:8px"></div>
+            <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Address</div>
+            <div class="view-row"><div class="view-label">Full Address</div><div class="view-val">${addr}</div></div>
+            <div style="height:8px"></div>
+            <div class="view-row"><div class="view-label">Added On</div><div class="view-val">${new Date(c.createdAt).toLocaleDateString('en-GB')} at ${new Date(c.createdAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</div></div>`;
+
+        document.getElementById('view-title').textContent = c.name;
+        document.getElementById('view-body').innerHTML = rows;
+        document.getElementById('view-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeViewModal() {
+        document.getElementById('view-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function deleteCustomer(id) {
+        if (!confirm('Delete this customer?')) return;
+        saveAll(getAll().filter(c => c.id !== id));
+        Toast.success('Customer deleted.'); renderList(); updateStats();
+    }
+
+    function exportCSV() {
+        const all = getAll();
+        if (!all.length) { Toast.warning('No data to export.'); return; }
+        const csv = 'Contact ID,Type,Name,Group,Mobile,Alt Number,Landline,Email,Assigned To,Tax Number,Balance,Pay Term,Credit Limit,Address,City,State,Country,Zip,Added\n' +
+            all.map(c => {
+                const addr = [c.addr1, c.addr2].filter(Boolean).join(', ') || c.address || '';
+                const payTerm = c.payTermVal ? `${c.payTermVal} ${c.payTermUnit || ''}` : '';
+                const cl = c.creditLimit !== null && c.creditLimit !== undefined ? c.creditLimit : '';
+                return `"${c.id}","${c.type||'individual'}","${c.name}","${c.group||''}","${c.mobile||c.phone||''}","${c.altNumber||''}","${c.landline||''}","${c.email||''}","${c.assignedTo||''}","${c.taxNumber||''}",${c.balance||0},"${payTerm}","${cl}","${addr}","${c.city||''}","${c.state||''}","${c.country||''}","${c.zip||''}","${c.createdAt}"`;
+            }).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'customers.csv'; a.click();
+        Toast.success('CSV exported!');
+    }
+    </script>
+</body>
+</html>

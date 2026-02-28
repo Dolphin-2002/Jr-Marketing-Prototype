@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JR MARKETING SHOP — Purchases</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a5c2e'/><text x='50%25' y='55%25' font-size='13' font-weight='900' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='Arial'>JR</text></svg>">
+    <link rel="stylesheet" href="assets/css/variables.css"><link rel="stylesheet" href="assets/css/base.css">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;background:#eef1f8;min-height:100vh;display:flex;flex-direction:column}.navbar{background:#0a5c2e;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 18px 0 0;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(10,92,46,0.4);flex-shrink:0}.navbar-left{display:flex;align-items:center;height:100%}.nav-sidebar-toggle{width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.8);transition:background .2s}.nav-sidebar-toggle:hover{background:rgba(255,255,255,0.1)}.navbar-brand{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;padding:0 14px 0 8px;white-space:nowrap}.brand-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;display:inline-block}.navbar-right{display:flex;align-items:center;gap:5px}.nav-pos-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:white;padding:0 12px;height:34px;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s}.nav-pos-btn:hover{background:rgba(255,255,255,0.22)}.nav-divider{width:1px;height:22px;background:rgba(255,255,255,0.2);margin:0 4px}.nav-date{color:rgba(255,255,255,0.85);font-size:13px;font-weight:600;padding:0 4px;white-space:nowrap}.nav-icon-btn{width:36px;height:36px;border-radius:8px;background:transparent;border:none;color:rgba(255,255,255,0.75);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}.nav-icon-btn:hover{background:rgba(255,255,255,0.12);color:white}.nav-user{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:8px;padding:0 10px;height:34px;color:white;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}.nav-user:hover{background:rgba(255,255,255,0.2)}.nav-user-avatar{width:24px;height:24px;border-radius:50%;background:#16a34a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+        .layout{display:flex;flex:1;min-height:calc(100vh - 52px)}.sidebar{width:240px;background:#f8f9fc;border-right:1px solid #dde3f0;flex-shrink:0;overflow-y:auto;overflow-x:hidden;transition:width .28s ease}.sidebar.collapsed{width:0}.sidebar-inner{padding:6px 0 28px}.sidebar-menu{list-style:none}.menu-item{position:relative}.menu-link{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 10px 14px;color:#374151;font-size:13.5px;font-weight:500;text-decoration:none;cursor:pointer;transition:background .15s,color .15s;border-left:3px solid transparent;user-select:none;white-space:nowrap}.menu-link:hover{background:#dcfce7;color:#15803d}.menu-link.active{background:#dcfce7;color:#15803d;border-left-color:#16a34a;font-weight:700}.menu-link-left{display:flex;align-items:center;gap:10px}.menu-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#6b7280}.menu-link.active .menu-icon,.menu-link:hover .menu-icon{color:#16a34a}.menu-chevron{font-size:10px;color:#9ca3af;transition:transform .2s}.menu-item.open>.menu-link .menu-chevron{transform:rotate(90deg)}.submenu{display:none;background:#f0fdf4;list-style:none}.menu-item.open .submenu{display:block}.submenu-link{display:flex;align-items:center;gap:8px;padding:8px 16px 8px 40px;color:#4b5563;font-size:12.5px;text-decoration:none;transition:color .15s,background .15s;cursor:pointer;white-space:nowrap}.submenu-link:hover{color:#15803d;background:#bbf7d0}.submenu-link.active{color:#15803d;background:#bbf7d0;font-weight:600}
+        .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}.content-header{background:#0a5c2e;padding:22px 26px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}.page-title{font-size:22px;font-weight:800;color:#fff;display:flex;align-items:center;gap:10px}.content-body{padding:20px;background:#eef1f8;flex:1}
+        .tabs{display:flex;gap:0;border-bottom:2px solid #e5e7eb;margin-bottom:18px}.tab-btn{padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;background:none;border:none;color:#6b7280;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .2s}.tab-btn.active{color:#16a34a;border-bottom-color:#16a34a}.tab-btn:hover{color:#15803d}.tab-panel{display:none}.tab-panel.active{display:block}
+        .card{background:#fff;border-radius:12px;box-shadow:0 1px 5px rgba(0,0,0,.07);padding:20px;margin-bottom:18px}
+        .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar input,.toolbar select{height:36px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;font-size:13px;outline:none}.toolbar input:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12)}
+        .btn{height:36px;padding:0 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .2s}.btn-primary{background:#16a34a;color:#fff}.btn-primary:hover{background:#15803d}.btn-outline{background:#fff;color:#374151;border:1px solid #d1d5db}.btn-outline:hover{background:#f3f4f6}.btn-danger{background:#dc2626;color:#fff}.btn-danger:hover{background:#b91c1c}
+        .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.form-group{display:flex;flex-direction:column;gap:4px}.form-group label{font-size:12px;font-weight:600;color:#374151}.form-group input,.form-group select,.form-group textarea{height:36px;border:1px solid #d1d5db;border-radius:8px;padding:0 10px;font-size:13px;outline:none}.form-group textarea{height:60px;padding:8px 10px;resize:vertical}.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.12)}
+        table{width:100%;border-collapse:collapse}th{background:#f9fafb;padding:10px 12px;font-size:12px;font-weight:600;color:#6b7280;text-align:left;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e5e7eb}td{padding:10px 12px;font-size:13px;color:#374151;border-bottom:1px solid #f3f4f6}tr:hover{background:#f0fdf4}.empty-state{text-align:center;padding:40px;color:#9ca3af;font-size:14px}
+        .badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600}.badge-green{background:#dcfce7;color:#16a34a}.badge-red{background:#fee2e2;color:#dc2626}
+        .action-btn{padding:4px 10px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;margin-right:4px}
+        @media(max-width:768px){.sidebar{display:none}.sidebar.mobile-open{display:flex;position:fixed;left:0;top:52px;height:calc(100vh - 52px);z-index:300;width:240px;box-shadow:4px 0 20px rgba(0,0,0,.2)}.form-grid{grid-template-columns:1fr}.nav-date{display:none}}
+    </style>
+</head>
+<body>
+    <nav class="navbar"><div class="navbar-left"><div class="nav-sidebar-toggle" id="sidebar-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><div class="navbar-brand">JR MARKETING SHOP <span class="brand-dot"></span></div></div><div class="navbar-right"><button class="nav-pos-btn" onclick="location.href='pos.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> POS</button><div class="nav-divider"></div><span class="nav-date" id="nav-date"></span><div class="nav-divider"></div><button class="nav-icon-btn" title="Notifications"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><div class="nav-user" id="nav-user"><div class="nav-user-avatar" id="nav-avatar">A</div><span id="nav-username">Admin</span></div></div></nav>
+    <div class="layout">
+        <aside class="sidebar" id="sidebar"><div class="sidebar-inner"><ul class="sidebar-menu">
+            <li class="menu-item"><a href="dashboard.html" class="menu-link"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</span></a></li>
+            <li class="menu-item" data-menu="contacts"><div class="menu-link" onclick="toggleMenu('contacts')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Contacts</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="customers.html">&#8227;&nbsp; Customers</a></li><li><a class="submenu-link" href="suppliers.html">&#8227;&nbsp; Suppliers</a></li></ul></li>
+            <li class="menu-item" data-menu="products"><div class="menu-link" onclick="toggleMenu('products')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>Products</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="products.html">&#8227;&nbsp; Products List</a></li><li><a class="submenu-link" href="products.html#add">&#8227;&nbsp; Add New Product</a></li><li><a class="submenu-link" href="categories.html">&#8227;&nbsp; Categories</a></li><li><a class="submenu-link" href="brands.html">&#8227;&nbsp; Brands</a></li><li><a class="submenu-link" href="units.html">&#8227;&nbsp; Units</a></li><li><a class="submenu-link" href="stock.html">&#8227;&nbsp; Stock</a></li></ul></li>
+            <li class="menu-item open" data-menu="purchases"><div class="menu-link active" onclick="toggleMenu('purchases')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg></span>Purchases</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link active" href="purchases.html">&#8227;&nbsp; Purchase List</a></li><li><a class="submenu-link" href="purchases.html#add">&#8227;&nbsp; Add Purchase</a></li><li><a class="submenu-link" href="purchases.html#return">&#8227;&nbsp; Purchase Return</a></li></ul></li>
+            <li class="menu-item" data-menu="sell"><div class="menu-link" onclick="toggleMenu('sell')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>Sell</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="sales.html">&#8227;&nbsp; All Sales</a></li><li><a class="submenu-link" href="add-sale.html">&#8227;&nbsp; Add Sale</a></li><li><a class="submenu-link" href="sale-return.html">&#8227;&nbsp; Sale Return</a></li><li><a class="submenu-link" href="sales.html#quotations">&#8227;&nbsp; Quotations</a></li><li><a class="submenu-link" href="sales.html#credit">&#8227;&nbsp; Credit Sales</a></li></ul></li>
+            <li class="menu-item" data-menu="expenses"><div class="menu-link" onclick="toggleMenu('expenses')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Expenses</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="expenses.html">&#8227;&nbsp; Expense List</a></li><li><a class="submenu-link" href="expenses.html#add">&#8227;&nbsp; Add Expense</a></li><li><a class="submenu-link" href="expense-categories.html">&#8227;&nbsp; Expense Categories</a></li></ul></li>
+            <li class="menu-item"><a href="payments.html" class="menu-link"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="10" y2="15"/><line x1="13" y1="15" x2="17" y2="15"/></svg></span>Payments</span></a></li>
+            <li class="menu-item" data-menu="reports"><div class="menu-link" onclick="toggleMenu('reports')"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>Reports</span><span class="menu-chevron">&#9654;</span></div><ul class="submenu"><li><a class="submenu-link" href="profit-loss.html">&#8227;&nbsp; Profit / Loss</a></li><li><a class="submenu-link" href="purchase-report.html">&#8227;&nbsp; Purchase Report</a></li><li><a class="submenu-link" href="sales-report.html">&#8227;&nbsp; Sales Report</a></li><li><a class="submenu-link" href="expense-report.html">&#8227;&nbsp; Expense Report</a></li><li><a class="submenu-link" href="stock-report.html">&#8227;&nbsp; Stock Report</a></li><li><a class="submenu-link" href="tax-report.html">&#8227;&nbsp; Tax Report</a></li></ul></li>
+        </ul></div></aside>
+        <main class="main">
+            <div class="content-header"><div class="page-title"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> Purchases</div></div>
+            <div class="content-body">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('list')">📋 Purchase List</button>
+                    <button class="tab-btn" onclick="switchTab('add')">➕ Add Purchase</button>
+                    <button class="tab-btn" onclick="switchTab('return')">🔄 Purchase Return</button>
+                </div>
+                <!-- Purchase List -->
+                <div class="tab-panel active" id="tab-list">
+                    <div class="card">
+                        <div class="toolbar">
+                            <input type="text" id="search-input" placeholder="Search purchases..." style="flex:1;min-width:200px" oninput="renderList()">
+                            <input type="date" id="filter-date" onchange="renderList()">
+                            <button class="btn btn-outline" onclick="exportCSV()">📥 Export</button>
+                        </div>
+                        <table><thead><tr><th>#</th><th>Date</th><th>Ref No</th><th>Supplier</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody id="purchase-tbody"></tbody></table>
+                        <div class="empty-state" id="empty-list">No purchases recorded yet.</div>
+                    </div>
+                </div>
+                <!-- Add Purchase -->
+                <div class="tab-panel" id="tab-add">
+                    <div class="card">
+                        <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">New Purchase</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Supplier *</label><select id="p-supplier"><option value="">Select supplier</option></select></div>
+                            <div class="form-group"><label>Date *</label><input type="date" id="p-date"></div>
+                            <div class="form-group"><label>Reference No</label><input type="text" id="p-ref" placeholder="PUR-001"></div>
+                        </div>
+                        <h4 style="font-size:13px;font-weight:700;margin:18px 0 10px">Add Items</h4>
+                        <div class="form-grid" style="grid-template-columns:2fr 1fr 1fr 1fr auto;align-items:end">
+                            <div class="form-group"><label>Product</label><select id="p-product"><option value="">Select product</option></select></div>
+                            <div class="form-group"><label>Quantity</label><input type="number" id="p-qty" placeholder="0" min="1"></div>
+                            <div class="form-group"><label>Unit Price</label><input type="number" id="p-unit-price" placeholder="0.00" step="0.01"></div>
+                            <div class="form-group"><label>Subtotal</label><input type="text" id="p-subtotal" readonly disabled></div>
+                            <button class="btn btn-primary" style="height:36px" onclick="addItem()">Add</button>
+                        </div>
+                        <table style="margin-top:12px"><thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th><th></th></tr></thead><tbody id="item-tbody"></tbody></table>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:2px solid #e5e7eb">
+                            <strong style="font-size:16px">Total: <span id="p-total">LKR 0.00</span></strong>
+                            <div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="clearForm()">Clear</button><button class="btn btn-primary" onclick="savePurchase()">💾 Save Purchase</button></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Purchase Return -->
+                <div class="tab-panel" id="tab-return">
+                    <div class="card">
+                        <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">Purchase Return</h3>
+                        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr">
+                            <div class="form-group"><label>Select Purchase</label><select id="ret-purchase"><option value="">Select purchase to return</option></select></div>
+                            <div class="form-group"><label>Return Date</label><input type="date" id="ret-date"></div>
+                            <div class="form-group"><label>Reason</label><input type="text" id="ret-reason" placeholder="Reason for return"></div>
+                        </div>
+                        <div id="ret-items" style="margin-top:14px"></div>
+                        <div style="margin-top:14px"><button class="btn btn-danger" onclick="saveReturn()">🔄 Process Return</button></div>
+                        <table style="margin-top:20px"><thead><tr><th>#</th><th>Date</th><th>Purchase Ref</th><th>Reason</th><th>Amount</th></tr></thead><tbody id="return-tbody"></tbody></table>
+                        <div class="empty-state" id="empty-returns">No purchase returns yet.</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="assets/js/utils.js"></script><script src="assets/js/auth.js"></script><script src="assets/js/toast.js"></script>
+    <script>
+    const STORAGE_KEY = 'jr_purchases';
+    const RETURN_KEY = 'jr_purchase_returns';
+    let purchaseItems = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        Auth.requireAuth();
+        const session = Auth.getSession(); if (session && session.user) { document.getElementById('nav-username').textContent = session.user.name || session.user.username; document.getElementById('nav-avatar').textContent = (session.user.name || session.user.username).charAt(0).toUpperCase(); }
+        document.getElementById('nav-date').textContent = new Date().toLocaleDateString('en-GB');
+        document.getElementById('sidebar-toggle').addEventListener('click', () => { const sb = document.getElementById('sidebar'); if (window.innerWidth <= 768) sb.classList.toggle('mobile-open'); else sb.classList.toggle('collapsed'); });
+        document.getElementById('nav-user').addEventListener('click', () => { if (confirm('Logout?')) Auth.logout(); });
+        document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
+        document.getElementById('ret-date').value = new Date().toISOString().split('T')[0];
+        loadDropdowns(); renderList(); renderReturns();
+        // qty/price change auto subtotal
+        document.getElementById('p-qty').addEventListener('input', calcSub);
+        document.getElementById('p-unit-price').addEventListener('input', calcSub);
+        // Hash nav
+        if (location.hash === '#add') switchTab('add');
+        else if (location.hash === '#return') switchTab('return');
+    });
+    function toggleMenu(id) { const item = document.querySelector(`[data-menu="${id}"]`); if (!item) return; const w = item.classList.contains('open'); document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open')); if (!w) item.classList.add('open'); }
+    function fmtC(v) { return 'LKR ' + parseFloat(v||0).toLocaleString('en-LK',{minimumFractionDigits:2}); }
+    function switchTab(name) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        const idx = {list:0,add:1,return:2}[name]||0;
+        document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+        document.getElementById('tab-'+name).classList.add('active');
+    }
+    function loadDropdowns() {
+        const suppliers = JSON.parse(localStorage.getItem('jr_suppliers')||'[]');
+        const products = JSON.parse(localStorage.getItem('jr_products')||'[]');
+        const ss = document.getElementById('p-supplier');
+        suppliers.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.company || s.name; ss.appendChild(o); });
+        const ps = document.getElementById('p-product');
+        products.forEach(p => { const o = document.createElement('option'); o.value = p.id || p.sku; o.textContent = p.name + (p.sku?' ('+p.sku+')':''); ps.appendChild(o); });
+        // Return dropdown
+        const purchases = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+        const rp = document.getElementById('ret-purchase');
+        purchases.forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = (p.ref||p.id)+' — '+p.supplier+' — '+fmtC(p.total); rp.appendChild(o); });
+    }
+    function calcSub() {
+        const q = parseFloat(document.getElementById('p-qty').value)||0;
+        const u = parseFloat(document.getElementById('p-unit-price').value)||0;
+        document.getElementById('p-subtotal').value = fmtC(q*u);
+    }
+    function addItem() {
+        const sel = document.getElementById('p-product');
+        if (!sel.value) { Toast.warning('Select a product'); return; }
+        const qty = parseInt(document.getElementById('p-qty').value)||0;
+        const price = parseFloat(document.getElementById('p-unit-price').value)||0;
+        if (qty <= 0 || price <= 0) { Toast.warning('Enter valid quantity and price'); return; }
+        purchaseItems.push({ product: sel.options[sel.selectedIndex].textContent, qty, price, subtotal: qty*price });
+        renderItems(); sel.value=''; document.getElementById('p-qty').value=''; document.getElementById('p-unit-price').value=''; document.getElementById('p-subtotal').value='';
+    }
+    function removeItem(i) { purchaseItems.splice(i,1); renderItems(); }
+    function renderItems() {
+        const tbody = document.getElementById('item-tbody');
+        tbody.innerHTML = purchaseItems.map((it,i) => `<tr><td>${it.product}</td><td>${it.qty}</td><td>${fmtC(it.price)}</td><td>${fmtC(it.subtotal)}</td><td><button class="action-btn" style="background:#fee2e2;color:#dc2626" onclick="removeItem(${i})">✕</button></td></tr>`).join('');
+        const total = purchaseItems.reduce((s,it)=>s+it.subtotal,0);
+        document.getElementById('p-total').textContent = fmtC(total);
+    }
+    function savePurchase() {
+        const supplier = document.getElementById('p-supplier');
+        const date = document.getElementById('p-date').value;
+        const ref = document.getElementById('p-ref').value.trim();
+        if (!supplier.value) { Toast.warning('Select supplier'); return; }
+        if (!date) { Toast.warning('Select date'); return; }
+        if (!purchaseItems.length) { Toast.warning('Add at least one item'); return; }
+        const all = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+        const total = purchaseItems.reduce((s,it)=>s+it.subtotal,0);
+        all.unshift({ id:'PUR-'+Date.now(), date, ref: ref||('PUR-'+(all.length+1)), supplier: supplier.options[supplier.selectedIndex].textContent, items: [...purchaseItems], total, status:'Received', created: new Date().toISOString() });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+        Toast.success('Purchase saved!');
+        purchaseItems = []; clearForm(); renderList(); switchTab('list');
+    }
+    function clearForm() {
+        purchaseItems = [];
+        document.getElementById('p-supplier').value='';
+        document.getElementById('p-date').value=new Date().toISOString().split('T')[0];
+        document.getElementById('p-ref').value='';
+        renderItems();
+    }
+    function renderList() {
+        const all = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+        const q = (document.getElementById('search-input').value||'').toLowerCase();
+        const df = document.getElementById('filter-date').value;
+        let items = all;
+        if (q) items = items.filter(p => (p.ref||'').toLowerCase().includes(q) || (p.supplier||'').toLowerCase().includes(q));
+        if (df) items = items.filter(p => p.date === df);
+        const tbody = document.getElementById('purchase-tbody');
+        const empty = document.getElementById('empty-list');
+        if (!items.length) { tbody.innerHTML=''; empty.style.display=''; return; }
+        empty.style.display='none';
+        tbody.innerHTML = items.map((p,i)=>`<tr><td>${i+1}</td><td>${p.date||'—'}</td><td style="font-family:monospace">${p.ref||p.id}</td><td>${p.supplier}</td><td>${(p.items||[]).length}</td><td style="font-weight:600">${fmtC(p.total)}</td><td><span class="badge badge-green">${p.status||'Received'}</span></td><td><button class="action-btn" style="background:#fee2e2;color:#dc2626" onclick="deletePurchase(${i})">🗑</button></td></tr>`).join('');
+    }
+    function deletePurchase(idx) {
+        if (!confirm('Delete this purchase?')) return;
+        const all = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+        all.splice(idx,1);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+        renderList(); Toast.success('Deleted');
+    }
+    function saveReturn() {
+        const pId = document.getElementById('ret-purchase').value;
+        const date = document.getElementById('ret-date').value;
+        const reason = document.getElementById('ret-reason').value.trim();
+        if (!pId) { Toast.warning('Select a purchase'); return; }
+        if (!reason) { Toast.warning('Enter reason'); return; }
+        const purchases = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+        const pur = purchases.find(p=>p.id===pId);
+        if (!pur) return;
+        const returns = JSON.parse(localStorage.getItem(RETURN_KEY)||'[]');
+        returns.unshift({ id:'RET-'+Date.now(), purchaseRef: pur.ref||pur.id, date, reason, amount: pur.total, created: new Date().toISOString() });
+        localStorage.setItem(RETURN_KEY, JSON.stringify(returns));
+        Toast.success('Return processed!');
+        document.getElementById('ret-purchase').value=''; document.getElementById('ret-reason').value='';
+        renderReturns();
+    }
+    function renderReturns() {
+        const rets = JSON.parse(localStorage.getItem(RETURN_KEY)||'[]');
+        const tbody = document.getElementById('return-tbody');
+        const empty = document.getElementById('empty-returns');
+        if (!rets.length) { tbody.innerHTML=''; empty.style.display=''; return; }
+        empty.style.display='none';
+        tbody.innerHTML = rets.map((r,i)=>`<tr><td>${i+1}</td><td>${r.date}</td><td style="font-family:monospace">${r.purchaseRef}</td><td>${r.reason}</td><td style="font-weight:600">${fmtC(r.amount)}</td></tr>`).join('');
+    }
+    function exportCSV() {
+        const all = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+        if (!all.length) { Toast.warning('No data'); return; }
+        const csv='Date,Ref,Supplier,Items,Total,Status\n'+all.map(p=>`"${p.date}","${p.ref||p.id}","${p.supplier}",${(p.items||[]).length},${p.total},"${p.status||'Received'}"`).join('\n');
+        const b=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='purchases.csv';a.click();
+    }
+    </script>
+</body>
+</html>
