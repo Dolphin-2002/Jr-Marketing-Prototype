@@ -1247,6 +1247,67 @@
             .ap-grid-3 { grid-template-columns: 1fr 1fr; }
             .ae-grid-2 { grid-template-columns: 1fr; }
         }
+
+        /* ===== DAILY SUMMARY POPUP ===== */
+        .ds-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,.55);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity .2s;
+        }
+        .ds-overlay.open { opacity: 1; pointer-events: auto; }
+        .ds-modal {
+            background: #fff; border-radius: 14px; width: 480px; max-width: 94vw;
+            max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25);
+        }
+        .ds-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 22px 14px; border-bottom: 1px solid #e5e7eb;
+        }
+        .ds-header h3 { margin: 0; font-size: 17px; color: #111827; }
+        .ds-header-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+        .ds-close {
+            width: 30px; height: 30px; border-radius: 8px; border: none;
+            background: #f3f4f6; cursor: pointer; font-size: 16px; color: #6b7280;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ds-close:hover { background: #e5e7eb; color: #111827; }
+        .ds-body { padding: 16px 22px; }
+        .ds-section { margin-bottom: 16px; }
+        .ds-section-title {
+            font-size: 13px; font-weight: 700; color: #374151; text-transform: uppercase;
+            letter-spacing: .5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+        }
+        .ds-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .ds-stat {
+            background: #f9fafb; border-radius: 10px; padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+        }
+        .ds-stat-label { font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; }
+        .ds-stat-value { font-size: 18px; font-weight: 700; color: #111827; margin-top: 2px; }
+        .ds-stat-value.green { color: #059669; }
+        .ds-stat-value.red { color: #dc2626; }
+        .ds-stat-value.blue { color: #2563eb; }
+        .ds-expense-list { margin-top: 8px; }
+        .ds-expense-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px; background: #fef2f2; border-radius: 8px; margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .ds-expense-item .ds-exp-title { color: #374151; font-weight: 500; }
+        .ds-expense-item .ds-exp-amount { color: #dc2626; font-weight: 700; }
+        .ds-footer {
+            padding: 14px 22px; border-top: 1px solid #e5e7eb;
+            display: flex; justify-content: flex-end; gap: 10px;
+        }
+        .ds-btn {
+            padding: 9px 20px; border-radius: 8px; border: none; font-size: 13px;
+            font-weight: 600; cursor: pointer;
+        }
+        .ds-btn-close { background: #f3f4f6; color: #374151; }
+        .ds-btn-close:hover { background: #e5e7eb; }
+        .ds-btn-exit { background: #dc2626; color: #fff; }
+        .ds-btn-exit:hover { background: #b91c1c; }
     </style>
 </head>
 <body>
@@ -1275,7 +1336,7 @@
                 </svg>
             </button>
             <!-- Close / Delete -->
-            <button class="tb-btn red" title="Close">
+            <button class="tb-btn red" title="Close" onclick="openDailySummary()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -1310,10 +1371,7 @@
                             </svg>
                         </div>
                         <select class="ctrl-select" id="customer-select">
-                            <option>Walk-In Customer</option>
-                            <option>John Silva</option>
-                            <option>Kamal Perera</option>
-                            <option>Sunil Fernando</option>
+                            <option value="">Walk-In Customer</option>
                         </select>
                         <button class="ctrl-add-btn" id="open-add-customer-btn" title="Add Customer">+</button>
                     </div>
@@ -2660,42 +2718,57 @@
             sdClose();
         });
 
-        /* Demo products for search */
-        const demoProducts = [
-            { name: 'Anchor Milk Powder 400g',   sku: 'AMP400',  price: 1250 },
-            { name: 'Milo Tin 400g',              sku: 'MLT400',  price: 980  },
-            { name: 'Sunlight Soap Bar',          sku: 'SLB001',  price: 85   },
-            { name: 'Panadol 10 Tabs',            sku: 'PND010',  price: 65   },
-            { name: 'Rice 1kg',                   sku: 'RCE001',  price: 320  },
-            { name: 'Coca Cola 1.5L',             sku: 'CCL150',  price: 295  },
-            { name: 'Harpic Toilet Cleaner 500ml',sku: 'HRP500',  price: 460  },
-            { name: 'Teerth Toothpaste 100g',     sku: 'TTH100',  price: 150  },
-        ];
+        /* Load products from localStorage */
+        function getProducts() {
+            try { return JSON.parse(localStorage.getItem('jr_products') || '[]'); } catch(e) { return []; }
+        }
+
+        /* Load customers from localStorage and populate dropdown */
+        function loadCustomerDropdown() {
+            const sel = document.getElementById('customer-select');
+            /* Keep Walk-In as first option */
+            while (sel.options.length > 1) sel.remove(1);
+            const customers = JSON.parse(localStorage.getItem('jr_customers') || '[]');
+            customers.forEach(c => {
+                const opt = document.createElement('option');
+                const name = c.name || c.businessName || [c.prefix, c.firstName, c.middleName, c.lastName].filter(Boolean).join(' ');
+                opt.value = name;
+                opt.textContent = name;
+                opt.dataset.creditLimit = c.creditLimit || 0;
+                opt.dataset.customerId = c.id || '';
+                opt.dataset.mobile = c.mobile || '';
+                sel.appendChild(opt);
+            });
+        }
+        loadCustomerDropdown();
 
         function addToCart(product) {
             const existing = cartItems.find(i => i.sku === product.sku);
             if (existing) {
                 existing.qty++;
             } else {
-                cartItems.push({ ...product, qty: 1 });
+                cartItems.push({ name: product.name, sku: product.sku, price: product.price, qty: 1 });
             }
             renderCart();
             document.getElementById('product-search').value = '';
             Toast.success(`${product.name} added to cart`);
         }
 
-        /* Search on Enter */
+        /* Search on Enter - uses localStorage products */
         document.getElementById('product-search').addEventListener('keydown', e => {
             if (e.key === 'Enter') {
                 const query = e.target.value.trim().toLowerCase();
                 if (!query) return;
-                const found = demoProducts.find(p =>
-                    p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query)
+                const products = getProducts();
+                const found = products.find(p =>
+                    (p.name || '').toLowerCase().includes(query) ||
+                    (p.sku || '').toLowerCase().includes(query) ||
+                    (p.barcode || '').toLowerCase() === query
                 );
                 if (found) {
                     addToCart(found);
                 } else {
-                    Toast.error('Product not found. Try: Milk Powder, Milo, Rice, Soap...');
+                    Toast.error('Product not found. Add products via the Products page first.');
                 }
             }
         });
@@ -2880,13 +2953,17 @@
                 <!-- Totals -->
                 <div class="inv-totals-wrap">
                     <div class="inv-totals-left">
-                        <strong>Total Due</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LKR ${fmt(grandTotal)}<br>
-                        <strong>Total Outstanding</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LKR ${fmt(totalOutstanding)}
+                        <table style="border-collapse:collapse;width:100%;">
+                            <tr><td style="font-weight:700;padding:3px 0;white-space:nowrap;">Total Due</td><td style="text-align:right;padding:3px 0;white-space:nowrap;">LKR ${fmt(grandTotal)}</td></tr>
+                            <tr><td style="font-weight:700;padding:3px 0;white-space:nowrap;">Total Outstanding</td><td style="text-align:right;padding:3px 0;white-space:nowrap;">LKR ${fmt(totalOutstanding)}</td></tr>
+                        </table>
                     </div>
                     <div class="inv-totals-right">
-                        <strong>Total Qty</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${totalQty.toFixed(2)}<br>
-                        <strong>Total Items</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${totalItems}<br>
-                        <strong>Total:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LKR ${fmt(grandTotal)}
+                        <table style="border-collapse:collapse;width:100%;">
+                            <tr><td style="font-weight:700;padding:3px 0;white-space:nowrap;">Total Qty</td><td style="text-align:right;padding:3px 0;white-space:nowrap;">${totalQty.toFixed(2)}</td></tr>
+                            <tr><td style="font-weight:700;padding:3px 0;white-space:nowrap;">Total Items</td><td style="text-align:right;padding:3px 0;white-space:nowrap;">${totalItems}</td></tr>
+                            <tr style="border-top:1px solid #d1d5db;"><td style="font-weight:700;padding:5px 0 3px;white-space:nowrap;">Total:</td><td style="text-align:right;padding:5px 0 3px;font-weight:700;white-space:nowrap;">LKR ${fmt(grandTotal)}</td></tr>
+                        </table>
                     </div>
                 </div>
                 <div class="inv-total-words">${totalWords}</div>
@@ -2943,6 +3020,32 @@
         /* Cash pay */
         document.getElementById('btn-cash').addEventListener('click', () => {
             if (cartItems.length === 0) { Toast.warning('Add items to cart first.'); return; }
+
+            /* Save cash payment to jr_payments */
+            const custSel = document.getElementById('customer-select');
+            const custOpt = custSel.options[custSel.selectedIndex];
+            const customer = custOpt ? custOpt.text : 'Walk-In Customer';
+            const totalAmt      = cartItems.reduce((s,i) => s + i.price * i.qty, 0);
+            const totalDiscount = cartItems.reduce((s,i) => s + calcItemDiscount(i), 0);
+            const totalPayable  = totalAmt - totalDiscount;
+
+            const record = {
+                id: 'INV-' + Date.now(),
+                date: new Date().toISOString(),
+                customer: customer,
+                items: cartItems.map(i => ({ ...i })),
+                totalItems: cartItems.reduce((s, i) => s + i.qty, 0),
+                totalPayable,
+                totalPaying: totalPayable,
+                balance: 0,
+                payments: [{ amount: totalPayable, method: 'Cash', note: '' }],
+                sellNote: '',
+                staffNote: ''
+            };
+            const existing = JSON.parse(localStorage.getItem('jr_payments') || '[]');
+            existing.unshift(record);
+            localStorage.setItem('jr_payments', JSON.stringify(existing));
+
             openBill('Cash');
         });
 
@@ -3042,10 +3145,27 @@
                         </div>
                     </div>
                     <div class="mp-field">
+                        <label class="mp-label">Got Cheque?</label>
+                        <div class="mp-cheque-status">
+                            <label>
+                                <input type="radio" name="mp-got-cheque-${id}" value="Yes" checked/>
+                                <span class="mp-passed-badge">✓ Yes, Received</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="mp-got-cheque-${id}" value="No"/>
+                                <span class="mp-bounced-badge">✗ Not Yet</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mp-field">
                         <label class="mp-label">Cheque Status</label>
                         <div class="mp-cheque-status">
                             <label>
-                                <input type="radio" name="mp-cheque-status-${id}" value="Passed" checked/>
+                                <input type="radio" name="mp-cheque-status-${id}" value="Pending" checked/>
+                                <span style="display:inline-block;padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600;background:#fef3c7;color:#92400e;cursor:pointer;">⏳ Pending</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="mp-cheque-status-${id}" value="Passed"/>
                                 <span class="mp-passed-badge">✓ Passed</span>
                             </label>
                             <label>
@@ -3149,8 +3269,10 @@
                     rowData.chequeNo = document.getElementById(`mp-cheque-no-${rowId}`).value.trim();
                     rowData.bank = document.getElementById(`mp-bank-${rowId}`).value.trim();
                     rowData.chequeDate = document.getElementById(`mp-cheque-date-${rowId}`).value;
+                    const gotChequeRadio = document.querySelector(`input[name="mp-got-cheque-${rowId}"]:checked`);
+                    rowData.gotCheque = gotChequeRadio ? gotChequeRadio.value : 'Yes';
                     const statusRadio = document.querySelector(`input[name="mp-cheque-status-${rowId}"]:checked`);
-                    rowData.chequeStatus = statusRadio ? statusRadio.value : 'Passed';
+                    rowData.chequeStatus = statusRadio ? statusRadio.value : 'Pending';
                 }
                 payments.push(rowData);
             });
@@ -3292,13 +3414,40 @@
                 displayName = parts.join(' ');
             }
 
+            const creditLimit = parseFloat(document.getElementById('ac-credit-limit').value) || 0;
+            const contactId = document.getElementById('ac-contact-id').value || ('C-' + String(Date.now()).slice(-6));
+
+            /* Save to localStorage jr_customers */
+            const record = {
+                id: contactId,
+                type: isBiz ? 'business' : 'individual',
+                name: displayName,
+                prefix: isBiz ? '' : (document.getElementById('ac-prefix').value || ''),
+                firstName: isBiz ? '' : (document.getElementById('ac-first-name').value.trim()),
+                middleName: isBiz ? '' : (document.getElementById('ac-middle-name').value.trim()),
+                lastName: isBiz ? '' : (document.getElementById('ac-last-name').value.trim()),
+                businessName: isBiz ? displayName : '',
+                mobile: document.getElementById('ac-mobile').value.trim(),
+                email: document.getElementById('ac-email') ? (document.getElementById('ac-email').value || '').trim() : '',
+                creditLimit: creditLimit,
+                balance: 0,
+                status: 'Active',
+                createdAt: new Date().toISOString()
+            };
+            try {
+                const allCust = JSON.parse(localStorage.getItem('jr_customers') || '[]');
+                allCust.unshift(record);
+                localStorage.setItem('jr_customers', JSON.stringify(allCust));
+            } catch(e) {}
+
             /* Add to customer dropdown */
             const sel = document.getElementById('customer-select');
             const opt = document.createElement('option');
             opt.value = displayName;
             opt.textContent = displayName;
-            const creditLimit = parseFloat(document.getElementById('ac-credit-limit').value) || 0;
             opt.dataset.creditLimit = creditLimit;
+            opt.dataset.customerId = contactId;
+            opt.dataset.mobile = record.mobile;
             opt.selected = true;
             sel.appendChild(opt);
 
@@ -3322,9 +3471,11 @@
             return sel.options[sel.selectedIndex] || null;
         }
         function scIsWalkIn() {
-            const opt = scSelectedCustomer();
+            const sel = document.getElementById('customer-select');
+            if (!sel || sel.selectedIndex === 0) return true;
+            const opt = sel.options[sel.selectedIndex];
             if (!opt) return true;
-            return opt.selectedIndex === 0 || opt.value.toLowerCase().includes('walk-in') || opt.value === '';
+            return opt.value === '' || opt.value.toLowerCase().includes('walk-in');
         }
         function scCartEmpty() {
             return cartItems.length === 0;
@@ -3673,9 +3824,23 @@
         updateSuspendBadge();
 
         /* ══════════════════════════════════════════════════════════════════
-           CREDIT SALE
+           CREDIT SALE (Enhanced with warnings, history, dual confirmation)
         ══════════════════════════════════════════════════════════════════ */
         const CREDIT_KEY = 'jr_credit_sales';
+
+        function getCreditSales() {
+            try { return JSON.parse(localStorage.getItem(CREDIT_KEY)) || []; } catch(e) { return []; }
+        }
+
+        function getCustomerUnpaidCredit(custName) {
+            const all = getCreditSales();
+            return all.filter(r => r.customer === custName && r.status === 'Unpaid');
+        }
+
+        function getCustomerCreditHistory(custName) {
+            const all = getCreditSales();
+            return all.filter(r => r.customer === custName);
+        }
 
         function renderCreditModal() {
             const body       = document.getElementById('credit-body');
@@ -3684,6 +3849,10 @@
             const opt        = sel.options[sel.selectedIndex];
             const isWalkIn   = scIsWalkIn();
             const creditLimit = opt ? parseFloat(opt.dataset.creditLimit || '0') : 0;
+
+            /* Reset confirm state */
+            confirmBtn.dataset.confirmed = '0';
+            confirmBtn.textContent = 'Confirm Credit Sale';
 
             if (scCartEmpty()) {
                 confirmBtn.disabled = true; confirmBtn.style.opacity = '0.5';
@@ -3713,34 +3882,88 @@
                 return;
             }
 
-            const payable  = scTotalPayable();
+            const payable   = scTotalPayable();
+            const custName  = opt ? opt.value : '';
+            const unpaid    = getCustomerUnpaidCredit(custName);
+            const history   = getCustomerCreditHistory(custName);
+            const totalUnpaid = unpaid.reduce((s, r) => s + (r.totalPayable || 0), 0);
+            const remainingCredit = creditLimit - totalUnpaid;
 
-            if (payable > creditLimit) {
+            if (payable > remainingCredit) {
                 confirmBtn.disabled = true; confirmBtn.style.opacity = '0.5';
                 body.innerHTML = `<div class="credit-warn">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    Order total (${scFmt(payable)}) exceeds customer's credit limit (${scFmt(creditLimit)}).
+                    Order total (${scFmt(payable)}) exceeds remaining credit.<br>
+                    Credit Limit: ${scFmt(creditLimit)} | Unpaid: ${scFmt(totalUnpaid)} | Available: ${scFmt(remainingCredit)}
                 </div>`;
                 return;
             }
 
-            /* All good */
+            /* All checks passed - build the modal content */
             confirmBtn.disabled = false; confirmBtn.style.opacity = '1';
-            const custName = opt ? opt.value : '';
             const initials = custName.split(' ').map(w => w[0] || '').join('').toUpperCase().slice(0,2);
-            body.innerHTML = `
+            let html = '';
+
+            /* Customer card */
+            html += `
                 <div class="credit-customer-card">
                     <div class="credit-cust-avatar">${initials}</div>
                     <div>
                         <div class="credit-cust-name">${custName}</div>
-                        <div class="credit-cust-limit">Credit Limit: ${scFmt(creditLimit)}</div>
+                        <div class="credit-cust-limit">Credit Limit: ${scFmt(creditLimit)} | Available: ${scFmt(remainingCredit)}</div>
                     </div>
-                </div>
-                <div class="sc-summary">${scSummaryHTML()}</div>
-                <div class="sc-info-box">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    This sale will be recorded as <strong>&nbsp;unpaid&nbsp;</strong>. No payment is collected now. The amount will be tracked against the customer's credit account.
                 </div>`;
+
+            /* Warning if customer has unpaid credit */
+            if (unpaid.length > 0) {
+                html += `
+                <div class="credit-warn" style="background:#fef3c7;border-color:#f59e0b;color:#92400e;">
+                    <svg width="16" height="16" fill="none" stroke="#d97706" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <strong>Warning:</strong> ${custName} has <strong>${unpaid.length}</strong> unpaid credit sale(s) totalling <strong>${scFmt(totalUnpaid)}</strong>.
+                    Please confirm you want to proceed with an additional credit sale.
+                </div>`;
+            }
+
+            /* Order summary */
+            html += `<div class="sc-summary">${scSummaryHTML()}</div>`;
+
+            /* Past credit purchase history */
+            if (history.length > 0) {
+                html += `<div style="margin-top:10px;">
+                    <div style="font-size:13px;font-weight:700;color:#374151;margin-bottom:6px;">Past Credit Purchases (${history.length})</div>
+                    <div style="max-height:140px;overflow-y:auto;border:1px solid #e5e7eb;border-radius:8px;">
+                        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                            <thead><tr style="background:#f9fafb;">
+                                <th style="padding:6px 8px;text-align:left;color:#6b7280;position:sticky;top:0;background:#f9fafb;">ID</th>
+                                <th style="padding:6px 8px;text-align:left;color:#6b7280;position:sticky;top:0;background:#f9fafb;">Date</th>
+                                <th style="padding:6px 8px;text-align:right;color:#6b7280;position:sticky;top:0;background:#f9fafb;">Amount</th>
+                                <th style="padding:6px 8px;text-align:center;color:#6b7280;position:sticky;top:0;background:#f9fafb;">Status</th>
+                            </tr></thead><tbody>`;
+                history.slice().reverse().forEach(r => {
+                    const d = r.date ? new Date(r.date).toLocaleDateString('en-GB') : '—';
+                    const statusColor = r.status === 'Unpaid' ? '#dc2626' : '#059669';
+                    html += `<tr style="border-top:1px solid #f3f4f6;">
+                        <td style="padding:5px 8px;color:#2563eb;font-weight:500;">${r.id}</td>
+                        <td style="padding:5px 8px;color:#374151;">${d}</td>
+                        <td style="padding:5px 8px;text-align:right;font-weight:600;">${scFmt(r.totalPayable)}</td>
+                        <td style="padding:5px 8px;text-align:center;"><span style="font-size:11px;font-weight:600;color:${statusColor};background:${r.status==='Unpaid'?'#fef2f2':'#f0fdf4'};padding:2px 8px;border-radius:99px;">${r.status}</span></td>
+                    </tr>`;
+                });
+                html += `</tbody></table></div></div>`;
+            }
+
+            /* Info box - dual confirmation required */
+            html += `
+                <div class="sc-info-box" style="margin-top:10px;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    This sale will be recorded as <strong>&nbsp;unpaid&nbsp;</strong>. No payment is collected now.
+                    ${unpaid.length > 0 ? '<br><strong>You will be asked to confirm twice due to existing unpaid credit.</strong>' : ''}
+                </div>`;
+
+            body.innerHTML = html;
         }
 
         document.querySelector('.shortcut-item[title="Credit Sale"]').addEventListener('click', () => {
@@ -3756,9 +3979,37 @@
             const creditLimit = parseFloat(opt.dataset.creditLimit || '0');
             if (creditLimit <= 0) { Toast.error('Customer has no credit limit set.'); return; }
             const payable = scTotalPayable();
-            if (payable > creditLimit) { Toast.error(`Order total exceeds credit limit (${scFmt(creditLimit)}).`); return; }
-
             const custName = opt.value;
+            const unpaid = getCustomerUnpaidCredit(custName);
+            const totalUnpaid = unpaid.reduce((s, r) => s + (r.totalPayable || 0), 0);
+            const remainingCredit = creditLimit - totalUnpaid;
+            if (payable > remainingCredit) { Toast.error(`Order total exceeds remaining credit (${scFmt(remainingCredit)}).`); return; }
+
+            const confirmBtn = document.getElementById('credit-confirm-btn');
+
+            /* Dual confirmation for customers with unpaid credit */
+            if (unpaid.length > 0) {
+                if (confirmBtn.dataset.confirmed === '0') {
+                    /* First confirm */
+                    if (!confirm(`⚠️ ${custName} has ${unpaid.length} unpaid credit sale(s) totalling ${scFmt(totalUnpaid)}.\n\nAre you sure you want to allow another credit sale?`)) return;
+                    confirmBtn.dataset.confirmed = '1';
+                    confirmBtn.textContent = 'Click Again to Finalize';
+                    confirmBtn.style.background = '#dc2626';
+                    Toast.warning('Click "Confirm" again to finalize the credit sale.');
+                    return;
+                }
+                /* Second confirm */
+                if (!confirm(`Final confirmation: Record credit sale of ${scFmt(payable)} for ${custName}?\n\nTotal outstanding after this: ${scFmt(totalUnpaid + payable)}`)) {
+                    confirmBtn.dataset.confirmed = '0';
+                    confirmBtn.textContent = 'Confirm Credit Sale';
+                    confirmBtn.style.background = '';
+                    return;
+                }
+            } else {
+                /* Single confirmation for clean customers */
+                if (!confirm(`Record credit sale of ${scFmt(payable)} for ${custName}?`)) return;
+            }
+
             const record   = {
                 id:           'CR-' + Date.now(),
                 date:         new Date().toISOString(),
@@ -4023,9 +4274,6 @@
                 date:        new Date().toISOString()
             };
 
-            /* Push to runtime demoProducts so it is immediately searchable */
-            demoProducts.push({ name: record.name, sku: record.sku, price: record.price });
-
             /* Persist to localStorage */
             const existing = JSON.parse(localStorage.getItem('jr_products') || '[]');
             existing.unshift(record);
@@ -4109,6 +4357,150 @@
 
     document.getElementById('sap-overlay').addEventListener('click', function(e) {
         if (e.target === this) closeAllPrices();
+    });
+    </script>
+
+    <!-- ===== DAILY SUMMARY POPUP ===== -->
+    <div class="ds-overlay" id="ds-overlay">
+        <div class="ds-modal">
+            <div class="ds-header">
+                <div>
+                    <h3>Daily Summary</h3>
+                    <div class="ds-header-sub" id="ds-header-sub"></div>
+                </div>
+                <button class="ds-close" onclick="closeDailySummary()">&#x2715;</button>
+            </div>
+            <div class="ds-body" id="ds-body"></div>
+            <div class="ds-footer">
+                <button class="ds-btn ds-btn-close" onclick="closeDailySummary()">Continue Working</button>
+                <button class="ds-btn ds-btn-exit" onclick="closeDailySummary(); window.location.href='dashboard.html'">Close &amp; Exit POS</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* ===== DAILY SUMMARY ===== */
+    function dsFmt(val) {
+        return 'LKR ' + parseFloat(val || 0).toLocaleString('en-LK', { minimumFractionDigits: 2 });
+    }
+
+    window.openDailySummary = function() {
+        const today = new Date();
+        const todayStr = today.toLocaleDateString('en-GB');
+        document.getElementById('ds-header-sub').textContent = todayStr;
+
+        /* Today's sales from jr_payments */
+        const payments = JSON.parse(localStorage.getItem('jr_payments') || '[]');
+        const todaySales = payments.filter(r => {
+            if (!r.date) return false;
+            const d = new Date(r.date);
+            return d.toDateString() === today.toDateString();
+        });
+        const totalSalesAmount = todaySales.reduce((s, r) => s + (r.totalPayable || 0), 0);
+        const totalPaidAmount = todaySales.reduce((s, r) => s + (r.totalPaying || 0), 0);
+        const totalSaleItems = todaySales.reduce((s, r) => s + (r.totalItems || 0), 0);
+        const totalTransactions = todaySales.length;
+
+        /* Today's credit sales from jr_credit_sales */
+        const creditSales = JSON.parse(localStorage.getItem('jr_credit_sales') || '[]');
+        const todayCredit = creditSales.filter(r => {
+            if (!r.date) return false;
+            const d = new Date(r.date);
+            return d.toDateString() === today.toDateString();
+        });
+        const totalCreditAmount = todayCredit.reduce((s, r) => s + (r.totalPayable || 0), 0);
+
+        /* Today's expenses from jr_expenses */
+        const expenses = JSON.parse(localStorage.getItem('jr_expenses') || '[]');
+        const todayExpenses = expenses.filter(r => {
+            if (!r.date) return false;
+            const d = new Date(r.date);
+            return d.toDateString() === today.toDateString();
+        });
+        const totalExpenseAmount = todayExpenses.reduce((s, r) => s + (r.totalAmount || 0), 0);
+
+        /* Net */
+        const netAmount = totalPaidAmount - totalExpenseAmount;
+
+        let html = '';
+
+        /* Sales section */
+        html += `<div class="ds-section">
+            <div class="ds-section-title">
+                <svg width="16" height="16" fill="none" stroke="#059669" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                Sales Summary
+            </div>
+            <div class="ds-stat-grid">
+                <div class="ds-stat"><div class="ds-stat-label">Transactions</div><div class="ds-stat-value">${totalTransactions}</div></div>
+                <div class="ds-stat"><div class="ds-stat-label">Items Sold</div><div class="ds-stat-value">${totalSaleItems}</div></div>
+                <div class="ds-stat"><div class="ds-stat-label">Total Sales</div><div class="ds-stat-value green">${dsFmt(totalSalesAmount)}</div></div>
+                <div class="ds-stat"><div class="ds-stat-label">Cash Received</div><div class="ds-stat-value green">${dsFmt(totalPaidAmount)}</div></div>
+            </div>
+        </div>`;
+
+        /* Credit sales section */
+        if (todayCredit.length > 0) {
+            html += `<div class="ds-section">
+                <div class="ds-section-title">
+                    <svg width="16" height="16" fill="none" stroke="#7c3aed" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    Credit Sales
+                </div>
+                <div class="ds-stat-grid">
+                    <div class="ds-stat"><div class="ds-stat-label">Credit Sales</div><div class="ds-stat-value blue">${todayCredit.length}</div></div>
+                    <div class="ds-stat"><div class="ds-stat-label">Credit Amount</div><div class="ds-stat-value blue">${dsFmt(totalCreditAmount)}</div></div>
+                </div>
+            </div>`;
+        }
+
+        /* Expenses section */
+        html += `<div class="ds-section">
+            <div class="ds-section-title">
+                <svg width="16" height="16" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+                Expenses
+            </div>`;
+        if (todayExpenses.length === 0) {
+            html += `<div style="color:#6b7280;font-size:13px;padding:8px 0;">No expenses recorded today.</div>`;
+        } else {
+            html += `<div class="ds-expense-list">`;
+            todayExpenses.forEach(exp => {
+                html += `<div class="ds-expense-item">
+                    <span class="ds-exp-title">${exp.title || exp.ref || '—'}</span>
+                    <span class="ds-exp-amount">− ${dsFmt(exp.totalAmount)}</span>
+                </div>`;
+            });
+            html += `</div>
+            <div class="ds-stat-grid" style="margin-top:8px;">
+                <div class="ds-stat"><div class="ds-stat-label">Total Expenses</div><div class="ds-stat-value red">${dsFmt(totalExpenseAmount)}</div></div>
+            </div>`;
+        }
+        html += `</div>`;
+
+        /* Net summary */
+        html += `<div class="ds-section" style="margin-bottom:0;">
+            <div class="ds-section-title">
+                <svg width="16" height="16" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Net Summary
+            </div>
+            <div class="ds-stat-grid">
+                <div class="ds-stat" style="grid-column:1/-1;background:${netAmount >= 0 ? '#f0fdf4' : '#fef2f2'};border-color:${netAmount >= 0 ? '#bbf7d0' : '#fecaca'};">
+                    <div class="ds-stat-label">Net (Cash Received − Expenses)</div>
+                    <div class="ds-stat-value ${netAmount >= 0 ? 'green' : 'red'}">${dsFmt(netAmount)}</div>
+                </div>
+            </div>
+        </div>`;
+
+        document.getElementById('ds-body').innerHTML = html;
+        document.getElementById('ds-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeDailySummary = function() {
+        document.getElementById('ds-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    };
+
+    document.getElementById('ds-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeDailySummary();
     });
     </script>
 </body>

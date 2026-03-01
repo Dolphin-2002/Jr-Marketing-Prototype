@@ -202,6 +202,7 @@
                             <li><a class="submenu-link" href="sale-return.html">&#8227;&nbsp; Sale Return</a></li>
                             <li><a class="submenu-link" href="sales.html#quotations">&#8227;&nbsp; Quotations</a></li>
                             <li><a class="submenu-link" href="sales.html#credit">&#8227;&nbsp; Credit Sales</a></li>
+                            <li><a class="submenu-link" href="sales.html#cheques">&#8227;&nbsp; Cheques</a></li>
                         </ul>
                     </li>
                     <li class="menu-item" data-menu="expenses">
@@ -241,6 +242,7 @@
                     <button class="tab-btn"        onclick="switchTab('quotations')" id="tab-quotations">Quotations <span class="tab-badge" id="badge-quotations">0</span></button>
                     <button class="tab-btn"        onclick="switchTab('suspended')"  id="tab-suspended">Suspended <span class="tab-badge" id="badge-suspended">0</span></button>
                     <button class="tab-btn"        onclick="switchTab('credit')"     id="tab-credit">Credit Sales <span class="tab-badge" id="badge-credit">0</span></button>
+                    <button class="tab-btn"        onclick="switchTab('cheques')"    id="tab-cheques">Cheques <span class="tab-badge" id="badge-cheques">0</span></button>
                 </div>
 
                 <!-- DRAFTS -->
@@ -315,6 +317,37 @@
                     </div>
                 </div>
 
+                <!-- CHEQUES -->
+                <div class="tab-panel" id="panel-cheques">
+                    <div class="section-header">
+                        <div class="section-desc">Track cheque payments — confirm receipt and mark as passed or bounced.</div>
+                        <input type="text" class="search-input" id="search-cheques" placeholder="Search by cheque no, customer, invoice...">
+                    </div>
+                    <div class="table-wrap">
+                        <table class="sales-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Invoice ID</th>
+                                    <th>Customer</th>
+                                    <th>Cheque No</th>
+                                    <th>Bank</th>
+                                    <th>Amount (LKR)</th>
+                                    <th>Cheque Date</th>
+                                    <th>Received</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-cheques"></tbody>
+                        </table>
+                        <div class="empty-state" id="empty-cheques" style="display:none;">
+                            <svg width="44" height="44" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14" x2="12" y2="14"/></svg>
+                            <p>No cheque payments</p><span>Cheques from Multiple Pay in POS will appear here.</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -352,7 +385,7 @@
 
         /* Hash routing */
         const hash = window.location.hash.replace('#', '');
-        if (['quotations','suspended','credit'].includes(hash)) {
+        if (['quotations','suspended','credit','cheques'].includes(hash)) {
             switchTab(hash);
             history.replaceState(null, '', window.location.pathname);
         }
@@ -362,6 +395,7 @@
         document.getElementById('search-quotations').addEventListener('input', () => renderAll());
         document.getElementById('search-suspended').addEventListener('input',  () => renderAll());
         document.getElementById('search-credit').addEventListener('input',     () => renderAll());
+        document.getElementById('search-cheques').addEventListener('input',    () => renderAll());
 
         renderAll();
     });
@@ -393,6 +427,7 @@
         renderQuotations();
         renderSuspended();
         renderCredit();
+        renderCheques();
     }
 
     function renderDrafts() {
@@ -414,7 +449,7 @@
                 <td><span class="id-badge">${d.id}</span></td>
                 <td><ul class="items-list">${itemNames}</ul><span class="item-count">${(d.items||[]).length} item(s)</span></td>
                 <td class="amount-cell">${fmt(total)}</td>
-                <td class="date-cell">${fmtDatetime(d.savedAt)}</td>
+                <td class="date-cell">${fmtDatetime(d.date || d.savedAt)}</td>
                 <td><button class="action-btn" title="Delete" onclick="deleteRecord('jr_drafts','${d.id}','draft','renderDrafts')">
                     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                 </button></td>
@@ -442,7 +477,7 @@
                 <td class="customer-name">${d.customer || '—'}</td>
                 <td><ul class="items-list">${itemNames}</ul><span class="item-count">${(d.items||[]).length} item(s)</span></td>
                 <td class="amount-cell">${fmt(total)}</td>
-                <td class="date-cell">${fmtDate(d.savedAt)}</td>
+                <td class="date-cell">${fmtDate(d.date || d.savedAt)}</td>
                 <td><button class="action-btn" title="Delete" onclick="deleteRecord('jr_quotations','${d.id}','quotation','renderQuotations')">
                     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                 </button></td>
@@ -470,7 +505,7 @@
                 <td style="font-size:12.5px;color:#374151;">${d.note || '—'}</td>
                 <td><ul class="items-list">${itemNames}</ul><span class="item-count">${(d.items||[]).length} item(s)</span></td>
                 <td class="amount-cell">${fmt(total)}</td>
-                <td class="date-cell">${fmtDatetime(d.savedAt)}</td>
+                <td class="date-cell">${fmtDatetime(d.date || d.savedAt)}</td>
                 <td><button class="action-btn" title="Delete" onclick="deleteRecord('jr_suspended','${d.id}','suspended sale','renderSuspended')">
                     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                 </button></td>
@@ -492,6 +527,8 @@
         tbody.innerHTML = items.map((d, i) => {
             const total = cartTotal(d.items);
             const itemNames = (d.items||[]).map(it => `<li>• ${it.name} ×${it.qty}</li>`).join('');
+            const statusColor = d.status === 'Unpaid' ? '#dc2626' : '#059669';
+            const statusBg = d.status === 'Unpaid' ? '#fef2f2' : '#f0fdf4';
             return `<tr>
                 <td>${i+1}</td>
                 <td><span class="id-badge">${d.id}</span></td>
@@ -499,13 +536,121 @@
                 <td><ul class="items-list">${itemNames}</ul><span class="item-count">${(d.items||[]).length} item(s)</span></td>
                 <td class="amount-cell">${fmt(total)}</td>
                 <td style="font-size:12.5px;font-weight:600;color:#6d28d9;">${d.creditLimit ? fmt(d.creditLimit) : '—'}</td>
-                <td class="date-cell">${fmtDate(d.savedAt)}</td>
-                <td><button class="action-btn" title="Delete" onclick="deleteRecord('jr_credit_sales','${d.id}','credit sale','renderCredit')">
-                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                </button></td>
+                <td class="date-cell">${fmtDate(d.date)}</td>
+                <td>
+                    <div style="display:flex;gap:4px;align-items:center;">
+                        <span style="font-size:11px;font-weight:600;color:${statusColor};background:${statusBg};padding:2px 8px;border-radius:99px;">${d.status || 'Unpaid'}</span>
+                        ${d.status === 'Unpaid' ? `<button class="action-btn" title="Mark as Paid" onclick="markCreditPaid('${d.id}')" style="color:#059669;">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>` : ''}
+                        <button class="action-btn" title="Delete" onclick="deleteRecord('jr_credit_sales','${d.id}','credit sale','renderCredit')">
+                            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                        </button>
+                    </div>
+                </td>
             </tr>`;
         }).join('');
     }
+
+    window.markCreditPaid = function(id) {
+        if (!confirm('Mark this credit sale as paid?')) return;
+        const all = JSON.parse(localStorage.getItem('jr_credit_sales') || '[]');
+        const record = all.find(r => r.id === id);
+        if (record) { record.status = 'Paid'; record.paidAt = new Date().toISOString(); }
+        localStorage.setItem('jr_credit_sales', JSON.stringify(all));
+        Toast.success('Credit sale marked as paid.');
+        renderAll();
+    };
+
+    function renderCheques() {
+        const q     = (document.getElementById('search-cheques').value||'').toLowerCase();
+        const allPayments = JSON.parse(localStorage.getItem('jr_payments') || '[]');
+
+        /* Extract all cheque payment rows from all invoices */
+        const allCheques = [];
+        allPayments.forEach(inv => {
+            if (!inv.payments) return;
+            inv.payments.forEach((p, pIdx) => {
+                if (p.method !== 'Cheque') return;
+                allCheques.push({
+                    invoiceId: inv.id,
+                    customer: inv.customer,
+                    date: inv.date,
+                    paymentIndex: pIdx,
+                    chequeNo: p.chequeNo || '—',
+                    bank: p.bank || '—',
+                    amount: p.amount || 0,
+                    chequeDate: p.chequeDate || '',
+                    gotCheque: p.gotCheque || 'Yes',
+                    chequeStatus: p.chequeStatus || 'Pending'
+                });
+            });
+        });
+
+        const items = q ? allCheques.filter(c =>
+            (c.chequeNo||'').toLowerCase().includes(q) ||
+            (c.customer||'').toLowerCase().includes(q) ||
+            (c.invoiceId||'').toLowerCase().includes(q) ||
+            (c.bank||'').toLowerCase().includes(q)
+        ) : allCheques;
+
+        document.getElementById('badge-cheques').textContent = allCheques.length;
+        const tbody = document.getElementById('tbody-cheques');
+        const empty = document.getElementById('empty-cheques');
+        if (!items.length) { tbody.innerHTML = ''; empty.style.display='block'; return; }
+        empty.style.display = 'none';
+
+        tbody.innerHTML = items.map((c, i) => {
+            const receivedBadge = c.gotCheque === 'Yes'
+                ? '<span style="font-size:11px;font-weight:600;color:#059669;background:#f0fdf4;padding:2px 8px;border-radius:99px;">✓ Yes</span>'
+                : '<span style="font-size:11px;font-weight:600;color:#dc2626;background:#fef2f2;padding:2px 8px;border-radius:99px;">✗ No</span>';
+
+            let statusBadge;
+            if (c.chequeStatus === 'Passed') {
+                statusBadge = '<span style="font-size:11px;font-weight:600;color:#059669;background:#f0fdf4;padding:2px 8px;border-radius:99px;">✓ Passed</span>';
+            } else if (c.chequeStatus === 'Bounced') {
+                statusBadge = '<span style="font-size:11px;font-weight:600;color:#dc2626;background:#fef2f2;padding:2px 8px;border-radius:99px;">✗ Bounced</span>';
+            } else {
+                statusBadge = '<span style="font-size:11px;font-weight:600;color:#92400e;background:#fef3c7;padding:2px 8px;border-radius:99px;">⏳ Pending</span>';
+            }
+
+            return `<tr>
+                <td>${i+1}</td>
+                <td><span class="id-badge">${c.invoiceId}</span></td>
+                <td class="customer-name">${c.customer || '—'}</td>
+                <td style="font-weight:600;color:#374151;">${c.chequeNo}</td>
+                <td style="font-size:12.5px;">${c.bank}</td>
+                <td class="amount-cell">${fmt(c.amount)}</td>
+                <td class="date-cell">${c.chequeDate ? fmtDate(c.chequeDate) : '—'}</td>
+                <td style="text-align:center;">${receivedBadge}</td>
+                <td style="text-align:center;">${statusBadge}</td>
+                <td>
+                    <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                        ${c.gotCheque !== 'Yes' ? `<button class="action-btn" title="Mark as Received" style="color:#059669;font-size:11px;" onclick="updateChequeField('${c.invoiceId}',${c.paymentIndex},'gotCheque','Yes')">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        </button>` : ''}
+                        ${c.chequeStatus !== 'Passed' ? `<button class="action-btn" title="Mark Passed" style="color:#059669;font-size:11px;padding:2px 6px;border-radius:6px;border:1px solid #d1fae5;background:#f0fdf4;" onclick="updateChequeField('${c.invoiceId}',${c.paymentIndex},'chequeStatus','Passed')">✓ Pass</button>` : ''}
+                        ${c.chequeStatus !== 'Bounced' ? `<button class="action-btn" title="Mark Bounced" style="color:#dc2626;font-size:11px;padding:2px 6px;border-radius:6px;border:1px solid #fecaca;background:#fef2f2;" onclick="updateChequeField('${c.invoiceId}',${c.paymentIndex},'chequeStatus','Bounced')">✗ Bounce</button>` : ''}
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    window.updateChequeField = function(invoiceId, paymentIndex, field, value) {
+        const label = field === 'chequeStatus' ? `Mark cheque as ${value}?` : `Confirm cheque received?`;
+        if (!confirm(label)) return;
+        const all = JSON.parse(localStorage.getItem('jr_payments') || '[]');
+        const inv = all.find(r => r.id === invoiceId);
+        if (inv && inv.payments && inv.payments[paymentIndex]) {
+            inv.payments[paymentIndex][field] = value;
+            localStorage.setItem('jr_payments', JSON.stringify(all));
+            Toast.success(`Cheque ${field === 'chequeStatus' ? 'status updated to ' + value : 'marked as received'}.`);
+            renderAll();
+        } else {
+            Toast.error('Record not found.');
+        }
+    };
 
     function deleteRecord(key, id, label, rerender) {
         if (!confirm(`Delete this ${label}?`)) return;
