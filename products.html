@@ -310,9 +310,7 @@
                         </div>
                         <ul class="submenu">
                             <li><a class="submenu-link active" href="products.html">&#8227;&nbsp; Products List</a></li>
-                            <li><a class="submenu-link" href="products.html#add">&#8227;&nbsp; Add New Product</a></li>
-                            <li><a class="submenu-link" href="categories.html">&#8227;&nbsp; Categories</a></li>
-                            <li><a class="submenu-link" href="brands.html">&#8227;&nbsp; Brands</a></li>
+                            <li><a class="submenu-link" href="products.html#add" onclick="switchTab('add'); return false;">&#8227;&nbsp; Add New Product</a></li>
                             <li><a class="submenu-link" href="units.html">&#8227;&nbsp; Units</a></li>
                             <li><a class="submenu-link" href="stock.html">&#8227;&nbsp; Stock</a></li>
                         </ul>
@@ -660,10 +658,14 @@
         });
 
         /* Hash routing: #add opens Add tab */
-        if (window.location.hash === '#add') {
-            switchTab('add');
-            history.replaceState(null, '', window.location.pathname);
+        function handleHash() {
+            if (window.location.hash === '#add') {
+                switchTab('add');
+                history.replaceState(null, '', window.location.pathname);
+            }
         }
+        handleHash();
+        window.addEventListener('hashchange', handleHash);
 
         /* Manage Stock toggle */
         document.getElementById('f-manage-stock').addEventListener('change', function () {
