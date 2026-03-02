@@ -276,6 +276,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Reference</th>
+                                    <th>Category</th>
                                     <th>Title</th>
                                     <th>Date</th>
                                     <th>Amount (LKR)</th>
@@ -313,6 +314,16 @@
                                 <label class="form-label" for="f-amount">Total Amount (LKR) <span class="req">*</span></label>
                                 <input type="number" id="f-amount" class="form-input" placeholder="0.00" min="0" step="0.01">
                                 <span class="field-error" id="err-amount">A valid amount is required.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-3">
+                            <div class="form-field">
+                                <label class="form-label" for="f-category">Expense Category <span class="req">*</span></label>
+                                <select id="f-category" class="form-select">
+                                    <option value="">-- Select Category --</option>
+                                </select>
+                                <span class="field-error" id="err-category">Please select a category.</span>
                             </div>
                         </div>
 
@@ -432,6 +443,16 @@
         document.getElementById('f-paid-on').value = today;
         document.getElementById('f-ref').value     = 'EXP-' + Date.now().toString(36).toUpperCase();
 
+        /* Load expense categories */
+        const catSel = document.getElementById('f-category');
+        const cats = JSON.parse(localStorage.getItem('jr_expense_categories') || '[]');
+        cats.forEach(c => {
+            const o = document.createElement('option');
+            o.value = c.name;
+            o.textContent = c.name;
+            catSel.appendChild(o);
+        });
+
         /* Auto-fill pay amount when total entered */
         document.getElementById('f-amount').addEventListener('input', function () {
             document.getElementById('f-pay-amount').value = this.value;
@@ -448,6 +469,14 @@
             switchTab('add');
             history.replaceState(null, '', window.location.pathname);
         }
+
+        /* Listen for hash changes when already on expenses.html */
+        window.addEventListener('hashchange', () => {
+            const h = location.hash;
+            if (h === '#add') switchTab('add');
+            else switchTab('list');
+            history.replaceState(null, '', window.location.pathname);
+        });
 
         document.getElementById('search-input').addEventListener('input', renderList);
         document.getElementById('save-btn').addEventListener('click', saveExpense);
@@ -480,8 +509,9 @@
         document.getElementById('f-pay-note').value = '';
         document.getElementById('cheque-fields').classList.remove('show');
         document.getElementById('bank-field').classList.remove('show');
-        ['f-date','f-amount','f-title'].forEach(id => document.getElementById(id).classList.remove('error'));
-        ['err-date','err-amount','err-title'].forEach(id => document.getElementById(id).classList.remove('show'));
+        document.getElementById('f-category').value = '';
+        ['f-date','f-amount','f-title','f-category'].forEach(id => document.getElementById(id).classList.remove('error'));
+        ['err-date','err-amount','err-title','err-category'].forEach(id => document.getElementById(id).classList.remove('show'));
     }
 
     function saveExpense() {
@@ -491,9 +521,10 @@
             document.getElementById(errId).classList.toggle('show', bad);
             if (bad) valid = false;
         }
-        flag('f-date',   'err-date',   !document.getElementById('f-date').value);
-        flag('f-amount', 'err-amount', !document.getElementById('f-amount').value || parseFloat(document.getElementById('f-amount').value) <= 0);
-        flag('f-title',  'err-title',  !document.getElementById('f-title').value.trim());
+        flag('f-date',     'err-date',     !document.getElementById('f-date').value);
+        flag('f-amount',   'err-amount',   !document.getElementById('f-amount').value || parseFloat(document.getElementById('f-amount').value) <= 0);
+        flag('f-category', 'err-category', !document.getElementById('f-category').value);
+        flag('f-title',    'err-title',    !document.getElementById('f-title').value.trim());
         if (!valid) return;
 
         const method = document.getElementById('f-method').value;
@@ -501,6 +532,7 @@
             id:        document.getElementById('f-ref').value,
             ref:       document.getElementById('f-ref').value,
             date:      document.getElementById('f-date').value,
+            category:  document.getElementById('f-category').value,
             title:     document.getElementById('f-title').value.trim(),
             note:      document.getElementById('f-note').value.trim(),
             amount:    parseFloat(document.getElementById('f-amount').value),
@@ -531,7 +563,7 @@
         const query = (document.getElementById('search-input').value || '').trim().toLowerCase();
         const all   = JSON.parse(localStorage.getItem('jr_expenses') || '[]');
         const items = query ? all.filter(e =>
-            (e.title||'').toLowerCase().includes(query) || (e.ref||'').toLowerCase().includes(query)
+            (e.title||'').toLowerCase().includes(query) || (e.ref||'').toLowerCase().includes(query) || (e.category||'').toLowerCase().includes(query)
         ) : all;
 
         const tbody = document.getElementById('expense-tbody');
@@ -545,6 +577,7 @@
             <tr>
                 <td>${i + 1}</td>
                 <td><span class="ref-badge">${e.ref}</span></td>
+                <td><span style="font-size:11.5px;background:#f3e8ff;color:#7c3aed;padding:2px 8px;border-radius:4px;font-weight:600;">${e.category || '—'}</span></td>
                 <td><strong>${e.title}</strong></td>
                 <td>${new Date(e.date).toLocaleDateString('en-GB')}</td>
                 <td><strong>LKR ${Number(e.amount).toLocaleString('en-LK', {minimumFractionDigits:2})}</strong></td>

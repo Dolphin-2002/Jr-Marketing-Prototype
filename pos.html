@@ -2145,14 +2145,25 @@
                     </div>
                 </div>
 
-                <!-- Row 2: Expense Title (category) + Expense Note -->
+                <!-- Row 2: Expense Category + Expense Title -->
                 <div class="ae-grid-2">
+                    <div class="ae-field">
+                        <label class="ae-label">Expense Category <span class="req">*</span></label>
+                        <select class="ae-select" id="ae-category" style="height:40px;border:1.5px solid #d1d5db;border-radius:8px;padding:0 12px;font-size:13px;color:#374151;background:#fff;outline:none;width:100%;font-family:inherit;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 11px center;padding-right:30px;">
+                            <option value="">-- Select Category --</option>
+                        </select>
+                        <span class="ae-error-msg" id="ae-category-err">Please select a category.</span>
+                    </div>
                     <div class="ae-field">
                         <label class="ae-label">Expense Title <span class="req">*</span></label>
                         <textarea class="ae-textarea" id="ae-title-input" placeholder="e.g. Office Supplies, Electricity Bill, Staff Meal…" style="height:64px;"></textarea>
                         <span class="ae-error-msg" id="ae-title-err">Expense title is required.</span>
                     </div>
-                    <div class="ae-field">
+                </div>
+
+                <!-- Row 3: Expense Note -->
+                <div class="ae-grid-2">
+                    <div class="ae-field" style="grid-column:1/-1;">
                         <label class="ae-label">Expense Note</label>
                         <textarea class="ae-textarea" id="ae-note" placeholder="Optional details about this expense…" style="height:64px;"></textarea>
                     </div>
@@ -4065,11 +4076,21 @@
             document.getElementById('ae-pay-note').value     = '';
             document.getElementById('ae-cheque-fields').classList.remove('show');
             document.getElementById('ae-bank-field').style.display = 'none';
+            /* Load expense categories */
+            const catSel = document.getElementById('ae-category');
+            catSel.innerHTML = '<option value="">-- Select Category --</option>';
+            const cats = JSON.parse(localStorage.getItem('jr_expense_categories') || '[]');
+            cats.forEach(c => {
+                const o = document.createElement('option');
+                o.value = c.name;
+                o.textContent = c.name;
+                catSel.appendChild(o);
+            });
             /* Clear errors */
-            ['ae-title-err','ae-amount-err','ae-pay-amount-err'].forEach(id => {
+            ['ae-title-err','ae-amount-err','ae-pay-amount-err','ae-category-err'].forEach(id => {
                 document.getElementById(id).classList.remove('show');
             });
-            ['ae-title-input','ae-amount-wrap','ae-pay-amount-wrap'].forEach(id => {
+            ['ae-title-input','ae-amount-wrap','ae-pay-amount-wrap','ae-category'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) { el.classList.remove('error'); }
             });
@@ -4106,17 +4127,24 @@
         document.getElementById('ae-save-btn').addEventListener('click', () => {
             let valid = true;
 
+            const catEl    = document.getElementById('ae-category');
             const titleEl  = document.getElementById('ae-title-input');
             const amountEl = document.getElementById('ae-amount');
             const payAmtEl = document.getElementById('ae-pay-amount');
 
             /* Clear previous errors */
-            ['ae-title-err','ae-amount-err','ae-pay-amount-err'].forEach(id =>
+            ['ae-category-err','ae-title-err','ae-amount-err','ae-pay-amount-err'].forEach(id =>
                 document.getElementById(id).classList.remove('show'));
+            catEl.classList.remove('error');
             titleEl.classList.remove('error');
             document.getElementById('ae-amount-wrap').classList.remove('error');
             document.getElementById('ae-pay-amount-wrap').classList.remove('error');
 
+            if (!catEl.value) {
+                catEl.classList.add('error');
+                document.getElementById('ae-category-err').classList.add('show');
+                valid = false;
+            }
             if (!titleEl.value.trim()) {
                 titleEl.classList.add('error');
                 document.getElementById('ae-title-err').classList.add('show');
@@ -4141,9 +4169,10 @@
                 id:          'EXP-' + Date.now(),
                 ref:         document.getElementById('ae-ref').value.trim() || ('EXP-' + Date.now()),
                 date:        document.getElementById('ae-date').value || new Date().toISOString(),
+                category:    catEl.value,
                 title:       titleEl.value.trim(),
                 note:        document.getElementById('ae-note').value.trim(),
-                totalAmount: amt,
+                amount:      amt,
                 payment: {
                     amount:  payAmt,
                     paidOn:  document.getElementById('ae-paid-on').value || new Date().toISOString(),

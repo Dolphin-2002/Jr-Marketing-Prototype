@@ -116,6 +116,15 @@
         // Hash nav
         if (location.hash === '#add') switchTab('add');
         else if (location.hash === '#return') switchTab('return');
+
+        // Listen for hash changes when already on purchases.html
+        window.addEventListener('hashchange', () => {
+            const h = location.hash;
+            if (h === '#add') switchTab('add');
+            else if (h === '#return') switchTab('return');
+            else switchTab('list');
+            history.replaceState(null, '', window.location.pathname);
+        });
     });
     function toggleMenu(id) { const item = document.querySelector(`[data-menu="${id}"]`); if (!item) return; const w = item.classList.contains('open'); document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open')); if (!w) item.classList.add('open'); }
     function fmtC(v) { return 'LKR ' + parseFloat(v||0).toLocaleString('en-LK',{minimumFractionDigits:2}); }
