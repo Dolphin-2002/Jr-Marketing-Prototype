@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('password');
     const rememberCheck = document.getElementById('remember-me');
     const loginBtn      = document.getElementById('login-btn');
-    const techTeamBtn   = document.getElementById('tech-team-btn');
     const alertBox      = document.getElementById('login-alert');
     const togglePwdBtn  = document.getElementById('toggle-password');
 
@@ -126,16 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setError(passwordInput, ' ');
         }
     });
-
-    // ---- Technical Team Button ----
-    if (techTeamBtn) {
-        techTeamBtn.addEventListener('click', () => {
-            Toast.info('Opening Technical Team Portal...');
-            setTimeout(() => {
-                alert('Technical Team Portal\n\nContact: support@jr-marketing.com\nPhone: +94 11 234 5678\n\nSupport Hours: Mon-Fri 8:00AM - 6:00PM (IST)');
-            }, 400);
-        });
-    }
 
     // ---- Redirect if already logged in ----
     if (Auth.isLoggedIn()) {
