@@ -71,19 +71,19 @@
     function toggleMenu(id) { const item = document.querySelector(`[data-menu="${id}"]`); if (!item) return; const w = item.classList.contains('open'); document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open')); if (!w) item.classList.add('open'); }
     function fmtC(v) { return 'LKR ' + parseFloat(v||0).toLocaleString('en-LK',{minimumFractionDigits:2}); }
     function loadSales() {
-        const sales = JSON.parse(localStorage.getItem('jr_sales')||'[]');
+        const sales = JSON.parse(localStorage.getItem('jr_payments')||'[]');
         const sel = document.getElementById('ret-sale');
-        sales.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = (s.invoice||s.id)+' — '+(s.customer||'Walk-in')+' — '+fmtC(s.total); sel.appendChild(o); });
+        sales.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.id+' — '+(s.customer||'Walk-in')+' — '+fmtC(s.totalPayable||s.total||0); sel.appendChild(o); });
     }
     function loadSaleDetails() {
         const saleId = document.getElementById('ret-sale').value;
         const det = document.getElementById('sale-details');
         if (!saleId) { det.style.display='none'; return; }
-        const sales = JSON.parse(localStorage.getItem('jr_sales')||'[]');
+        const sales = JSON.parse(localStorage.getItem('jr_payments')||'[]');
         const sale = sales.find(s=>s.id===saleId);
         if (!sale || !sale.items) { det.style.display='none'; return; }
         det.style.display='';
-        document.getElementById('sale-items-tbody').innerHTML = sale.items.map((it,i)=>`<tr><td>${it.product}</td><td>${it.qty}</td><td>${fmtC(it.price)}</td><td><input type="number" id="retqty-${i}" min="0" max="${it.qty}" value="0" style="width:60px;height:30px;border:1px solid #d1d5db;border-radius:6px;text-align:center"></td></tr>`).join('');
+        document.getElementById('sale-items-tbody').innerHTML = sale.items.map((it,i)=>`<tr><td>${it.name||it.product||'—'}</td><td>${it.qty||0}</td><td>${fmtC(it.price||it.unitPrice||0)}</td><td><input type="number" id="retqty-${i}" min="0" max="${it.qty||0}" value="0" style="width:60px;height:30px;border:1px solid #d1d5db;border-radius:6px;text-align:center"></td></tr>`).join('');
     }
     function processReturn() {
         const saleId = document.getElementById('ret-sale').value;
@@ -91,17 +91,17 @@
         const date = document.getElementById('ret-date').value;
         if (!saleId) { Toast.warning('Select a sale'); return; }
         if (!reason) { Toast.warning('Enter reason'); return; }
-        const sales = JSON.parse(localStorage.getItem('jr_sales')||'[]');
+        const sales = JSON.parse(localStorage.getItem('jr_payments')||'[]');
         const sale = sales.find(s=>s.id===saleId);
         if (!sale) return;
         let refundTotal = 0;
         (sale.items||[]).forEach((it,i)=>{
             const rq = parseInt(document.getElementById('retqty-'+i)?.value)||0;
-            if (rq > 0) refundTotal += rq * it.price;
+            if (rq > 0) refundTotal += rq * (it.price || it.unitPrice || 0);
         });
         if (refundTotal <= 0) { Toast.warning('Enter return quantities'); return; }
         const rets = JSON.parse(localStorage.getItem(RETURN_KEY)||'[]');
-        rets.unshift({ id:'SRET-'+Date.now(), saleId, invoice: sale.invoice||sale.id, customer: sale.customer||'Walk-in', date, reason, refund: refundTotal, created: new Date().toISOString() });
+        rets.unshift({ id:'SRET-'+Date.now(), saleId, invoice: sale.id, customer: sale.customer||'Walk-in', date, reason, refund: refundTotal, created: new Date().toISOString() });
         localStorage.setItem(RETURN_KEY, JSON.stringify(rets));
         Toast.success('Return processed! Refund: '+fmtC(refundTotal));
         document.getElementById('ret-sale').value=''; document.getElementById('ret-reason').value='';

@@ -98,6 +98,42 @@
         .amount-cell { font-weight: 700; color: #111827; white-space: nowrap; }
         .date-cell { font-size: 12.5px; color: #4b5563; white-space: nowrap; }
         .status-badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 10px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+
+        /* ===== ALL SALES DATATABLE ===== */
+        .dt-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+        .dt-toolbar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .dt-toolbar-right { display: flex; align-items: center; gap: 8px; }
+        .dt-show-entries { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; }
+        .dt-show-entries select { height: 32px; border: 1px solid #d1d5db; border-radius: 6px; padding: 0 8px; font-size: 13px; background: #fff; cursor: pointer; }
+        .dt-export-btn { display: inline-flex; align-items: center; gap: 5px; height: 32px; padding: 0 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; color: #374151; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; }
+        .dt-export-btn:hover { background: #f3f4f6; border-color: #9ca3af; }
+        .dt-search { height: 34px; border: 1.5px solid #d1d5db; border-radius: 7px; padding: 0 12px; font-size: 13px; min-width: 200px; outline: none; background: #fff; }
+        .dt-search:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.1); }
+        .dt-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 5px rgba(10,17,114,.07); overflow: hidden; }
+        .dt-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .dt-table thead tr { background: #f8f9fc; border-bottom: 2px solid #e5e7eb; }
+        .dt-table thead th { padding: 12px 14px; text-align: left; font-weight: 700; color: #374151; font-size: 12px; white-space: nowrap; cursor: pointer; user-select: none; position: relative; }
+        .dt-table thead th .sort-icon { font-size: 10px; color: #9ca3af; margin-left: 4px; }
+        .dt-table tbody tr { border-bottom: 1px solid #f3f4f6; transition: background .12s; }
+        .dt-table tbody tr:nth-child(even) { background: #fafbfc; }
+        .dt-table tbody tr:hover { background: #f0fdf4; }
+        .dt-table tbody td { padding: 11px 14px; color: #374151; vertical-align: middle; }
+        .dt-actions-btn { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border: 1.5px solid #16a34a; border-radius: 6px; background: #f0fdf4; color: #16a34a; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; }
+        .dt-actions-btn:hover { background: #dcfce7; }
+        .dt-badge-paid { background: #dcfce7; color: #16a34a; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+        .dt-badge-due { background: #fef9c3; color: #a16207; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+        .dt-badge-partial { background: #dbeafe; color: #2563eb; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+        .dt-add-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 16px; background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(37,99,235,.3); transition: opacity .15s; }
+        .dt-add-btn:hover { opacity: .9; }
+        .dt-pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; font-size: 13px; color: #6b7280; border-top: 1px solid #f3f4f6; }
+        .dt-filter-bar { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(10,17,114,.06); padding: 16px 20px; margin-bottom: 16px; }
+        .dt-filter-bar-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #2563eb; cursor: pointer; }
+        .dt-filter-content { display: none; margin-top: 14px; }
+        .dt-filter-content.open { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+        .dt-filter-group { display: flex; flex-direction: column; gap: 4px; }
+        .dt-filter-group label { font-size: 11.5px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; }
+        .dt-filter-group input, .dt-filter-group select { height: 34px; border: 1px solid #d1d5db; border-radius: 7px; padding: 0 10px; font-size: 13px; outline: none; }
+        .dt-filter-group input:focus, .dt-filter-group select:focus { border-color: #16a34a; }
         .badge-draft     { background: #f3f4f6; color: #374151; }
         .badge-quotation { background: #fef9c3; color: #854d0e; }
         .badge-suspended { background: #dcfce7; color: #166534; }
@@ -238,15 +274,104 @@
             <div class="content-body">
 
                 <div class="tab-bar">
-                    <button class="tab-btn active" onclick="switchTab('drafts')"     id="tab-drafts">Drafts <span class="tab-badge" id="badge-drafts">0</span></button>
+                    <button class="tab-btn active" onclick="switchTab('all')"        id="tab-all">All Sales <span class="tab-badge" id="badge-all">0</span></button>
+                    <button class="tab-btn"        onclick="switchTab('drafts')"     id="tab-drafts">Drafts <span class="tab-badge" id="badge-drafts">0</span></button>
                     <button class="tab-btn"        onclick="switchTab('quotations')" id="tab-quotations">Quotations <span class="tab-badge" id="badge-quotations">0</span></button>
                     <button class="tab-btn"        onclick="switchTab('suspended')"  id="tab-suspended">Suspended <span class="tab-badge" id="badge-suspended">0</span></button>
                     <button class="tab-btn"        onclick="switchTab('credit')"     id="tab-credit">Credit Sales <span class="tab-badge" id="badge-credit">0</span></button>
                     <button class="tab-btn"        onclick="switchTab('cheques')"    id="tab-cheques">Cheques <span class="tab-badge" id="badge-cheques">0</span></button>
                 </div>
 
+                <!-- ALL SALES -->
+                <div class="tab-panel active" id="panel-all">
+                    <!-- Filters -->
+                    <div class="dt-filter-bar">
+                        <div class="dt-filter-bar-title" onclick="document.getElementById('all-filter-content').classList.toggle('open')">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                            Filters
+                        </div>
+                        <div class="dt-filter-content" id="all-filter-content">
+                            <div class="dt-filter-group">
+                                <label>Date From</label>
+                                <input type="date" id="all-date-from" onchange="renderAllSales()">
+                            </div>
+                            <div class="dt-filter-group">
+                                <label>Date To</label>
+                                <input type="date" id="all-date-to" onchange="renderAllSales()">
+                            </div>
+                            <div class="dt-filter-group">
+                                <label>Payment Status</label>
+                                <select id="all-pay-status" onchange="renderAllSales()">
+                                    <option value="">All</option>
+                                    <option value="Paid">Paid</option>
+                                    <option value="Due">Due</option>
+                                    <option value="Partial">Partial</option>
+                                </select>
+                            </div>
+                            <div class="dt-filter-group">
+                                <label>Payment Method</label>
+                                <select id="all-pay-method" onchange="renderAllSales()">
+                                    <option value="">All</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="Card">Card</option>
+                                    <option value="Multiple">Multiple</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toolbar -->
+                    <div class="dt-toolbar">
+                        <div class="dt-toolbar-left">
+                            <div class="dt-show-entries">Show <select id="all-page-size" onchange="renderAllSales()"><option>10</option><option selected>25</option><option>50</option><option>100</option></select> entries</div>
+                            <button class="dt-export-btn" onclick="exportAllSalesCSV()">📥 Export CSV</button>
+                            <button class="dt-export-btn" onclick="window.print()">🖨 Print</button>
+                            <button class="dt-export-btn" onclick="Importer.showModal('sales')" style="background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;border-color:transparent;font-weight:700">📤 Import Data</button>
+                        </div>
+                        <div class="dt-toolbar-right">
+                            <input type="text" class="dt-search" id="all-search" placeholder="Search ..." oninput="renderAllSales()">
+                            <button class="dt-add-btn" onclick="window.location.href='pos.html'">+ Add Sale</button>
+                        </div>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="dt-card">
+                        <div style="overflow-x:auto;">
+                            <table class="dt-table" id="all-sales-table">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Invoice No.</th>
+                                        <th>Customer Name</th>
+                                        <th>Contact Number</th>
+                                        <th>Location</th>
+                                        <th>Payment Status</th>
+                                        <th>Payment Method</th>
+                                        <th>Total Amount</th>
+                                        <th>Total Paid</th>
+                                        <th>Sell Due</th>
+                                        <th>Sell Return Due</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="all-sales-tbody"></tbody>
+                            </table>
+                        </div>
+                        <div class="dt-pagination">
+                            <span id="all-page-info">Showing 0 to 0 of 0 entries</span>
+                            <div style="display:flex;gap:4px;" id="all-page-btns"></div>
+                        </div>
+                        <div class="empty-state" id="empty-all" style="display:none;">
+                            <svg width="44" height="44" fill="none" stroke="#d1d5db" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                            <p>No sales recorded yet</p><span>Complete a sale from POS to see it here.</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- DRAFTS -->
-                <div class="tab-panel active" id="panel-drafts">
+                <div class="tab-panel" id="panel-drafts">
                     <div class="section-header">
                         <div class="section-desc">Saved draft orders — can be restored in POS to continue editing.</div>
                         <input type="text" class="search-input" id="search-drafts" placeholder="Search drafts...">
@@ -355,6 +480,7 @@
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/toast.js"></script>
+    <script src="assets/js/importer.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -386,7 +512,7 @@
         /* Hash routing */
         /* Hash routing */
         const hash = window.location.hash.replace('#', '');
-        if (['quotations','suspended','credit','cheques'].includes(hash)) {
+        if (['drafts','quotations','suspended','credit','cheques'].includes(hash)) {
             switchTab(hash);
             history.replaceState(null, '', window.location.pathname);
         }
@@ -394,7 +520,7 @@
         /* Listen for hash changes (e.g. sidebar links on the same page) */
         window.addEventListener('hashchange', () => {
             const h = window.location.hash.replace('#', '');
-            if (['quotations','suspended','credit','cheques'].includes(h)) {
+            if (['drafts','quotations','suspended','credit','cheques'].includes(h)) {
                 switchTab(h);
                 history.replaceState(null, '', window.location.pathname);
             }
@@ -407,6 +533,9 @@
         document.getElementById('search-credit').addEventListener('input',     () => renderAll());
         document.getElementById('search-cheques').addEventListener('input',    () => renderAll());
 
+        // Import refresh callback
+        window._importRefresh = () => { renderAll(); };
+
         renderAll();
     });
 
@@ -415,6 +544,7 @@
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         document.getElementById('tab-'   + name).classList.add('active');
         document.getElementById('panel-' + name).classList.add('active');
+        if (name === 'all') renderAllSales();
     }
 
     function fmt(n) { return 'LKR ' + Number(n||0).toLocaleString('en-LK', {minimumFractionDigits:2}); }
@@ -433,11 +563,156 @@
     }
 
     function renderAll() {
+        renderAllSales();
         renderDrafts();
         renderQuotations();
         renderSuspended();
         renderCredit();
         renderCheques();
+    }
+
+    /* ═══ ALL SALES (from jr_payments) ═══ */
+    let allSalesPage = 1;
+
+    function renderAllSales() {
+        const q = (document.getElementById('all-search').value || '').toLowerCase();
+        const dateFrom = document.getElementById('all-date-from').value;
+        const dateTo = document.getElementById('all-date-to').value;
+        const payStatus = document.getElementById('all-pay-status').value;
+        const payMethod = document.getElementById('all-pay-method').value;
+        const pageSize = parseInt(document.getElementById('all-page-size').value) || 25;
+
+        const allPayments = JSON.parse(localStorage.getItem('jr_payments') || '[]');
+        const allCustomers = JSON.parse(localStorage.getItem('jr_customers') || '[]');
+        document.getElementById('badge-all').textContent = allPayments.length;
+
+        let items = allPayments.map(sale => {
+            // Determine payment status
+            const totalPaid = (sale.payments || []).reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+            const totalPayable = sale.totalPayable || 0;
+            const balance = sale.balance || 0;
+            let status = 'Paid';
+            if (balance > 0 && totalPaid <= 0) status = 'Due';
+            else if (balance > 0 && totalPaid > 0) status = 'Partial';
+
+            // Determine primary payment method
+            let method = '—';
+            if (sale.payments && sale.payments.length > 0) {
+                if (sale.payments.length > 1) method = 'Multiple';
+                else method = sale.payments[0].method || '—';
+            }
+
+            // Lookup customer for contact number
+            const cust = allCustomers.find(c => c.name === sale.customer || c.businessName === sale.customer);
+            const contactNumber = cust ? (cust.mobile || cust.phone || '') : '';
+
+            // Parse date
+            const dateObj = sale.date ? new Date(sale.date) : null;
+            const dateOnly = dateObj ? dateObj.toISOString().split('T')[0] : '';
+
+            return { ...sale, _status: status, _method: method, _contactNumber: contactNumber, _dateOnly: dateOnly, _totalPaid: totalPaid };
+        });
+
+        // Apply filters
+        if (q) items = items.filter(s =>
+            (s.customer || '').toLowerCase().includes(q) ||
+            (s.id || '').toLowerCase().includes(q) ||
+            (s._contactNumber || '').includes(q) ||
+            (s._method || '').toLowerCase().includes(q)
+        );
+        if (dateFrom) items = items.filter(s => s._dateOnly >= dateFrom);
+        if (dateTo) items = items.filter(s => s._dateOnly <= dateTo);
+        if (payStatus) items = items.filter(s => s._status === payStatus);
+        if (payMethod) items = items.filter(s => {
+            if (payMethod === 'Multiple') return s._method === 'Multiple';
+            return s._method === payMethod;
+        });
+
+        const total = items.length;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        if (allSalesPage > totalPages) allSalesPage = totalPages;
+        const start = (allSalesPage - 1) * pageSize;
+        const pageItems = items.slice(start, start + pageSize);
+
+        const tbody = document.getElementById('all-sales-tbody');
+        const empty = document.getElementById('empty-all');
+
+        if (!items.length) {
+            tbody.innerHTML = '';
+            empty.style.display = 'block';
+            document.getElementById('all-page-info').textContent = 'Showing 0 to 0 of 0 entries';
+            document.getElementById('all-page-btns').innerHTML = '';
+            return;
+        }
+        empty.style.display = 'none';
+
+        tbody.innerHTML = pageItems.map(s => {
+            const dateStr = s.date ? fmtDatetime(s.date) : '—';
+            const invNo = s.id || '—';
+            const customer = s.customer || 'Walk-In Customer';
+            const contact = s._contactNumber || '—';
+            const location = 'JR MARKETING SHOP';
+            const totalAmt = s.totalPayable || 0;
+            const totalPaid = s._totalPaid;
+            const sellDue = Math.max(0, totalAmt - totalPaid);
+            const statusBadge = s._status === 'Paid'
+                ? `<span class="dt-badge-paid">Paid</span>`
+                : s._status === 'Partial'
+                    ? `<span class="dt-badge-partial">Partial</span>`
+                    : `<span class="dt-badge-due">Due</span>`;
+
+            return `<tr>
+                <td><button class="dt-actions-btn" onclick="viewSaleDetail('${s.id}')">Actions ▾</button></td>
+                <td class="date-cell">${dateStr}</td>
+                <td><span class="id-badge">${invNo}</span></td>
+                <td class="customer-name">${customer}</td>
+                <td>${contact}</td>
+                <td style="font-size:12.5px">${location}</td>
+                <td>${statusBadge}</td>
+                <td style="font-size:12.5px">${s._method}</td>
+                <td class="amount-cell">${fmt(totalAmt)}</td>
+                <td class="amount-cell">${fmt(totalPaid)}</td>
+                <td class="amount-cell">${fmt(sellDue)}</td>
+                <td class="amount-cell">—</td>
+            </tr>`;
+        }).join('');
+
+        // Pagination info
+        document.getElementById('all-page-info').textContent = `Showing ${start + 1} to ${Math.min(start + pageSize, total)} of ${total} entries`;
+
+        // Page buttons
+        let btnsHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            btnsHTML += `<button style="padding:4px 10px;border:1px solid ${i === allSalesPage ? '#16a34a' : '#d1d5db'};border-radius:5px;background:${i === allSalesPage ? '#16a34a' : '#fff'};color:${i === allSalesPage ? '#fff' : '#374151'};font-size:12px;font-weight:600;cursor:pointer;" onclick="allSalesPage=${i};renderAllSales()">${i}</button>`;
+        }
+        document.getElementById('all-page-btns').innerHTML = btnsHTML;
+    }
+
+    window.viewSaleDetail = function(id) {
+        const all = JSON.parse(localStorage.getItem('jr_payments') || '[]');
+        const sale = all.find(s => s.id === id);
+        if (!sale) { Toast.error('Sale not found.'); return; }
+
+        const totalPaid = (sale.payments || []).reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+        const balance = Math.max(0, (sale.totalPayable || 0) - totalPaid);
+        const methods = (sale.payments || []).map(p => `${p.method}: ${fmt(p.amount)}`).join(', ');
+        const items = (sale.items || []).map((it, i) => `${i+1}. ${it.name} ×${it.qty} @ ${fmt(it.price)}`).join('\n');
+
+        alert(`Invoice: ${sale.id}\nCustomer: ${sale.customer || 'Walk-In'}\nDate: ${fmtDatetime(sale.date)}\n\nItems:\n${items}\n\nTotal: ${fmt(sale.totalPayable || 0)}\nPaid: ${fmt(totalPaid)}\nBalance: ${fmt(balance)}\nPayments: ${methods}`);
+    };
+
+    function exportAllSalesCSV() {
+        const all = JSON.parse(localStorage.getItem('jr_payments') || '[]');
+        if (!all.length) { Toast.warning('No sales to export.'); return; }
+        const csv = 'Invoice No,Date,Customer,Payment Method,Total Amount,Total Paid,Balance\n' +
+            all.map(s => {
+                const totalPaid = (s.payments || []).reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                const method = (s.payments || []).length > 1 ? 'Multiple' : ((s.payments||[])[0]||{}).method || '—';
+                return `"${s.id}","${s.date}","${s.customer||'Walk-In'}","${method}",${s.totalPayable||0},${totalPaid},${s.balance||0}`;
+            }).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'all-sales.csv'; a.click();
+        Toast.success('CSV exported!');
     }
 
     function renderDrafts() {

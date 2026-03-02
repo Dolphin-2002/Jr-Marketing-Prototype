@@ -40,8 +40,8 @@
                 <div class="tabs"><div class="tab active" onclick="switchTab('list')">Supplier List</div><div class="tab" onclick="switchTab('add')">+ Add Supplier</div></div>
                 <div class="tab-content active" id="tab-list">
                     <div class="card">
-                        <div class="toolbar"><input type="text" id="search-input" placeholder="Search suppliers..." style="flex:1;min-width:200px" oninput="renderList()"><button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button></div>
-                        <table><thead><tr><th>#</th><th>Company</th><th>Contact</th><th>Phone</th><th>Email</th><th>Address</th><th>Balance</th><th>Action</th></tr></thead><tbody id="supplier-tbody"></tbody></table>
+                        <div class="toolbar"><input type="text" id="search-input" placeholder="Search suppliers..." style="flex:1;min-width:200px" oninput="renderList()"><button class="btn btn-primary" onclick="Importer.showModal('suppliers')" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">📤 Import Data</button><button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button></div>
+                        <table><thead><tr><th>#</th><th>Company</th><th>Contact</th><th>Phone</th><th>Email</th><th>Address</th><th>Balance</th><th>Total Purchase Due</th><th>Action</th></tr></thead><tbody id="supplier-tbody"></tbody></table>
                         <div class="empty-state" id="empty-state">No suppliers found. Add your first supplier!</div>
                     </div>
                 </div>
@@ -64,8 +64,9 @@
         </main>
     </div>
 
-    <script src="assets/js/utils.js"></script><script src="assets/js/auth.js"></script><script src="assets/js/toast.js"></script>
+    <script src="assets/js/utils.js"></script><script src="assets/js/auth.js"></script><script src="assets/js/toast.js"></script><script src="assets/js/importer.js"></script>
     <script>
+    window._importRefresh = () => { renderList(); };
     document.addEventListener('DOMContentLoaded', () => {
         Auth.requireAuth();
         const session = Auth.getSession(); if (session && session.user) { document.getElementById('nav-username').textContent = session.user.name || session.user.username; document.getElementById('nav-avatar').textContent = (session.user.name || session.user.username).charAt(0).toUpperCase(); }
@@ -95,10 +96,10 @@
         const tbody = document.getElementById('supplier-tbody'); const empty = document.getElementById('empty-state');
         if (!items.length) { tbody.innerHTML = ''; empty.style.display = ''; return; }
         empty.style.display = 'none';
-        tbody.innerHTML = items.map((s,i) => `<tr><td>${i+1}</td><td><strong>${s.company}</strong></td><td>${s.contact||'—'}</td><td>${s.phone}</td><td>${s.email||'—'}</td><td style="max-width:150px;font-size:12px;color:#6b7280">${s.address||'—'}</td><td><strong>LKR ${parseFloat(s.balance||0).toLocaleString('en-LK',{minimumFractionDigits:2})}</strong></td><td><button class="action-btn" onclick="deleteSupplier('${s.id}')"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>`).join('');
+        tbody.innerHTML = items.map((s,i) => `<tr><td>${i+1}</td><td><strong>${s.company}</strong></td><td>${s.contact||'—'}</td><td>${s.phone}</td><td>${s.email||'—'}</td><td style="max-width:150px;font-size:12px;color:#6b7280">${s.address||'—'}</td><td><strong>LKR ${parseFloat(s.balance||0).toLocaleString('en-LK',{minimumFractionDigits:2})}</strong></td><td><strong style="color:${parseFloat(s.totalPurchaseDue||0)>0?'#dc2626':'#166534'}">LKR ${parseFloat(s.totalPurchaseDue||0).toLocaleString('en-LK',{minimumFractionDigits:2})}</strong></td><td><button class="action-btn" onclick="deleteSupplier('${s.id}')"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button></td></tr>`).join('');
     }
     function deleteSupplier(id) { if (!confirm('Delete this supplier?')) return; saveAll(getAll().filter(s => s.id !== id)); Toast.success('Supplier deleted.'); renderList(); }
-    function exportCSV() { const all = getAll(); if (!all.length) { Toast.warning('No data.'); return; } const csv = 'Company,Contact,Phone,Email,Tax,Address,Balance,Added\n'+all.map(s=>`"${s.company}","${s.contact||''}","${s.phone}","${s.email||''}","${s.tax||''}","${s.address||''}",${s.balance||0},"${s.createdAt}"`).join('\n'); const b = new Blob([csv],{type:'text/csv'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download='suppliers.csv'; a.click(); }
+    function exportCSV() { const all = getAll(); if (!all.length) { Toast.warning('No data.'); return; } const csv = 'Company,Contact,Phone,Email,Tax,Address,Balance,Total Purchase Due,Total Purchase Return Due,Added\n'+all.map(s=>`"${s.company}","${s.contact||''}","${s.phone}","${s.email||''}","${s.tax||''}","${s.address||''}",${s.balance||0},${s.totalPurchaseDue||0},${s.totalPurchaseReturnDue||0},"${s.createdAt}"`).join('\n'); const b = new Blob([csv],{type:'text/csv'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download='suppliers.csv'; a.click(); }
     </script>
 </body>
 </html>

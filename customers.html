@@ -211,12 +211,12 @@
                         <div class="toolbar">
                             <input type="text" id="search-input" placeholder="Search by name, phone, email, ID..." style="flex:1;min-width:200px" oninput="renderList()">
                             <select id="filter-type" onchange="renderList()" style="width:150px"><option value="">All Types</option><option value="individual">Individual</option><option value="business">Business</option></select>
-                            <select id="filter-group" onchange="renderList()" style="width:150px"><option value="">All Groups</option><option value="Walk-In">Walk-In</option><option value="Wholesale">Wholesale</option><option value="Retail">Retail</option><option value="VIP">VIP</option></select>
                             <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+                            <button class="btn btn-primary" onclick="Importer.showModal('customers')" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">📤 Import Data</button>
                         </div>
                         <div style="overflow-x:auto">
                         <table>
-                            <thead><tr><th>#</th><th>Contact ID</th><th>Name</th><th>Type</th><th>Group</th><th>Mobile</th><th>Email</th><th>Balance</th><th>Credit Limit</th><th>Added</th><th style="text-align:center">Actions</th></tr></thead>
+                            <thead><tr><th>#</th><th>Contact ID</th><th>Name</th><th>Type</th><th>Mobile</th><th>Email</th><th>Credit Limit</th><th>Total Sale Due</th><th>Added</th><th style="text-align:center">Actions</th></tr></thead>
                             <tbody id="customer-tbody"></tbody>
                         </table>
                         </div>
@@ -242,22 +242,10 @@
                                 </label>
                             </div>
 
-                            <!-- Contact ID + Customer Group -->
-                            <div class="ac-grid-2">
-                                <div class="ac-field">
-                                    <label class="ac-label">Contact ID</label>
-                                    <input class="ac-input" type="text" id="ac-contact-id" placeholder="Auto-generated" readonly style="background:#f9fafb;color:#9ca3af;"/>
-                                </div>
-                                <div class="ac-field">
-                                    <label class="ac-label">Customer Group</label>
-                                    <select class="ac-select" id="ac-group">
-                                        <option value="">— Select Group —</option>
-                                        <option>Walk-In</option>
-                                        <option>Wholesale</option>
-                                        <option>Retail</option>
-                                        <option>VIP</option>
-                                    </select>
-                                </div>
+                            <!-- Contact ID -->
+                            <div class="ac-field" style="max-width:300px;">
+                                <label class="ac-label">Contact ID</label>
+                                <input class="ac-input" type="text" id="ac-contact-id" placeholder="Auto-generated" readonly style="background:#f9fafb;color:#9ca3af;"/>
                             </div>
 
                             <div class="ac-divider"></div>
@@ -291,12 +279,7 @@
                                         <input class="ac-input" type="text" id="ac-last-name" placeholder="Last name"/>
                                     </div>
                                 </div>
-                                <div style="margin-top:12px;">
-                                    <div class="ac-field" style="max-width:200px;">
-                                        <label class="ac-label">Date of Birth</label>
-                                        <input class="ac-input" type="date" id="ac-dob"/>
-                                    </div>
-                                </div>
+
                             </div>
 
                             <!-- ── BUSINESS FIELDS ── -->
@@ -373,22 +356,8 @@
                                     <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
                                 </button>
                                 <div class="ac-more-section" id="ac-more-section">
-                                    <!-- Row 1: Tax Number | Opening Balance | Pay Term -->
-                                    <div class="ac-grid-3" style="margin-bottom:14px;">
-                                        <div class="ac-field">
-                                            <label class="ac-label">Tax Number</label>
-                                            <div class="ac-input-icon">
-                                                <span class="icon" style="font-size:12px;font-weight:700;font-style:italic;color:#6b7280;">T</span>
-                                                <input class="ac-input" type="text" id="ac-tax" placeholder="Tax number"/>
-                                            </div>
-                                        </div>
-                                        <div class="ac-field">
-                                            <label class="ac-label">Opening Balance</label>
-                                            <div class="ac-input-icon">
-                                                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
-                                                <input class="ac-input" type="number" id="ac-opening-balance" placeholder="0" min="0" step="0.01"/>
-                                            </div>
-                                        </div>
+                                    <!-- Row 1: Pay Term -->
+                                    <div class="ac-grid-2" style="margin-bottom:14px;">
                                         <div class="ac-field">
                                             <label class="ac-label">Pay Term</label>
                                             <div class="ac-payterm-wrap">
@@ -422,14 +391,10 @@
                                 <div class="ac-section-title">Address</div>
                                 <div style="display:flex;flex-direction:column;gap:12px;">
                                     <div class="ac-field">
-                                        <label class="ac-label">Address Line 1</label>
+                                        <label class="ac-label">Address</label>
                                         <input class="ac-input" type="text" id="ac-addr1" placeholder="No, Street name"/>
                                     </div>
-                                    <div class="ac-field">
-                                        <label class="ac-label">Address Line 2</label>
-                                        <input class="ac-input" type="text" id="ac-addr2" placeholder="Apartment, suite, unit"/>
-                                    </div>
-                                    <div class="ac-grid-4">
+                                    <div class="ac-grid-3">
                                         <div class="ac-field">
                                             <label class="ac-label">City</label>
                                             <input class="ac-input" type="text" id="ac-city" placeholder="Colombo"/>
@@ -437,19 +402,6 @@
                                         <div class="ac-field">
                                             <label class="ac-label">State / Province</label>
                                             <input class="ac-input" type="text" id="ac-state" placeholder="Western"/>
-                                        </div>
-                                        <div class="ac-field">
-                                            <label class="ac-label">Country</label>
-                                            <select class="ac-select" id="ac-country">
-                                                <option value="LK" selected>Sri Lanka</option>
-                                                <option value="IN">India</option>
-                                                <option value="SG">Singapore</option>
-                                                <option value="AE">UAE</option>
-                                                <option value="GB">United Kingdom</option>
-                                                <option value="US">United States</option>
-                                                <option value="AU">Australia</option>
-                                                <option value="other">Other</option>
-                                            </select>
                                         </div>
                                         <div class="ac-field">
                                             <label class="ac-label">Zip / Postal Code</label>
@@ -481,6 +433,7 @@
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/toast.js"></script>
+    <script src="assets/js/importer.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         Auth.requireAuth();
@@ -522,6 +475,9 @@
         if (location.hash === '#add') switchTab('add');
         renderList();
         updateStats();
+
+        // Import refresh callback
+        window._importRefresh = () => { renderList(); updateStats(); };
     });
 
     function toggleMenu(id) { const item = document.querySelector(`[data-menu="${id}"]`); if (!item) return; const w = item.classList.contains('open'); document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open')); if (!w) item.classList.add('open'); }
@@ -586,28 +542,23 @@
             firstName: isBiz ? '' : document.getElementById('ac-first-name').value.trim(),
             middleName: isBiz ? '' : document.getElementById('ac-middle-name').value.trim(),
             lastName: isBiz ? '' : document.getElementById('ac-last-name').value.trim(),
-            dob: isBiz ? '' : document.getElementById('ac-dob').value,
+            dob: '',
             // Business-specific
             businessName: isBiz ? document.getElementById('ac-business-name').value.trim() : '',
             // Contact info
-            group: document.getElementById('ac-group').value,
             mobile: document.getElementById('ac-mobile').value.trim(),
             altNumber: document.getElementById('ac-alt-number').value.trim(),
             landline: document.getElementById('ac-landline').value.trim(),
             email: document.getElementById('ac-email').value.trim(),
             assignedTo: document.getElementById('ac-assigned').value,
             // More information
-            taxNumber: document.getElementById('ac-tax').value.trim(),
-            balance: parseFloat(document.getElementById('ac-opening-balance').value) || 0,
             payTermVal: document.getElementById('ac-payterm-val').value,
             payTermUnit: document.getElementById('ac-payterm-unit').value,
             creditLimit: document.getElementById('ac-credit-limit').value ? parseFloat(document.getElementById('ac-credit-limit').value) : null,
             // Address
             addr1: document.getElementById('ac-addr1').value.trim(),
-            addr2: document.getElementById('ac-addr2').value.trim(),
             city: document.getElementById('ac-city').value.trim(),
             state: document.getElementById('ac-state').value.trim(),
-            country: document.getElementById('ac-country').value,
             zip: document.getElementById('ac-zip').value.trim(),
             // Meta
             status: 'Active',
@@ -626,14 +577,12 @@
         document.getElementById('ac-business-fields').style.display = 'none';
         clearErrors();
         // Clear all inputs
-        const ids = ['ac-first-name','ac-middle-name','ac-last-name','ac-dob','ac-business-name','ac-mobile','ac-alt-number','ac-landline','ac-email','ac-tax','ac-opening-balance','ac-payterm-val','ac-credit-limit','ac-addr1','ac-addr2','ac-city','ac-state','ac-zip'];
+        const ids = ['ac-first-name','ac-middle-name','ac-last-name','ac-business-name','ac-mobile','ac-alt-number','ac-landline','ac-email','ac-payterm-val','ac-credit-limit','ac-addr1','ac-city','ac-state','ac-zip'];
         ids.forEach(id => document.getElementById(id).value = '');
         // Reset selects
         document.getElementById('ac-prefix').value = '';
-        document.getElementById('ac-group').value = '';
         document.getElementById('ac-assigned').value = '';
         document.getElementById('ac-payterm-unit').value = '';
-        document.getElementById('ac-country').value = 'LK';
         // New contact ID
         document.getElementById('ac-contact-id').value = genContactId();
         // Close More Information
@@ -651,11 +600,9 @@
     function renderList() {
         const q = (document.getElementById('search-input').value || '').toLowerCase();
         const ft = document.getElementById('filter-type').value;
-        const fg = document.getElementById('filter-group').value;
         let items = getAll();
         if (q) items = items.filter(c => (c.name||'').toLowerCase().includes(q) || (c.mobile||c.phone||'').includes(q) || (c.email||'').toLowerCase().includes(q) || (c.id||'').toLowerCase().includes(q) || (c.businessName||'').toLowerCase().includes(q));
         if (ft) items = items.filter(c => ft === 'business' ? c.type === 'business' : c.type !== 'business');
-        if (fg) items = items.filter(c => c.group === fg);
         const tbody = document.getElementById('customer-tbody');
         const empty = document.getElementById('empty-state');
         if (items.length === 0) { tbody.innerHTML = ''; empty.style.display = ''; return; }
@@ -666,16 +613,16 @@
                 : '<span class="badge badge-green">Individual</span>';
             const phone = c.mobile || c.phone || '—';
             const cl = c.creditLimit !== null && c.creditLimit !== undefined ? fmtC(c.creditLimit) : 'No Limit';
+            const saleDue = c.totalSaleDue ? fmtC(c.totalSaleDue) : 'LKR 0.00';
             return `<tr>
                 <td>${i + 1}</td>
                 <td style="font-family:monospace;font-size:12px;color:#6b7280">${c.id}</td>
                 <td><strong>${c.name}</strong></td>
                 <td>${typeBadge}</td>
-                <td>${c.group || '—'}</td>
                 <td>${phone}</td>
                 <td>${c.email || '—'}</td>
-                <td><strong>${fmtC(c.balance || 0)}</strong></td>
                 <td style="font-size:12px">${cl}</td>
+                <td style="font-size:12px;font-weight:600;color:${c.totalSaleDue > 0 ? '#dc2626' : '#16a34a'}">${saleDue}</td>
                 <td style="font-size:12px;color:#6b7280">${new Date(c.createdAt).toLocaleDateString('en-GB')}</td>
                 <td style="text-align:center;white-space:nowrap">
                     <button class="action-btn action-btn-view" onclick="viewCustomer('${c.id}')" title="View details"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
@@ -690,8 +637,7 @@
     function viewCustomer(id) {
         const c = getAll().find(x => x.id === id);
         if (!c) return;
-        const countryNames = { LK:'Sri Lanka', IN:'India', SG:'Singapore', AE:'UAE', GB:'United Kingdom', US:'United States', AU:'Australia', other:'Other' };
-        const addr = [c.addr1, c.addr2, c.city, c.state, countryNames[c.country] || c.country, c.zip].filter(Boolean).join(', ') || c.address || '—';
+        const addr = [c.addr1, c.city, c.state, c.zip].filter(Boolean).join(', ') || c.address || '—';
         const payTerm = c.payTermVal ? `${c.payTermVal} ${c.payTermUnit || ''}` : '—';
         const cl = c.creditLimit !== null && c.creditLimit !== undefined ? fmtC(c.creditLimit) : 'No Limit';
 
@@ -705,7 +651,6 @@
             if (c.dob) rows += `<div class="view-row"><div class="view-label">Date of Birth</div><div class="view-val">${new Date(c.dob).toLocaleDateString('en-GB')}</div></div>`;
         }
         rows += `
-            <div class="view-row"><div class="view-label">Customer Group</div><div class="view-val">${c.group || '—'}</div></div>
             <div style="height:8px"></div>
             <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Contact Information</div>
             <div class="view-row"><div class="view-label">Mobile</div><div class="view-val">+94 ${c.mobile || c.phone || '—'}</div></div>
@@ -715,10 +660,10 @@
             <div class="view-row"><div class="view-label">Assigned To</div><div class="view-val">${c.assignedTo || '—'}</div></div>
             <div style="height:8px"></div>
             <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Financial Information</div>
-            <div class="view-row"><div class="view-label">Tax Number</div><div class="view-val">${c.taxNumber || '—'}</div></div>
-            <div class="view-row"><div class="view-label">Opening Balance</div><div class="view-val"><strong>${fmtC(c.balance || 0)}</strong></div></div>
             <div class="view-row"><div class="view-label">Pay Term</div><div class="view-val">${payTerm}</div></div>
             <div class="view-row"><div class="view-label">Credit Limit</div><div class="view-val">${cl}</div></div>
+            <div class="view-row"><div class="view-label">Total Sale Due</div><div class="view-val" style="color:${c.totalSaleDue > 0 ? '#dc2626' : '#16a34a'};font-weight:700">${c.totalSaleDue ? fmtC(c.totalSaleDue) : 'LKR 0.00'}</div></div>
+            <div class="view-row"><div class="view-label">Total Sell Return Due</div><div class="view-val">${c.totalSellReturnDue ? fmtC(c.totalSellReturnDue) : 'LKR 0.00'}</div></div>
             <div style="height:8px"></div>
             <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Address</div>
             <div class="view-row"><div class="view-label">Full Address</div><div class="view-val">${addr}</div></div>
@@ -745,12 +690,13 @@
     function exportCSV() {
         const all = getAll();
         if (!all.length) { Toast.warning('No data to export.'); return; }
-        const csv = 'Contact ID,Type,Name,Group,Mobile,Alt Number,Landline,Email,Assigned To,Tax Number,Balance,Pay Term,Credit Limit,Address,City,State,Country,Zip,Added\n' +
+        const csv = 'Contact ID,Type,Name,Mobile,Alt Number,Landline,Email,Assigned To,Pay Term,Credit Limit,Total Sale Due,Address,City,State,Zip,Added\n' +
             all.map(c => {
-                const addr = [c.addr1, c.addr2].filter(Boolean).join(', ') || c.address || '';
+                const addr = c.addr1 || c.address || '';
                 const payTerm = c.payTermVal ? `${c.payTermVal} ${c.payTermUnit || ''}` : '';
                 const cl = c.creditLimit !== null && c.creditLimit !== undefined ? c.creditLimit : '';
-                return `"${c.id}","${c.type||'individual'}","${c.name}","${c.group||''}","${c.mobile||c.phone||''}","${c.altNumber||''}","${c.landline||''}","${c.email||''}","${c.assignedTo||''}","${c.taxNumber||''}",${c.balance||0},"${payTerm}","${cl}","${addr}","${c.city||''}","${c.state||''}","${c.country||''}","${c.zip||''}","${c.createdAt}"`;
+                const saleDue = c.totalSaleDue || 0;
+                return `"${c.id}","${c.type||'individual'}","${c.name}","${c.mobile||c.phone||''}","${c.altNumber||''}","${c.landline||''}","${c.email||''}","${c.assignedTo||''}","${payTerm}","${cl}","${saleDue}","${addr}","${c.city||''}","${c.state||''}","${c.zip||''}","${c.createdAt}"`;
             }).join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'customers.csv'; a.click();

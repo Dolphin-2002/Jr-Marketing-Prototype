@@ -1657,23 +1657,11 @@
                     </label>
                 </div>
 
-                <!-- Contact ID + Customer Group -->
-                <div class="ac-grid-2">
-                    <div class="ac-field">
-                        <label class="ac-label">Contact ID</label>
-                        <input class="ac-input" type="text" id="ac-contact-id" placeholder="Auto-generated" readonly
-                               style="background:#f9fafb;color:#9ca3af;"/>
-                    </div>
-                    <div class="ac-field">
-                        <label class="ac-label">Customer Group</label>
-                        <select class="ac-select" id="ac-group">
-                            <option value="">— Select Group —</option>
-                            <option>Walk-In</option>
-                            <option>Wholesale</option>
-                            <option>Retail</option>
-                            <option>VIP</option>
-                        </select>
-                    </div>
+                <!-- Contact ID -->
+                <div class="ac-field" style="max-width:300px;">
+                    <label class="ac-label">Contact ID</label>
+                    <input class="ac-input" type="text" id="ac-contact-id" placeholder="Auto-generated" readonly
+                           style="background:#f9fafb;color:#9ca3af;"/>
                 </div>
 
                 <div class="ac-divider"></div>
@@ -1705,12 +1693,6 @@
                         <div class="ac-field">
                             <label class="ac-label">Last Name</label>
                             <input class="ac-input" type="text" id="ac-last-name" placeholder="Last name"/>
-                        </div>
-                    </div>
-                    <div style="margin-top:12px;">
-                        <div class="ac-field" style="max-width:200px;">
-                            <label class="ac-label">Date of Birth</label>
-                            <input class="ac-input" type="date" id="ac-dob"/>
                         </div>
                     </div>
                 </div>
@@ -1818,29 +1800,8 @@
                     </button>
 
                     <div class="ac-more-section" id="ac-more-section">
-                        <!-- Row 1: Tax Number | Opening Balance | Pay Term -->
-                        <div class="ac-grid-3" style="margin-bottom:14px;">
-                            <!-- Tax Number -->
-                            <div class="ac-field">
-                                <label class="ac-label">Tax number:</label>
-                                <div class="ac-input-icon">
-                                    <span class="icon" style="font-size:12px;font-weight:700;font-style:italic;color:#6b7280;">i</span>
-                                    <input class="ac-input" type="text" id="ac-tax" placeholder="Tax number"/>
-                                </div>
-                            </div>
-                            <!-- Opening Balance -->
-                            <div class="ac-field">
-                                <label class="ac-label">Opening Balance:</label>
-                                <div class="ac-input-icon">
-                                    <span class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none"
-                                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                            <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
-                                        </svg>
-                                    </span>
-                                    <input class="ac-input" type="number" id="ac-opening-balance" placeholder="0" min="0" step="0.01"/>
-                                </div>
-                            </div>
+                        <!-- Row 1: Pay Term -->
+                        <div class="ac-grid-2" style="margin-bottom:14px;">
                             <!-- Pay Term -->
                             <div class="ac-field">
                                 <label class="ac-label" style="display:flex;align-items:center;gap:5px;">
@@ -1883,14 +1844,10 @@
                     <div class="ac-section-title">Address</div>
                     <div style="display:flex;flex-direction:column;gap:12px;">
                         <div class="ac-field">
-                            <label class="ac-label">Address Line 1</label>
+                            <label class="ac-label">Address</label>
                             <input class="ac-input" type="text" id="ac-addr1" placeholder="No, Street name"/>
                         </div>
-                        <div class="ac-field">
-                            <label class="ac-label">Address Line 2</label>
-                            <input class="ac-input" type="text" id="ac-addr2" placeholder="Apartment, suite, unit"/>
-                        </div>
-                        <div class="ac-grid-4">
+                        <div class="ac-grid-3">
                             <div class="ac-field">
                                 <label class="ac-label">City</label>
                                 <input class="ac-input" type="text" id="ac-city" placeholder="Colombo"/>
@@ -1898,19 +1855,6 @@
                             <div class="ac-field">
                                 <label class="ac-label">State / Province</label>
                                 <input class="ac-input" type="text" id="ac-state" placeholder="Western"/>
-                            </div>
-                            <div class="ac-field">
-                                <label class="ac-label">Country</label>
-                                <select class="ac-select" id="ac-country">
-                                    <option value="LK" selected>Sri Lanka</option>
-                                    <option value="IN">India</option>
-                                    <option value="SG">Singapore</option>
-                                    <option value="AE">UAE</option>
-                                    <option value="GB">United Kingdom</option>
-                                    <option value="US">United States</option>
-                                    <option value="AU">Australia</option>
-                                    <option value="other">Other</option>
-                                </select>
                             </div>
                             <div class="ac-field">
                                 <label class="ac-label">Zip / Postal Code</label>

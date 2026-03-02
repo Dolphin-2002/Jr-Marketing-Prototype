@@ -8,7 +8,7 @@
             "type": "msedge",
             "request": "launch",
             "name": "Open index.html",
-            "file": "/media/crimson/Development/Web Application/Visual Studio Code/Jr-Marketing-Prototype/index.html"
+            "file": "Q:\\Web Application\\Visual Studio Code\\Jr-Marketing-Prototype\\index.html"
         }
     ]
 }

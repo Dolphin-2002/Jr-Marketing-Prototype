@@ -48,8 +48,9 @@
                             <input type="text" id="search-input" placeholder="Search purchases..." style="flex:1;min-width:200px" oninput="renderList()">
                             <input type="date" id="filter-date" onchange="renderList()">
                             <button class="btn btn-outline" onclick="exportCSV()">📥 Export</button>
+                            <button class="btn btn-primary" onclick="Importer.showModal('purchases')" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">📤 Import Data</button>
                         </div>
-                        <table><thead><tr><th>#</th><th>Date</th><th>Ref No</th><th>Supplier</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody id="purchase-tbody"></tbody></table>
+                        <table><thead><tr><th>#</th><th>Date</th><th>Ref No</th><th>Supplier</th><th>Purchase Status</th><th>Payment Status</th><th>Grand Total</th><th>Payment Due</th><th>Added By</th><th>Actions</th></tr></thead><tbody id="purchase-tbody"></tbody></table>
                         <div class="empty-state" id="empty-list">No purchases recorded yet.</div>
                     </div>
                 </div>
@@ -57,10 +58,31 @@
                 <div class="tab-panel" id="tab-add">
                     <div class="card">
                         <h3 style="font-size:15px;font-weight:700;margin-bottom:16px">New Purchase</h3>
-                        <div class="form-grid">
-                            <div class="form-group"><label>Supplier *</label><select id="p-supplier"><option value="">Select supplier</option></select></div>
-                            <div class="form-group"><label>Date *</label><input type="date" id="p-date"></div>
+                        <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+                            <div class="form-group"><label>Supplier <span style="color:#dc2626">*</span></label><select id="p-supplier"><option value="">Select supplier</option></select></div>
+                            <div class="form-group"><label>Address</label><input type="text" id="p-address" placeholder="Supplier address"></div>
+                        </div>
+                        <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:14px;">
                             <div class="form-group"><label>Reference No</label><input type="text" id="p-ref" placeholder="PUR-001"></div>
+                            <div class="form-group"><label>Purchase Date <span style="color:#dc2626">*</span></label><input type="date" id="p-date"></div>
+                        </div>
+                        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;margin-top:14px;">
+                            <div class="form-group"><label>Purchase Status <span style="color:#dc2626">*</span></label>
+                                <select id="p-status">
+                                    <option value="">Please Select</option>
+                                    <option value="Received">Received</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Ordered">Ordered</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Pay Term</label>
+                                <select id="p-payterm-unit">
+                                    <option value="">Please Select</option>
+                                    <option value="months">Months</option>
+                                    <option value="days">Days</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Term</label><input type="number" id="p-payterm-val" placeholder="0" min="0"></div>
                         </div>
                         <h4 style="font-size:13px;font-weight:700;margin:18px 0 10px">Add Items</h4>
                         <div class="form-grid" style="grid-template-columns:2fr 1fr 1fr 1fr auto;align-items:end">
@@ -96,6 +118,7 @@
         </main>
     </div>
     <script src="assets/js/utils.js"></script><script src="assets/js/auth.js"></script><script src="assets/js/toast.js"></script>
+    <script src="assets/js/importer.js"></script>
     <script>
     const STORAGE_KEY = 'jr_purchases';
     const RETURN_KEY = 'jr_purchase_returns';
@@ -110,6 +133,9 @@
         document.getElementById('p-date').value = new Date().toISOString().split('T')[0];
         document.getElementById('ret-date').value = new Date().toISOString().split('T')[0];
         loadDropdowns(); renderList(); renderReturns();
+
+        // Import refresh callback
+        window._importRefresh = () => { renderList(); };
         // qty/price change auto subtotal
         document.getElementById('p-qty').addEventListener('input', calcSub);
         document.getElementById('p-unit-price').addEventListener('input', calcSub);
@@ -139,7 +165,12 @@
         const suppliers = JSON.parse(localStorage.getItem('jr_suppliers')||'[]');
         const products = JSON.parse(localStorage.getItem('jr_products')||'[]');
         const ss = document.getElementById('p-supplier');
-        suppliers.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.company || s.name; ss.appendChild(o); });
+        suppliers.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.company || s.name; o.dataset.address = s.address || s.addr1 || ''; ss.appendChild(o); });
+        // Auto-fill address on supplier change
+        ss.addEventListener('change', () => {
+            const opt = ss.options[ss.selectedIndex];
+            document.getElementById('p-address').value = opt && opt.dataset.address ? opt.dataset.address : '';
+        });
         const ps = document.getElementById('p-product');
         products.forEach(p => { const o = document.createElement('option'); o.value = p.id || p.sku; o.textContent = p.name + (p.sku?' ('+p.sku+')':''); ps.appendChild(o); });
         // Return dropdown
@@ -172,12 +203,14 @@
         const supplier = document.getElementById('p-supplier');
         const date = document.getElementById('p-date').value;
         const ref = document.getElementById('p-ref').value.trim();
+        const status = document.getElementById('p-status').value;
         if (!supplier.value) { Toast.warning('Select supplier'); return; }
         if (!date) { Toast.warning('Select date'); return; }
+        if (!status) { Toast.warning('Select purchase status'); return; }
         if (!purchaseItems.length) { Toast.warning('Add at least one item'); return; }
         const all = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
         const total = purchaseItems.reduce((s,it)=>s+it.subtotal,0);
-        all.unshift({ id:'PUR-'+Date.now(), date, ref: ref||('PUR-'+(all.length+1)), supplier: supplier.options[supplier.selectedIndex].textContent, items: [...purchaseItems], total, status:'Received', created: new Date().toISOString() });
+        all.unshift({ id:'PUR-'+Date.now(), date, ref: ref||('PUR-'+(all.length+1)), supplier: supplier.options[supplier.selectedIndex].textContent, address: document.getElementById('p-address').value.trim(), location: 'JR MARKETING SHOP', items: [...purchaseItems], total, status: status, paymentStatus: 'Due', paymentDue: total, totalPaid: 0, payTermUnit: document.getElementById('p-payterm-unit').value, payTermVal: document.getElementById('p-payterm-val').value, addedBy: (Auth.getSession() && Auth.getSession().user) ? Auth.getSession().user.name || Auth.getSession().user.username : 'Admin', created: new Date().toISOString() });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
         Toast.success('Purchase saved!');
         purchaseItems = []; clearForm(); renderList(); switchTab('list');
@@ -187,6 +220,10 @@
         document.getElementById('p-supplier').value='';
         document.getElementById('p-date').value=new Date().toISOString().split('T')[0];
         document.getElementById('p-ref').value='';
+        document.getElementById('p-address').value='';
+        document.getElementById('p-status').value='';
+        document.getElementById('p-payterm-unit').value='';
+        document.getElementById('p-payterm-val').value='';
         renderItems();
     }
     function renderList() {
@@ -200,7 +237,29 @@
         const empty = document.getElementById('empty-list');
         if (!items.length) { tbody.innerHTML=''; empty.style.display=''; return; }
         empty.style.display='none';
-        tbody.innerHTML = items.map((p,i)=>`<tr><td>${i+1}</td><td>${p.date||'—'}</td><td style="font-family:monospace">${p.ref||p.id}</td><td>${p.supplier}</td><td>${(p.items||[]).length}</td><td style="font-weight:600">${fmtC(p.total)}</td><td><span class="badge badge-green">${p.status||'Received'}</span></td><td><button class="action-btn" style="background:#fee2e2;color:#dc2626" onclick="deletePurchase(${i})">🗑</button></td></tr>`).join('');
+        tbody.innerHTML = items.map((p,i)=>{
+            // Payment status: determine from paymentStatus field or calculated
+            let payStatus = p.paymentStatus || '';
+            if (!payStatus) {
+                if (p.paymentDue > 0 && p.totalPaid > 0) payStatus = 'Partial';
+                else if (p.paymentDue > 0) payStatus = 'Due';
+                else payStatus = 'Paid';
+            }
+            const payBadge = payStatus === 'Paid' ? 'background:#dcfce7;color:#16a34a' : payStatus === 'Partial' ? 'background:#dbeafe;color:#2563eb' : 'background:#fef9c3;color:#a16207';
+            const purchaseDate = p.date ? new Date(p.date).toLocaleDateString('en-GB') + ' ' + new Date(p.date).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : '—';
+            const payDue = p.paymentDue !== undefined ? fmtC(p.paymentDue) : fmtC(0);
+            return `<tr>
+                <td>${i+1}</td>
+                <td style="white-space:nowrap;font-size:12.5px">${purchaseDate}</td>
+                <td style="font-family:monospace">${p.ref||p.id}</td>
+                <td>${p.supplier}</td>
+                <td><span class="badge badge-green">${p.status||'Received'}</span></td>
+                <td><span style="display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;${payBadge}">${payStatus}</span></td>
+                <td style="font-weight:600">${fmtC(p.total)}</td>
+                <td style="font-weight:600;color:${p.paymentDue > 0 ? '#dc2626' : '#16a34a'}">${payDue}</td>
+                <td style="font-size:12px;color:#6b7280">${p.addedBy||'Admin'}</td>
+                <td><button class="action-btn" style="background:#fee2e2;color:#dc2626" onclick="deletePurchase(${i})">🗑</button></td>
+            </tr>`}).join('');
     }
     function deletePurchase(idx) {
         if (!confirm('Delete this purchase?')) return;
@@ -236,7 +295,11 @@
     function exportCSV() {
         const all = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
         if (!all.length) { Toast.warning('No data'); return; }
-        const csv='Date,Ref,Supplier,Items,Total,Status\n'+all.map(p=>`"${p.date}","${p.ref||p.id}","${p.supplier}",${(p.items||[]).length},${p.total},"${p.status||'Received'}"`).join('\n');
+        const csv='Date,Reference No,Supplier,Purchase Status,Payment Status,Grand Total,Payment Due,Added By\n'+all.map(p=>{
+            let payStatus = p.paymentStatus || '';
+            if (!payStatus) { if (p.paymentDue > 0 && p.totalPaid > 0) payStatus = 'Partial'; else if (p.paymentDue > 0) payStatus = 'Due'; else payStatus = 'Paid'; }
+            return `"${p.date}","${p.ref||p.id}","${p.supplier}","${p.status||'Received'}","${payStatus}",${p.total},${p.paymentDue||0},"${p.addedBy||'Admin'}"`;
+        }).join('\n');
         const b=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='purchases.csv';a.click();
     }
     </script>
