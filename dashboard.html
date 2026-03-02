@@ -144,6 +144,7 @@
         .content-header {
             background: #0a5c2e; padding: 22px 26px 20px;
             display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+            position: relative;
         }
         .welcome-text {
             font-size: 26px; font-weight: 800; color: #fff;
@@ -157,6 +158,47 @@
             transition: background 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
         }
         .filter-btn:hover { background: #f0fdf4; }
+
+        /* Date filter dropdown panel */
+        .date-filter-panel {
+            display: none; position: absolute; top: 100%; right: 26px;
+            background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 16px 18px; z-index: 50; min-width: 300px;
+            animation: dfpSlide 0.2s ease;
+        }
+        .date-filter-panel.open { display: block; }
+        @keyframes dfpSlide {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .dfp-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+        .dfp-preset {
+            padding: 6px 13px; border-radius: 20px; border: 1.5px solid #d1d5db;
+            background: #fff; font-size: 12px; font-weight: 600; color: #374151;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .dfp-preset:hover { border-color: #16a34a; color: #16a34a; }
+        .dfp-preset.active { background: #0a5c2e; color: #fff; border-color: #0a5c2e; }
+        .dfp-custom {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            border-top: 1px solid #e5e7eb; padding-top: 12px;
+        }
+        .dfp-custom label { font-size: 12px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 6px; }
+        .dfp-custom input[type="date"] {
+            padding: 6px 10px; border: 1.5px solid #d1d5db; border-radius: 8px;
+            font-size: 13px; color: #374151; outline: none; cursor: pointer;
+        }
+        .dfp-custom input[type="date"]:focus { border-color: #16a34a; box-shadow: 0 0 0 2px rgba(22,163,74,0.15); }
+        .dfp-apply {
+            padding: 7px 18px; border-radius: 8px; border: none;
+            background: #0a5c2e; color: #fff; font-size: 12px; font-weight: 700;
+            cursor: pointer; transition: background 0.2s; margin-left: auto;
+        }
+        .dfp-apply:hover { background: #16a34a; }
+        .filter-badge {
+            display: inline-block; background: #22c55e; color: #fff; font-size: 10px;
+            font-weight: 700; padding: 1px 7px; border-radius: 10px; margin-left: 4px;
+        }
 
         /* Content body */
         .content-body { padding: 20px 20px 32px; background: #eef1f8; flex: 1; }
@@ -204,6 +246,10 @@
             .content-body { padding: 14px; }
             .nav-date { display: none; }
             .qa-grid { grid-template-columns: repeat(2,1fr); }
+            .stock-alert-table th:nth-child(3),
+            .stock-alert-table td:nth-child(3),
+            .stock-alert-table th:nth-child(5),
+            .stock-alert-table td:nth-child(5) { display: none; }
         }
         @media (max-width: 500px) {
             .stats-row { grid-template-columns: 1fr; }
@@ -242,6 +288,54 @@
         .qa-purple .qa-icon { background: #ede9fe; color: #7c3aed; }
         .qa-orange { background: #fff7ed; color: #c2410c; }
         .qa-orange .qa-icon { background: #ffedd5; color: #ea580c; }
+
+        /* ---- STOCK ALERT TABLE ---- */
+        .stock-alert-wrap {
+            background: #fff; border-radius: 12px; padding: 0;
+            box-shadow: 0 1px 5px rgba(10,17,114,0.07);
+            margin: 0 0 14px; overflow: hidden;
+        }
+        .stock-alert-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px 18px 13px; border-bottom: 1px solid #f3f4f6;
+        }
+        .stock-alert-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 14px; font-weight: 700; color: #111827;
+        }
+        .stock-alert-title svg { color: #dc2626; }
+        .stock-alert-count {
+            display: inline-flex; align-items: center; justify-content: center;
+            background: #fee2e2; color: #dc2626; font-size: 11px; font-weight: 700;
+            min-width: 22px; height: 22px; border-radius: 11px; padding: 0 7px;
+        }
+        .stock-alert-link {
+            font-size: 12px; font-weight: 600; color: #16a34a; text-decoration: none;
+        }
+        .stock-alert-link:hover { text-decoration: underline; }
+        .stock-alert-table { width: 100%; border-collapse: collapse; }
+        .stock-alert-table th {
+            background: #f9fafb; padding: 9px 14px; font-size: 11px; font-weight: 600;
+            color: #6b7280; text-align: left; text-transform: uppercase; letter-spacing: .3px;
+        }
+        .stock-alert-table td {
+            padding: 10px 14px; font-size: 13px; color: #374151; border-bottom: 1px solid #f3f4f6;
+        }
+        .stock-alert-table tr:last-child td { border-bottom: none; }
+        .stock-alert-table tr:hover { background: #fef2f2; }
+        .sa-sku { font-family: 'Courier New', monospace; font-size: 12px; color: #6b7280; background: #f3f4f6; padding: 2px 7px; border-radius: 4px; }
+        .sa-badge-out {
+            display: inline-block; padding: 2px 10px; border-radius: 20px;
+            font-size: 11px; font-weight: 600; background: #fee2e2; color: #dc2626;
+        }
+        .sa-badge-low {
+            display: inline-block; padding: 2px 10px; border-radius: 20px;
+            font-size: 11px; font-weight: 600; background: #fef9c3; color: #ca8a04;
+        }
+        .sa-empty {
+            padding: 30px 20px; text-align: center; color: #6b7280; font-size: 13px;
+        }
+        .sa-empty svg { margin: 0 auto 8px; display: block; color: #d1d5db; }
 
     </style>
 </head>
@@ -509,6 +603,24 @@
                         <polyline points="6 9 12 15 18 9"/>
                     </svg>
                 </button>
+                <!-- Date Filter Dropdown -->
+                <div class="date-filter-panel" id="date-filter-panel">
+                    <div class="dfp-presets">
+                        <button class="dfp-preset active" data-range="today">Today</button>
+                        <button class="dfp-preset" data-range="yesterday">Yesterday</button>
+                        <button class="dfp-preset" data-range="last7">Last 7 Days</button>
+                        <button class="dfp-preset" data-range="last30">Last 30 Days</button>
+                        <button class="dfp-preset" data-range="thisMonth">This Month</button>
+                        <button class="dfp-preset" data-range="lastMonth">Last Month</button>
+                        <button class="dfp-preset" data-range="thisYear">This Year</button>
+                        <button class="dfp-preset" data-range="all">All Time</button>
+                    </div>
+                    <div class="dfp-custom">
+                        <label>From <input type="date" id="dfp-from"></label>
+                        <label>To &nbsp;&nbsp;<input type="date" id="dfp-to"></label>
+                        <button class="dfp-apply" id="dfp-apply">Apply</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Stats + Chart -->
@@ -525,7 +637,7 @@
                         </div>
                         <div class="stat-body">
                             <div class="stat-label">Total Sales</div>
-                            <div class="stat-value">LKR &nbsp;0.00</div>
+                            <div class="stat-value" id="stat-total-sales">LKR &nbsp;0.00</div>
                         </div>
                     </div>
 
@@ -538,7 +650,7 @@
                         </div>
                         <div class="stat-body">
                             <div class="stat-label">Net</div>
-                            <div class="stat-value">LKR &nbsp;0.00</div>
+                            <div class="stat-value" id="stat-net">LKR &nbsp;0.00</div>
                         </div>
                     </div>
 
@@ -552,7 +664,7 @@
                         </div>
                         <div class="stat-body">
                             <div class="stat-label">Invoice due</div>
-                            <div class="stat-value">LKR &nbsp;0.00</div>
+                            <div class="stat-value" id="stat-invoice-due">LKR &nbsp;0.00</div>
                         </div>
                     </div>
 
@@ -567,7 +679,7 @@
                         </div>
                         <div class="stat-body">
                             <div class="stat-label">Total Sell Return</div>
-                            <div class="stat-value">LKR &nbsp;0.00</div>
+                            <div class="stat-value" id="stat-sell-return">LKR &nbsp;0.00</div>
                         </div>
                     </div>
                 </div>
@@ -584,7 +696,7 @@
                         </div>
                         <div class="stat-body">
                             <div class="stat-label">Total purchase</div>
-                            <div class="stat-value">LKR &nbsp;0.00</div>
+                            <div class="stat-value" id="stat-total-purchase">LKR &nbsp;0.00</div>
                         </div>
                     </div>
 
@@ -597,7 +709,7 @@
                         </div>
                         <div class="stat-body">
                             <div class="stat-label">Purchase due</div>
-                            <div class="stat-value">LKR &nbsp;0.00</div>
+                            <div class="stat-value" id="stat-purchase-due">LKR &nbsp;0.00</div>
                         </div>
                     </div>
 
@@ -610,7 +722,7 @@
                         </div>
                         <div class="stat-body">
                             <div class="stat-label">Total Purchase Return</div>
-                            <div class="stat-value">LKR &nbsp;0.00</div>
+                            <div class="stat-value" id="stat-purchase-return">LKR &nbsp;0.00</div>
                         </div>
                     </div>
 
@@ -623,12 +735,45 @@
                         </div>
                         <div class="stat-body">
                             <div class="stat-label">Expense</div>
-                            <div class="stat-value">LKR &nbsp;0.00</div>
+                            <div class="stat-value" id="stat-expense">LKR &nbsp;0.00</div>
                         </div>
                     </div>
                 </div>
 
             </div><!-- /content-body -->
+
+            <!-- ── Stock Alert Products ── -->
+            <div style="padding: 0 20px 6px; background: #eef1f8;">
+                <div class="stock-alert-wrap">
+                    <div class="stock-alert-header">
+                        <div class="stock-alert-title">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            Stock Alert Products
+                            <span class="stock-alert-count" id="sa-count">0</span>
+                        </div>
+                        <a class="stock-alert-link" href="stock-report.html">View Stock Report →</a>
+                    </div>
+                    <div id="sa-body">
+                        <table class="stock-alert-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th>SKU</th>
+                                    <th>Current Stock</th>
+                                    <th>Alert Qty</th>
+                                    <th>Selling Price</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sa-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
             <!-- ── Quick Actions ── -->
             <div class="quick-actions-wrap">
@@ -724,6 +869,286 @@
             }
         });
 
+        /* ============================================================
+           DASHBOARD  DATA  LOADER
+           ============================================================ */
+
+        const fmt = v => {
+            const n = Number(v) || 0;
+            return 'LKR \u00a0' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+
+        /* Helper: safely read localStorage JSON array */
+        const readLS = key => {
+            try { return JSON.parse(localStorage.getItem(key)) || []; }
+            catch { return []; }
+        };
+
+        /* Normalise a date value into YYYY-MM-DD string */
+        const toDateStr = v => {
+            if (!v) return null;
+            const d = new Date(v);
+            if (isNaN(d.getTime())) return null;
+            return d.toISOString().slice(0, 10);
+        };
+
+        /* Core: load stats, optionally filtered by date range */
+        function loadStats(fromDate, toDate) {
+            const inRange = rec => {
+                if (!fromDate && !toDate) return true;
+                const d = toDateStr(rec.date || rec.createdAt || rec.returnDate);
+                if (!d) return true; // include records with no date
+                if (fromDate && d < fromDate) return false;
+                if (toDate   && d > toDate)   return false;
+                return true;
+            };
+
+            /* Sales (jr_payments) */
+            const sales = readLS('jr_payments').filter(inRange);
+            let totalSales = 0, invoiceDue = 0;
+            sales.forEach(s => {
+                totalSales += parseFloat(s.totalPayable || s.total || 0);
+                const bal = parseFloat(s.balance || 0);
+                if (bal > 0) invoiceDue += bal;
+            });
+
+            /* Purchases (jr_purchases) */
+            const purchases = readLS('jr_purchases').filter(inRange);
+            let totalPurchase = 0, purchaseDue = 0;
+            purchases.forEach(p => {
+                totalPurchase += parseFloat(p.total || p.grandTotal || 0);
+                purchaseDue   += parseFloat(p.paymentDue || p.due || 0);
+            });
+
+            /* Sale Returns (jr_sale_returns) */
+            const saleReturns = readLS('jr_sale_returns').filter(inRange);
+            let totalSellReturn = 0;
+            saleReturns.forEach(r => {
+                totalSellReturn += parseFloat(r.refund || r.total || 0);
+            });
+
+            /* Purchase Returns (jr_purchase_returns) */
+            const purchaseReturns = readLS('jr_purchase_returns').filter(inRange);
+            let totalPurchaseReturn = 0;
+            purchaseReturns.forEach(r => {
+                totalPurchaseReturn += parseFloat(r.refund || r.total || 0);
+            });
+
+            /* Expenses (jr_expenses) */
+            const expenses = readLS('jr_expenses').filter(inRange);
+            let totalExpense = 0;
+            expenses.forEach(e => {
+                totalExpense += parseFloat(e.amount || 0);
+            });
+
+            /* Net = Total Sales − Total Purchase − Expense */
+            const net = totalSales - totalPurchase - totalExpense;
+
+            /* Populate cards */
+            document.getElementById('stat-total-sales').textContent     = fmt(totalSales);
+            document.getElementById('stat-net').textContent              = fmt(net);
+            document.getElementById('stat-invoice-due').textContent      = fmt(invoiceDue);
+            document.getElementById('stat-sell-return').textContent       = fmt(totalSellReturn);
+            document.getElementById('stat-total-purchase').textContent    = fmt(totalPurchase);
+            document.getElementById('stat-purchase-due').textContent      = fmt(purchaseDue);
+            document.getElementById('stat-purchase-return').textContent   = fmt(totalPurchaseReturn);
+            document.getElementById('stat-expense').textContent           = fmt(totalExpense);
+        }
+
+        /* ============================================================
+           DATE  FILTER  UI
+           ============================================================ */
+        const filterBtn   = document.getElementById('filter-btn');
+        const filterPanel = document.getElementById('date-filter-panel');
+        const dfpFrom     = document.getElementById('dfp-from');
+        const dfpTo       = document.getElementById('dfp-to');
+        const dfpApply    = document.getElementById('dfp-apply');
+        const presets     = filterPanel.querySelectorAll('.dfp-preset');
+
+        /* Toggle panel */
+        filterBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            filterPanel.classList.toggle('open');
+        });
+        document.addEventListener('click', e => {
+            if (!filterPanel.contains(e.target) && e.target !== filterBtn) {
+                filterPanel.classList.remove('open');
+            }
+        });
+
+        /* Preset helpers */
+        function dayStart(d) { return d.toISOString().slice(0, 10); }
+        function getRange(key) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            let from, to;
+            switch (key) {
+                case 'today':
+                    from = to = dayStart(today);
+                    break;
+                case 'yesterday': {
+                    const y = new Date(today); y.setDate(y.getDate() - 1);
+                    from = to = dayStart(y);
+                    break;
+                }
+                case 'last7': {
+                    const d = new Date(today); d.setDate(d.getDate() - 6);
+                    from = dayStart(d); to = dayStart(today);
+                    break;
+                }
+                case 'last30': {
+                    const d = new Date(today); d.setDate(d.getDate() - 29);
+                    from = dayStart(d); to = dayStart(today);
+                    break;
+                }
+                case 'thisMonth': {
+                    const d = new Date(today.getFullYear(), today.getMonth(), 1);
+                    from = dayStart(d); to = dayStart(today);
+                    break;
+                }
+                case 'lastMonth': {
+                    const first = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                    const last  = new Date(today.getFullYear(), today.getMonth(), 0);
+                    from = dayStart(first); to = dayStart(last);
+                    break;
+                }
+                case 'thisYear': {
+                    const d = new Date(today.getFullYear(), 0, 1);
+                    from = dayStart(d); to = dayStart(today);
+                    break;
+                }
+                case 'all':
+                default:
+                    from = ''; to = '';
+                    break;
+            }
+            return { from, to };
+        }
+
+        let activeRange = 'today';
+
+        /* Update badge text on filter button */
+        function updateBadge(label) {
+            let badge = filterBtn.querySelector('.filter-badge');
+            if (!label) {
+                if (badge) badge.remove();
+                return;
+            }
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'filter-badge';
+                filterBtn.appendChild(badge);
+            }
+            badge.textContent = label;
+        }
+
+        /* Preset click */
+        presets.forEach(btn => {
+            btn.addEventListener('click', () => {
+                presets.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeRange = btn.dataset.range;
+                const { from, to } = getRange(activeRange);
+                dfpFrom.value = from;
+                dfpTo.value   = to;
+                loadStats(from, to);
+                updateBadge(activeRange === 'all' ? '' : btn.textContent);
+                filterPanel.classList.remove('open');
+            });
+        });
+
+        /* Custom date apply */
+        dfpApply.addEventListener('click', () => {
+            presets.forEach(b => b.classList.remove('active'));
+            const from = dfpFrom.value;
+            const to   = dfpTo.value;
+            loadStats(from, to);
+            if (from || to) {
+                updateBadge((from || '…') + ' → ' + (to || '…'));
+            } else {
+                updateBadge('');
+            }
+            filterPanel.classList.remove('open');
+        });
+
+        /* ============================================================
+           STOCK ALERT PRODUCTS GRID
+           ============================================================ */
+        function loadStockAlerts() {
+            const products = readLS('jr_products');
+            const tbody = document.getElementById('sa-tbody');
+            const countBadge = document.getElementById('sa-count');
+            const body = document.getElementById('sa-body');
+
+            /* Filter products that have manageStock enabled and
+               current stock <= alertQty (or stock is 0) */
+            const alertItems = products.filter(p => {
+                if (!p.manageStock) return false;
+                const stock = parseInt(p.quantity || p.qty || 0);
+                const alert = parseInt(p.alertQty || 0);
+                // Show if out of stock OR stock is at/below alert threshold
+                if (stock === 0) return true;
+                if (alert > 0 && stock <= alert) return true;
+                return false;
+            }).sort((a, b) => {
+                // Out of stock first, then by stock ascending
+                const sA = parseInt(a.quantity || a.qty || 0);
+                const sB = parseInt(b.quantity || b.qty || 0);
+                return sA - sB;
+            });
+
+            countBadge.textContent = alertItems.length;
+            // Hide count badge if 0, change color
+            if (alertItems.length === 0) {
+                countBadge.style.background = '#dcfce7';
+                countBadge.style.color = '#16a34a';
+            } else {
+                countBadge.style.background = '#fee2e2';
+                countBadge.style.color = '#dc2626';
+            }
+
+            if (alertItems.length === 0) {
+                tbody.innerHTML = '';
+                // Show "all good" message
+                body.innerHTML = `
+                    <div class="sa-empty">
+                        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                        All products are well-stocked! No stock alerts at this time.
+                    </div>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = alertItems.map((p, i) => {
+                const stock = parseInt(p.quantity || p.qty || 0);
+                const alert = parseInt(p.alertQty || 0);
+                const isOut = stock === 0;
+                const badge = isOut
+                    ? '<span class="sa-badge-out">Out of Stock</span>'
+                    : '<span class="sa-badge-low">Low Stock</span>';
+                const price = Number(p.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
+                return `<tr>
+                    <td>${i + 1}</td>
+                    <td><strong>${p.name || '—'}</strong></td>
+                    <td><span class="sa-sku">${p.sku || '—'}</span></td>
+                    <td style="font-weight:700;color:${isOut ? '#dc2626' : '#ca8a04'}">${stock}</td>
+                    <td>${alert || '—'}</td>
+                    <td>LKR ${price}</td>
+                    <td>${badge}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        /* ── Initial load: default to "Today" ── */
+        const init = getRange('today');
+        dfpFrom.value = init.from;
+        dfpTo.value   = init.to;
+        loadStats(init.from, init.to);
+        updateBadge('Today');
+        loadStockAlerts();
     });
 
     /* Submenu accordion */
