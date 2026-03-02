@@ -384,11 +384,21 @@
         });
 
         /* Hash routing */
+        /* Hash routing */
         const hash = window.location.hash.replace('#', '');
         if (['quotations','suspended','credit','cheques'].includes(hash)) {
             switchTab(hash);
             history.replaceState(null, '', window.location.pathname);
         }
+
+        /* Listen for hash changes (e.g. sidebar links on the same page) */
+        window.addEventListener('hashchange', () => {
+            const h = window.location.hash.replace('#', '');
+            if (['quotations','suspended','credit','cheques'].includes(h)) {
+                switchTab(h);
+                history.replaceState(null, '', window.location.pathname);
+            }
+        });
 
         /* Search listeners */
         document.getElementById('search-drafts').addEventListener('input',     () => renderAll());

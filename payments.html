@@ -518,10 +518,11 @@
             today.toLocaleDateString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric' }).replace(/\//g, '/');
 
         /* User info */
-        const session = Utils.storage.get('jr_session');
-        if (session) {
-            document.getElementById('nav-username').textContent = session.name || session.username;
-            document.getElementById('nav-avatar').textContent = (session.name || session.username)[0].toUpperCase();
+        const session = Auth.getSession();
+        if (session && session.user) {
+            const name = session.user.name || session.user.username;
+            document.getElementById('nav-username').textContent = name;
+            document.getElementById('nav-avatar').textContent = name.charAt(0).toUpperCase();
         }
 
         /* Sidebar toggle */
@@ -534,11 +535,13 @@
             }
         });
 
-        /* Submenu toggle */
-        window.toggleMenu = function(key) {
-            const item = document.querySelector(`[data-menu="${key}"]`);
-            if (item) item.classList.toggle('open');
-        };
+        /* Logout */
+        document.getElementById('nav-user').addEventListener('click', () => {
+            if (confirm('Do you want to logout?')) {
+                Toast.info('Logging out...');
+                setTimeout(() => Auth.logout(), 600);
+            }
+        });
 
         /* ---- Load & render payments ---- */
         let allPayments = [];
@@ -718,6 +721,14 @@
 
         loadPayments();
     });
+
+    function toggleMenu(id) {
+        const item = document.querySelector(`[data-menu="${id}"]`);
+        if (!item) return;
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.menu-item.open').forEach(el => el.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
+    }
     </script>
 </body>
 </html>
