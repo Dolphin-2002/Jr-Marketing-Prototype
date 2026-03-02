@@ -797,16 +797,23 @@
 
     /* ── Column definitions (order = template column order) ── */
     const XL_COLS = [
-        { key: 'name',        label: 'Product Name',      required: true,  type: 'text'   },
-        { key: 'sku',         label: 'SKU',               required: false, type: 'text'   },
-        { key: 'price',       label: 'Selling Price',     required: true,  type: 'number' },
+        { key: 'name',        label: 'Product Name',      required: true,  type: 'text',
+          aliases: ['name','product name','product_name','item name','item'] },
+        { key: 'sku',         label: 'SKU',               required: false, type: 'text',
+          aliases: ['sku','sku (leave blank to auto generate sku)','product sku','item code','barcode'] },
+        { key: 'price',       label: 'Selling Price',     required: true,  type: 'number',
+          aliases: ['selling price','price','sell price','sale price','unit price','selling_price'] },
         { key: 'barcodeType', label: 'Barcode Type',      required: true,  type: 'select',
-          options: ['C128','C39','EAN13','EAN8','UPCA','UPCE'] },
+          options: ['C128','C39','EAN13','EAN8','UPCA','UPCE'],
+          aliases: ['barcode type','barcode_type','code type'] },
         { key: 'unit',        label: 'Unit',              required: true,  type: 'select',
-          options: ['Pieces','Boxes','Rolls'] },
+          options: ['Pieces','Boxes','Rolls','PCS','Kg','Ltr','Mtr','Set','Pack','Pair','Dozen'],
+          aliases: ['unit','uom','unit of measure'] },
         { key: 'manageStock', label: 'Manage Stock',      required: false, type: 'select',
-          options: ['Yes','No'] },
-        { key: 'alertQty',    label: 'Alert Quantity',    required: false, type: 'number' },
+          options: ['Yes','No'],
+          aliases: ['manage stock','manage stock (1=yes 0=no)','stock','manage_stock'] },
+        { key: 'alertQty',    label: 'Alert Quantity',    required: false, type: 'number',
+          aliases: ['alert quantity','alert qty','alert_quantity','reorder level'] },
     ];
 
     /* Parsed rows cache */
@@ -940,16 +947,31 @@
                 XL_COLS.forEach(col => {
                     const idx = headerRow.findIndex(h =>
                         h === col.label.toLowerCase() ||
-                        h === col.key.toLowerCase()
+                        h === col.key.toLowerCase() ||
+                        (col.aliases && col.aliases.some(a => h === a.toLowerCase() || h.startsWith(a.toLowerCase())))
                     );
                     if (idx !== -1) colMap[col.key] = idx;
                 });
 
-                /* Build rows */
+                /* Build rows — normalize values from legacy systems */
                 xlRows = raw.slice(1).filter(r => r.some(c => String(c).trim() !== '')).map((r, i) => {
                     const row = { _idx: i + 2, _errors: {} };
                     XL_COLS.forEach(col => {
-                        const v = colMap[col.key] !== undefined ? String(r[colMap[col.key]] ?? '').trim() : '';
+                        let v = colMap[col.key] !== undefined ? String(r[colMap[col.key]] ?? '').trim() : '';
+
+                        /* Normalize legacy values */
+                        if (col.key === 'manageStock') {
+                            if (v === '1') v = 'Yes';
+                            else if (v === '0') v = 'No';
+                        }
+                        if (col.key === 'unit') {
+                            const unitMap = { 'pcs':'Pieces', 'pc':'Pieces', 'piece':'Pieces', 'box':'Boxes', 'roll':'Rolls',
+                                              'kg':'Kg', 'ltr':'Ltr', 'mtr':'Mtr', 'set':'Set', 'pack':'Pack', 'pair':'Pair', 'dozen':'Dozen' };
+                            const lower = v.toLowerCase();
+                            if (unitMap[lower]) v = unitMap[lower];
+                        }
+                        if (col.key === 'barcodeType' && v === '') v = 'C128'; /* default barcode */
+
                         row[col.key] = v;
                     });
                     return row;
