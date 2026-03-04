@@ -969,3 +969,27 @@ All information is stored in your browser using these storage names:
 *JR Marketing Shop — System Manual v6.3*  
 *© 2025 JR Marketing, Sri Lanka*  
 *Last Updated: March 2026*
+
+Ok i will tell you fixex that customer i mean my client mentioed 
+
+1. whenever JR Marketing comes add JR Marketing (Pvt) Ltd
+2. Remove Tax Number and address option for add supplier and for suppliler related 
+3.Remove opening balance txt box from all ok 
+4.inside add supplier section add Supplier contect ID textbox to all add supplier and supplier related boxes
+5. inside product area there's a add product button so replace it with download product data like that do to all add a like export (data) button (xlsx)
+
+6. in product grid view client dont like to view barcode and warrenty remove that collum you can replace that thing with Purchase price and selling price. rencame the addon on into Data also in the action area if clinet clicked the client can edit that product in a pop up 
+
+7.inside that produt add page the barcode and unit should be defult like for bar code (code 128 (c128)) and unit (pieces) add a edit button near that row so if it's differnct he can click and edit it 
+
+8. inside that supplier gride view the clicnt dont want to see all the collums should be company,total amount, total paid, total due and date
+
+9. in side add customer page do give option to type customer id if they left it empty it will auto gen using customer name 
+
+10.also in customer add page for inducvial and bussiness remove (if exists)
+ remove 
+ middle name, last name , landline , altnative number and email remove the assiged to section 
+
+also move the addresss section to top to 
+
+

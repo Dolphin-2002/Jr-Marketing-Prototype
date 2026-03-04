@@ -354,7 +354,7 @@ const Importer = (() => {
             balance: Math.max(0, totalAmount - paidAmount),
             payments: payments,
             paymentStatus: paymentStatusVal || 'Paid',
-            location: location || 'JR MARKETING SHOP',
+            location: location || 'JR MARKETING (PVT) LTD',
             sellNote: '',
             staffNote: '',
             sellReturnDue: sellReturnDue,

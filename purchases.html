@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JR MARKETING SHOP — Purchases</title>
+    <title>JR MARKETING (PVT) LTD — Purchases</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a5c2e'/><text x='50%25' y='55%25' font-size='13' font-weight='900' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='Arial'>JR</text></svg>">
     <link rel="stylesheet" href="assets/css/variables.css"><link rel="stylesheet" href="assets/css/base.css">
     <style>
@@ -23,7 +23,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar"><div class="navbar-left"><div class="nav-sidebar-toggle" id="sidebar-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><div class="navbar-brand">JR MARKETING SHOP <span class="brand-dot"></span></div></div><div class="navbar-right"><button class="nav-pos-btn" onclick="location.href='pos.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> POS</button><div class="nav-divider"></div><span class="nav-date" id="nav-date"></span><div class="nav-divider"></div><button class="nav-icon-btn" title="Notifications"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><div class="nav-user" id="nav-user"><div class="nav-user-avatar" id="nav-avatar">A</div><span id="nav-username">Admin</span></div></div></nav>
+    <nav class="navbar"><div class="navbar-left"><div class="nav-sidebar-toggle" id="sidebar-toggle"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div><div class="navbar-brand">JR MARKETING (PVT) LTD <span class="brand-dot"></span></div></div><div class="navbar-right"><button class="nav-pos-btn" onclick="location.href='pos.html'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> POS</button><div class="nav-divider"></div><span class="nav-date" id="nav-date"></span><div class="nav-divider"></div><button class="nav-icon-btn" title="Notifications"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button><div class="nav-user" id="nav-user"><div class="nav-user-avatar" id="nav-avatar">A</div><span id="nav-username">Admin</span></div></div></nav>
     <div class="layout">
         <aside class="sidebar" id="sidebar"><div class="sidebar-inner"><ul class="sidebar-menu">
             <li class="menu-item"><a href="dashboard.html" class="menu-link"><span class="menu-link-left"><span class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home</span></a></li>
@@ -129,12 +129,10 @@
             <div class="modal-body">
                 <div class="form-grid">
                     <div class="form-group"><label>Company Name <span style="color:#dc2626">*</span></label><input type="text" id="ms-company" placeholder="Company name"></div>
+                    <div class="form-group"><label>Supplier Contact ID</label><input type="text" id="ms-contact-id" placeholder="Auto-generated" readonly style="background:#f9fafb;color:#9ca3af"></div>
                     <div class="form-group"><label>Contact Person</label><input type="text" id="ms-contact" placeholder="Contact person name"></div>
                     <div class="form-group"><label>Phone <span style="color:#dc2626">*</span></label><input type="text" id="ms-phone" placeholder="07X XXXX XXX"></div>
                     <div class="form-group"><label>Email</label><input type="email" id="ms-email" placeholder="email@example.com"></div>
-                    <div class="form-group"><label>Tax Number</label><input type="text" id="ms-tax" placeholder="Tax/VAT number"></div>
-                    <div class="form-group"><label>Opening Balance (LKR)</label><input type="number" id="ms-balance" value="0" min="0" step="0.01"></div>
-                    <div class="form-group full"><label>Address</label><textarea id="ms-address" placeholder="Supplier address" style="height:60px;padding:8px 10px;resize:vertical"></textarea></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -236,7 +234,7 @@
         if (!purchaseItems.length) { Toast.warning('Add at least one item'); return; }
         const all = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
         const total = purchaseItems.reduce((s,it)=>s+it.subtotal,0);
-        all.unshift({ id:'PUR-'+Date.now(), date, ref: ref||('PUR-'+(all.length+1)), supplier: supplier.options[supplier.selectedIndex].textContent, address: document.getElementById('p-address').value.trim(), location: 'JR MARKETING SHOP', items: [...purchaseItems], total, status: status, paymentStatus: 'Due', paymentDue: total, totalPaid: 0, payTermUnit: document.getElementById('p-payterm-unit').value, payTermVal: document.getElementById('p-payterm-val').value, addedBy: (Auth.getSession() && Auth.getSession().user) ? Auth.getSession().user.name || Auth.getSession().user.username : 'Admin', created: new Date().toISOString() });
+        all.unshift({ id:'PUR-'+Date.now(), date, ref: ref||('PUR-'+(all.length+1)), supplier: supplier.options[supplier.selectedIndex].textContent, address: document.getElementById('p-address').value.trim(), location: 'JR MARKETING (PVT) LTD', items: [...purchaseItems], total, status: status, paymentStatus: 'Due', paymentDue: total, totalPaid: 0, payTermUnit: document.getElementById('p-payterm-unit').value, payTermVal: document.getElementById('p-payterm-val').value, addedBy: (Auth.getSession() && Auth.getSession().user) ? Auth.getSession().user.name || Auth.getSession().user.username : 'Admin', created: new Date().toISOString() });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
         Toast.success('Purchase saved!');
         purchaseItems = []; clearForm(); renderList(); switchTab('list');
@@ -332,12 +330,13 @@
     /* ── Quick Add Supplier Modal ── */
     function openAddSupplierModal() {
         document.getElementById('addSupplierModal').classList.add('active');
+        document.getElementById('ms-contact-id').value = 'SC-' + String(Date.now()).slice(-6);
         setTimeout(() => document.getElementById('ms-company').focus(), 150);
     }
     function closeAddSupplierModal() {
         document.getElementById('addSupplierModal').classList.remove('active');
-        ['ms-company','ms-contact','ms-phone','ms-email','ms-tax','ms-address'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('ms-balance').value = '0';
+        ['ms-company','ms-contact','ms-phone','ms-email'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('ms-contact-id').value = 'SC-' + String(Date.now()).slice(-6);
     }
     function saveQuickSupplier() {
         const company = document.getElementById('ms-company').value.trim();
@@ -346,13 +345,11 @@
         if (!phone) { Toast.warning('Phone is required'); document.getElementById('ms-phone').focus(); return; }
         const newSupplier = {
             id: 'SUP-' + Date.now(),
+            contactId: document.getElementById('ms-contact-id').value || ('SC-' + String(Date.now()).slice(-6)),
             company,
             contact: document.getElementById('ms-contact').value.trim(),
             phone,
             email: document.getElementById('ms-email').value.trim(),
-            tax: document.getElementById('ms-tax').value.trim(),
-            address: document.getElementById('ms-address').value.trim(),
-            balance: parseFloat(document.getElementById('ms-balance').value) || 0,
             createdAt: new Date().toISOString()
         };
         const all = JSON.parse(localStorage.getItem('jr_suppliers') || '[]');
@@ -363,12 +360,9 @@
         const o = document.createElement('option');
         o.value = newSupplier.id;
         o.textContent = newSupplier.company;
-        o.dataset.address = newSupplier.address;
         // Insert after the first "Select supplier" option so it appears at top
         if (ss.options.length > 1) { ss.insertBefore(o, ss.options[1]); } else { ss.appendChild(o); }
         ss.value = newSupplier.id;
-        // Auto-fill address
-        document.getElementById('p-address').value = newSupplier.address;
         closeAddSupplierModal();
         Toast.success('Supplier "' + company + '" added and selected!');
     }

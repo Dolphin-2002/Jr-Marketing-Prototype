@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products — JR MARKETING SHOP</title>
+    <title>Products — JR MARKETING (PVT) LTD</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a5c2e'/><text x='50%25' y='55%25' font-size='13' font-weight='900' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='Arial'>JR</text></svg>">
     <link rel="stylesheet" href="assets/css/variables.css">
     <link rel="stylesheet" href="assets/css/base.css">
@@ -243,7 +243,7 @@
                     <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
                 </svg>
             </div>
-            <div class="navbar-brand">JR MARKETING SHOP <span class="brand-dot"></span></div>
+            <div class="navbar-brand">JR MARKETING (PVT) LTD <span class="brand-dot"></span></div>
         </div>
         <div class="navbar-center"></div>
         <div class="navbar-right">
@@ -422,9 +422,9 @@
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                             Import Excel
                         </button>
-                        <button class="btn-add-new" onclick="switchTab('add')">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                            Add New Product
+                        <button class="btn-add-new" onclick="exportProductsXlsx()" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Export Data
                         </button>
                     </div>
                     <div class="table-wrap">
@@ -434,12 +434,11 @@
                                     <th>#</th>
                                     <th>Product Name</th>
                                     <th>SKU</th>
-                                    <th>Barcode</th>
+                                    <th>Purchase Price (LKR)</th>
+                                    <th>Selling Price (LKR)</th>
                                     <th>Unit</th>
-                                    <th>Price (LKR)</th>
                                     <th>Stock</th>
-                                    <th>Warranty</th>
-                                    <th>Added On</th>
+                                    <th>Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -492,25 +491,31 @@
                         <div class="form-grid-2">
                             <div class="form-field">
                                 <label class="form-label" for="f-barcode">Barcode Type <span class="req">*</span></label>
-                                <select id="f-barcode" class="form-select">
-                                    <option value="">— Select Barcode —</option>
-                                    <option value="C128">Code 128 (C128)</option>
-                                    <option value="C39">Code 39 (C39)</option>
-                                    <option value="EAN13">EAN-13</option>
-                                    <option value="EAN8">EAN-8</option>
-                                    <option value="UPCA">UPC-A</option>
-                                    <option value="UPCE">UPC-E</option>
-                                </select>
+                                <div style="display:flex;gap:6px;align-items:center">
+                                    <select id="f-barcode" class="form-select" disabled style="background:#f9fafb;color:#6b7280;flex:1">
+                                        <option value="">— Select Barcode —</option>
+                                        <option value="C128" selected>Code 128 (C128)</option>
+                                        <option value="C39">Code 39 (C39)</option>
+                                        <option value="EAN13">EAN-13</option>
+                                        <option value="EAN8">EAN-8</option>
+                                        <option value="UPCA">UPC-A</option>
+                                        <option value="UPCE">UPC-E</option>
+                                    </select>
+                                    <button type="button" onclick="document.getElementById('f-barcode').disabled=false;document.getElementById('f-barcode').style.background='#fff';document.getElementById('f-barcode').style.color='#374151';" style="height:38px;padding:0 12px;border:1.5px solid #d1d5db;border-radius:8px;background:#fff;color:#6b7280;cursor:pointer;font-size:12px;white-space:nowrap" title="Edit barcode type">✏️ Edit</button>
+                                </div>
                                 <span class="field-error" id="err-barcode">Barcode type is required.</span>
                             </div>
                             <div class="form-field">
                                 <label class="form-label" for="f-unit">Unit <span class="req">*</span></label>
-                                <select id="f-unit" class="form-select">
-                                    <option value="">— Select Unit —</option>
-                                    <option value="Pieces">Pieces</option>
-                                    <option value="Boxes">Boxes</option>
-                                    <option value="Rolls">Rolls</option>
-                                </select>
+                                <div style="display:flex;gap:6px;align-items:center">
+                                    <select id="f-unit" class="form-select" disabled style="background:#f9fafb;color:#6b7280;flex:1">
+                                        <option value="">— Select Unit —</option>
+                                        <option value="Pieces" selected>Pieces</option>
+                                        <option value="Boxes">Boxes</option>
+                                        <option value="Rolls">Rolls</option>
+                                    </select>
+                                    <button type="button" onclick="document.getElementById('f-unit').disabled=false;document.getElementById('f-unit').style.background='#fff';document.getElementById('f-unit').style.color='#374151';" style="height:38px;padding:0 12px;border:1.5px solid #d1d5db;border-radius:8px;background:#fff;color:#6b7280;cursor:pointer;font-size:12px;white-space:nowrap" title="Edit unit">✏️ Edit</button>
+                                </div>
                                 <span class="field-error" id="err-unit">Unit is required.</span>
                             </div>
                         </div>
@@ -691,9 +696,15 @@
     }
 
     function resetForm() {
-        ['f-name','f-sku','f-price','f-alert-qty'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('f-barcode').value  = '';
-        document.getElementById('f-unit').value     = '';
+        ['f-name','f-sku','f-buying-price','f-price','f-alert-qty'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('f-barcode').value  = 'C128';
+        document.getElementById('f-barcode').disabled = true;
+        document.getElementById('f-barcode').style.background = '#f9fafb';
+        document.getElementById('f-barcode').style.color = '#6b7280';
+        document.getElementById('f-unit').value     = 'Pieces';
+        document.getElementById('f-unit').disabled = true;
+        document.getElementById('f-unit').style.background = '#f9fafb';
+        document.getElementById('f-unit').style.color = '#6b7280';
         document.getElementById('f-manage-stock').checked = true;
         document.getElementById('f-description').innerHTML = '';
         document.getElementById('stock-fields').style.display    = 'grid';
@@ -711,8 +722,7 @@
         }
         flag('f-name',    'err-name',    !document.getElementById('f-name').value.trim());
         flag('f-price',   'err-price',   !document.getElementById('f-price').value || parseFloat(document.getElementById('f-price').value) < 0);
-        flag('f-barcode', 'err-barcode', !document.getElementById('f-barcode').value);
-        flag('f-unit',    'err-unit',    !document.getElementById('f-unit').value);
+        // Barcode and Unit have defaults so no need to flag if they keep defaults
         if (!valid) return;
 
         const ms = document.getElementById('f-manage-stock').checked;
@@ -722,9 +732,10 @@
             id:          'PRD-' + Date.now(),
             name:        document.getElementById('f-name').value.trim(),
             sku,
+            buyingPrice: parseFloat(document.getElementById('f-buying-price').value) || 0,
             price:       parseFloat(document.getElementById('f-price').value),
-            barcodeType: document.getElementById('f-barcode').value,
-            unit:        document.getElementById('f-unit').value,
+            barcodeType: document.getElementById('f-barcode').value || 'C128',
+            unit:        document.getElementById('f-unit').value || 'Pieces',
             manageStock: ms,
             alertQty:    ms ? (parseInt(document.getElementById('f-alert-qty').value) || null) : null,
             description: document.getElementById('f-description').innerHTML.trim(),
@@ -760,13 +771,15 @@
                 <td>${i + 1}</td>
                 <td><strong>${p.name}</strong></td>
                 <td><span class="sku-badge">${p.sku}</span></td>
-                <td>${p.barcodeType || '—'}</td>
-                <td><span class="unit-badge">${p.unit}</span></td>
+                <td>LKR ${Number(p.buyingPrice||0).toLocaleString('en-LK', {minimumFractionDigits:2})}</td>
                 <td><strong>LKR ${Number(p.price).toLocaleString('en-LK', {minimumFractionDigits:2})}</strong></td>
+                <td><span class="unit-badge">${p.unit}</span></td>
                 <td>${p.manageStock ? `<span class="stock-badge-on">Managed</span>` : `<span class="stock-badge-off">Unmanaged</span>`}</td>
-                <td>${p.warranty || '—'}</td>
                 <td class="date-cell">${new Date(p.date).toLocaleDateString('en-GB')}</td>
-                <td>
+                <td style="white-space:nowrap">
+                    <button class="action-btn" title="Edit" onclick="openEditProduct('${p.id}')" style="background:#dcfce7;color:#16a34a;margin-right:4px">
+                        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
                     <button class="action-btn del" title="Delete" onclick="deleteProduct('${p.id}')">
                         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                     </button>
@@ -1144,6 +1157,93 @@
     /* ── HTML escape helper ── */
     function escHtml(str) {
         return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       EXPORT PRODUCTS AS XLSX
+    ═══════════════════════════════════════════════════════ */
+    function exportProductsXlsx() {
+        if (typeof XLSX === 'undefined') { Toast.warning('SheetJS not loaded yet. Check your internet connection.'); return; }
+        const all = JSON.parse(localStorage.getItem('jr_products') || '[]');
+        if (!all.length) { Toast.warning('No products to export.'); return; }
+        const headers = ['Product Name','SKU','Purchase Price','Selling Price','Barcode Type','Unit','Manage Stock','Alert Qty','Date'];
+        const rows = all.map(p => [
+            p.name, p.sku, p.buyingPrice||0, p.price, p.barcodeType||'C128', p.unit||'Pieces',
+            p.manageStock ? 'Yes' : 'No', p.alertQty||'', new Date(p.date).toLocaleDateString('en-GB')
+        ]);
+        const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+        ws['!cols'] = [{wch:28},{wch:14},{wch:14},{wch:14},{wch:14},{wch:10},{wch:14},{wch:10},{wch:12}];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Products');
+        XLSX.writeFile(wb, 'JR_Marketing_Products.xlsx');
+        Toast.success('Products exported to Excel!');
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       EDIT PRODUCT POPUP
+    ═══════════════════════════════════════════════════════ */
+    function openEditProduct(id) {
+        const all = JSON.parse(localStorage.getItem('jr_products') || '[]');
+        const p = all.find(x => x.id === id);
+        if (!p) return;
+        // Build modal HTML
+        const html = `
+        <div class="xl-overlay open" id="edit-prod-overlay" style="z-index:950" onclick="if(event.target===this)closeEditProduct()">
+            <div class="xl-modal" style="max-width:600px">
+                <div class="xl-header">
+                    <h3 style="gap:8px;display:flex;align-items:center">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        Edit Product
+                    </h3>
+                    <button class="xl-close" onclick="closeEditProduct()">✕</button>
+                </div>
+                <div class="xl-body" style="padding:20px 24px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                        <div class="form-field" style="grid-column:span 2"><label class="form-label">Product Name *</label><input type="text" class="form-input" id="ep-name" value="${escHtml(p.name)}"></div>
+                        <div class="form-field"><label class="form-label">SKU</label><input type="text" class="form-input" id="ep-sku" value="${escHtml(p.sku)}"></div>
+                        <div class="form-field"><label class="form-label">Purchase Price (LKR)</label><input type="number" class="form-input" id="ep-buying-price" value="${p.buyingPrice||0}" min="0" step="0.01"></div>
+                        <div class="form-field"><label class="form-label">Selling Price (LKR) *</label><input type="number" class="form-input" id="ep-price" value="${p.price}" min="0" step="0.01"></div>
+                        <div class="form-field"><label class="form-label">Barcode Type</label><select class="form-select" id="ep-barcode"><option value="C128" ${p.barcodeType==='C128'?'selected':''}>Code 128</option><option value="C39" ${p.barcodeType==='C39'?'selected':''}>Code 39</option><option value="EAN13" ${p.barcodeType==='EAN13'?'selected':''}>EAN-13</option><option value="EAN8" ${p.barcodeType==='EAN8'?'selected':''}>EAN-8</option><option value="UPCA" ${p.barcodeType==='UPCA'?'selected':''}>UPC-A</option><option value="UPCE" ${p.barcodeType==='UPCE'?'selected':''}>UPC-E</option></select></div>
+                        <div class="form-field"><label class="form-label">Unit</label><select class="form-select" id="ep-unit"><option value="Pieces" ${p.unit==='Pieces'?'selected':''}>Pieces</option><option value="Boxes" ${p.unit==='Boxes'?'selected':''}>Boxes</option><option value="Rolls" ${p.unit==='Rolls'?'selected':''}>Rolls</option></select></div>
+                        <div class="form-field"><label class="form-label">Alert Qty</label><input type="number" class="form-input" id="ep-alert-qty" value="${p.alertQty||''}" min="0"></div>
+                    </div>
+                </div>
+                <div class="xl-footer">
+                    <div></div>
+                    <div class="xl-footer-right">
+                        <button class="xl-btn-cancel" onclick="closeEditProduct()">Cancel</button>
+                        <button class="xl-btn-import" onclick="saveEditProduct('${p.id}')"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', html);
+        document.body.style.overflow = 'hidden';
+    }
+    function closeEditProduct() {
+        const ov = document.getElementById('edit-prod-overlay');
+        if (ov) ov.remove();
+        document.body.style.overflow = '';
+    }
+    function saveEditProduct(id) {
+        const name = document.getElementById('ep-name').value.trim();
+        const price = parseFloat(document.getElementById('ep-price').value);
+        if (!name) { Toast.warning('Product name is required'); return; }
+        if (isNaN(price) || price < 0) { Toast.warning('Valid selling price is required'); return; }
+        const all = JSON.parse(localStorage.getItem('jr_products') || '[]');
+        const idx = all.findIndex(x => x.id === id);
+        if (idx === -1) return;
+        all[idx].name = name;
+        all[idx].sku = document.getElementById('ep-sku').value.trim() || all[idx].sku;
+        all[idx].buyingPrice = parseFloat(document.getElementById('ep-buying-price').value) || 0;
+        all[idx].price = price;
+        all[idx].barcodeType = document.getElementById('ep-barcode').value;
+        all[idx].unit = document.getElementById('ep-unit').value;
+        all[idx].alertQty = parseInt(document.getElementById('ep-alert-qty').value) || null;
+        localStorage.setItem('jr_products', JSON.stringify(all));
+        Toast.success('Product updated!');
+        closeEditProduct();
+        renderList();
     }
     </script>
 </body>
