@@ -1,0 +1,79 @@
+/* ============================================
+   CSS VARIABLES - Global Design Tokens
+   JR Marketing - Sri Lanka
+============================================ */
+:root {
+    /* Brand Colors */
+    --color-primary: #16a34a;
+    --color-primary-dark: #0a5c2e;
+    --color-primary-light: #4ade80;
+    --color-secondary: #1a1a2e;
+    --color-accent-red: #e63946;
+    --color-accent-green: #16a34a;
+    --color-accent-green-dark: #0a5c2e;
+
+    /* Background Colors */
+    --color-bg-gradient-start: #16a34a;
+    --color-bg-gradient-end: #0a5c2e;
+    --color-bg-card: #ffffff;
+    --color-bg-input: #ffffff;
+    --color-bg-page: #f0fdf4;
+
+    /* Text Colors */
+    --color-text-primary: #1a1a2e;
+    --color-text-secondary: #555577;
+    --color-text-muted: #8888aa;
+    --color-text-white: #ffffff;
+    --color-text-link: #16a34a;
+
+    /* Border Colors */
+    --color-border: #dde1f0;
+    --color-border-focus: #16a34a;
+
+    /* Shadow */
+    --shadow-card: 0 20px 60px rgba(10, 92, 46, 0.18);
+    --shadow-btn: 0 4px 15px rgba(22, 163, 74, 0.4);
+    --shadow-btn-green: 0 4px 15px rgba(10, 92, 46, 0.4);
+    --shadow-input-focus: 0 0 0 3px rgba(22, 163, 74, 0.15);
+
+    /* Typography */
+    --font-family: 'Segoe UI', 'Inter', 'Poppins', Arial, sans-serif;
+    --font-size-xs: 11px;
+    --font-size-sm: 13px;
+    --font-size-base: 15px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 22px;
+    --font-size-2xl: 26px;
+    --font-size-3xl: 32px;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-2xl: 48px;
+
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.25s ease;
+    --transition-slow: 0.4s ease;
+
+    /* Z-index layers */
+    --z-dropdown: 100;
+    --z-modal: 200;
+    --z-toast: 300;
+    --z-tooltip: 400;
+}
